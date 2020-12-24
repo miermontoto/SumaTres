@@ -4,12 +4,12 @@ import java.util.Random; // Se necesita para la generación de números aleatori
 /** Clase principal del proyecto SumaTres.
  * @author Juan Mier, Martín Feito
  * @since 22/12/2020
- * @version v6
+ * @version v7
  * @see Se inicializa o bien con el constructor por defecto o bien sobrecargando dos enteros que delimitan el tamaño del tablero.
  */
 public class SumaTres {
 
-	// TODO imprimir matriz
+	// TODO toString()
 	// TODO main
 	// TODO end: documentación pdf
 	// TODO end: reestructuración y comentarios
@@ -102,13 +102,13 @@ public class SumaTres {
 
 
 	// TODO comprobar casos de varias casillas iguales juntas.
-	// TODO imprimir la matriz movida antes de sumar elementos.
 	// TODO comprobar el orden de suma de las casillas.
 
 	/** Método principal de la clase.
 	 * Ejecuta el código que determina qué jugada hacer, mueve y suma las piezas.
 	 * Si la casilla destino está vacía, simplemente se mueve.
 	 * Si la casilla destino es igual o suman 3 (1+2 || 2+1), se suman.
+	 * Se utiliza sumaCond() para verificar si la suma es posible o no.
 	 * Al principio de la jugada, se establece el valor de la siguiente ficha con 'newSiguiente()'.
 	 * Al final de la jugada, se pone la nueva ficha en el tablero, comprobando que se encuentra en una casilla vacía.
 	 * @param c Caracter que determina el movimiento (a/b/i/d). Ideado para entrada por consola.
@@ -155,13 +155,11 @@ public class SumaTres {
 					}
 				}
 			}
-
-			//out.println(this);
-
+			out.println(this);
 			for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) {
 				if(getTab(i, j)!=0) { // como antes, se buscan casillas que contengan valores.
 					// Paso 2: Suma de piezas.
-					if(getTab(i, j) == getTab(i+movx, j+movy) || getTab(i, j) + getTab(i+movx, j+movy) == 3) {
+					if(sumaCond(i, j, movx, movy)) {
 						setTab(i+movx, j+movy, getTab(i, j) + getTab(i+movx, j+movy));
 						setTab(i, j, 0);
 						addPuntos(tablero[i+movx][j+movy]); // Se suman los puntos de la suma al total.
@@ -169,9 +167,8 @@ public class SumaTres {
 				}
 			}
 		}
-		
 		newFicha(getSiguiente());
-		//out.println(this);
+		out.println(this);
 	}
 
 
@@ -198,15 +195,17 @@ public class SumaTres {
 	public boolean checkFull() {
 		int check = 0;
 		for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) {
-			if(tablero[i][j]!=0) check++;
+			if(tablero[i][j] != 0) check++;
 		}
 		return check == tablero.length * tablero[0].length;
 	}
 
 	/** Comprueba si se ha terminado la partida.
+	 * Es la lógica principal de la acción de suma del juego.
 	 * Para esto, escanea el tablero repetidas veces con todas los posibles movimientos.
 	 * Si en algún momento se detecta que hay una suma que se pueda hacer, el check devuelve 'false'.
 	 * Si el tablero no está lleno, devuelve 'false'.
+	 * Se utiliza sumaCond() para verificar si la suma es posible o no.
 	 * @return Valor 'booleano' definiendo si se ha terminado o no la partida.
 	 */
 	public boolean checkEnd() {
@@ -215,16 +214,27 @@ public class SumaTres {
 			boolean ableToMove = false;
 			for(int movx=-1; movx<=1; movx+=2) {
 				for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) {
-					if(getTab(i, j) == getTab(i+movx, j) || getTab(i, j) + getTab(i+movx, j) == 3) ableToMove = true;
+					if(sumaCond(i, j, movx, 0)) ableToMove = true;
 				}
 			}
 			for(int movy=-1; movy<=1; movy+=2) {
 				for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) {
-					if(getTab(i, j) == getTab(i, j+movy) || getTab(i, j+movy) + getTab(i, j+movy) == 3) ableToMove = true;
+					if(sumaCond(i, j, 0, movy)) ableToMove = true;
 				}
 			}
 			return ableToMove;
 		}
+	}
+	
+	/** Condición que detecta si se puede sumar o no.
+	 * @param i Posición x del tablero.
+	 * @param j Posición y del tablero.
+	 * @param movx Dirección de la suma horizontal (si no hay, es igual a 0).
+	 * @param movy Dirección de la suma vertical (si no hay, es igual a 0).
+	 * @return Un booleano, 'true' si se puede sumar, 'false' si no.
+	 */
+	public boolean sumaCond(int i, int j, int movx, int movy) {
+		return getTab(i, j) == getTab(i, j+movy) && getTab(i, j) != 1 && getTab(i, j) != 2 || getTab(i, j+movy) + getTab(i, j+movy) == 3;
 	}
 	
 	/** Coloca una nueva ficha en tablero.
