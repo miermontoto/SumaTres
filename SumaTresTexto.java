@@ -16,7 +16,7 @@ public class SumaTresTexto {
 		
 		out.print(Juego);
 		
-		while (!(Juego.checkEnd())) {
+		while (Juego.ableToMove()) {
 			char jugada;
 			out.print("Dirección Arriba (W)/Abajo (S)/Izquierda (A)/Derecha (D): ");
 			jugada = scr.next().toLowerCase().charAt(0);
