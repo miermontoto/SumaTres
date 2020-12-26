@@ -1,4 +1,5 @@
-import static java.lang.System.out;
+//se utiliza %n en vez de \n por recomendación de Oracle: https://docs.oracle.com/javase/tutorial/java/data/numberformat.html
+import static java.lang.System.out; //se importa de esta manera para acortar durante el resto del programa
 import java.util.Scanner;
 
 public class SumaTresTexto {
@@ -18,7 +19,7 @@ public class SumaTresTexto {
 		
 		while (Juego.ableToMove()) {
 			char jugada;
-			out.print("Dirección Arriba (W)/Abajo (S)/Izquierda (A)/Derecha (D): ");
+			out.print("Dirección: Up (W)/Down (S)/Left (A)/Right (D): ");
 			jugada = scr.next().toLowerCase().charAt(0);
 			Juego.Jugada(jugada);
 		}

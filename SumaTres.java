@@ -4,7 +4,7 @@ import java.util.Random; // Se necesita para la generación de números aleatori
 /** Clase principal del proyecto SumaTres.
  * @author Juan Mier, Martín Feito
  * @since 22/12/2020
- * @version v9
+ * @version v9b
  * @see Se inicializa o bien con el constructor por defecto o bien sobrecargando dos enteros que delimitan el tamaño del tablero.
  */
 public class SumaTres {
@@ -327,20 +327,24 @@ public class SumaTres {
 	 */
 	@Override
 	public String toString() {
-		String salida = String.format("_");
-		for(int i=0; i<tablero.length; i++) salida += "____";
+		String salida = String.format("╔");
+		for(int i=0; i+1<tablero.length; i++) salida += "══╦";
+		salida += "══╗";
 		salida += String.format("%n");
+		
 		for(int i=0; i<tablero.length; i++) {
-			if(getTab(i, 0) == 0) salida += "|   |";
-			else salida += String.format("|%3d|", getTab(i, 0));
+			if(getTab(i, 0) == 0) salida += "║  ║";
+			else salida += String.format("║%2d║", getTab(i, 0));
 			for(int j=1; j<tablero[0].length; j++) {
-				if(getTab(i, j) == 0) salida += "   |";
-				else salida += String.format("%3d|", getTab(i, j));
+				if(getTab(i, j) == 0) salida += "  ║";
+				else salida += String.format("%2d║", getTab(i, j));
 			}
 			salida += String.format("%n");
 		}
-		salida += "-";
-		for(int i=0; i<tablero.length; i++) salida += "----";
+		
+		salida += "╚";
+		for(int i=0; i+1<tablero.length; i++) salida += "══╩";
+		salida += "══╝";
 		salida += String.format("%n");
 		salida += String.format("Siguiente %d%nPuntos %d%nTurno %d%n", getSiguiente(), getPuntos(), getTurnos());
 		return salida;
