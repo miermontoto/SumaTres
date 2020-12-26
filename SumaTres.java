@@ -4,19 +4,18 @@ import java.util.Random; // Se necesita para la generación de números aleatori
 /** Clase principal del proyecto SumaTres.
  * @author Juan Mier, Martín Feito
  * @since 22/12/2020
- * @version v7
+ * @version v8
  * @see Se inicializa o bien con el constructor por defecto o bien sobrecargando dos enteros que delimitan el tamaño del tablero.
  */
 public class SumaTres {
 
-	// TODO toString()
-	// TODO main
+	// TODO arreglar checkEnd()
 	// TODO end: documentación pdf
 	// TODO end: reestructuración y comentarios
 	// TODO end: limpieza de código
 	// TODO end: casos extremos
 
-	private int turnos = 0; //no es necesario
+	private int turnos = 1; //no es necesario
 	private int siguiente;
 	private int[][] tablero;
 	private int puntos = 0;
@@ -42,6 +41,7 @@ public class SumaTres {
 		newFicha(3); 
 		newFicha(2); // se inicializa el tablero.
 		newFicha(1);
+		newSiguiente();
 	}
 
 
@@ -59,7 +59,7 @@ public class SumaTres {
 	/** Añade puntos al contador actual.
 	 * @param puntos que se quieren sumar.
 	 */
-	public void addPuntos(int puntos) {this.puntos += puntos;} //se pueden añadir puntos negativos?
+	public void addPuntos(int puntos) {this.puntos += puntos;}
 
 	/** Devuelve el valor de la ficha que se encuentre en unas coordenadas.
 	 * @param x Coordenada x que se desea analizar.
@@ -111,32 +111,28 @@ public class SumaTres {
 	 * Se utiliza sumaCond() para verificar si la suma es posible o no.
 	 * Al principio de la jugada, se establece el valor de la siguiente ficha con 'newSiguiente()'.
 	 * Al final de la jugada, se pone la nueva ficha en el tablero, comprobando que se encuentra en una casilla vacía.
+	 * Debe de comprobarse que los valores pasados a 'getTab()' y 'sumaCond()' son válidos para evitar Out of Bounds.
 	 * @param c Caracter que determina el movimiento (a/b/i/d). Ideado para entrada por consola.
 	 */
 	public void Jugada(char c) {
-		
-		newSiguiente(); // se genera el valor de la próxima ficha
-		
-		int movx = 0;
-		int movy = 0;
-		//delimitan el desplazamiento del movimiento
-		//para arriba, el desplazamiento es -1 en la vertical
-		//para izquierda, el desplazamiento es -1 en la horizontal
-		//utilizando esto, se reduce el código en un 70% aprox. (no se tiene que incluir cada caso en cada switch)
 
-		addTurno();
+		int up = 0;
+		int down = 0;
+		int left = 0;
+		int right = 0;
+
 		switch(c) {
-		case 'a': //ARRIBA
-			movy--;
+		case 'w': //up
+			up = 1;
 			break;
-		case 'b': //ABAJO
-			movy++;
+		case 's': //down
+			down = 1;
 			break;
-		case 'i': //IZQUIERDA
-			movx--;
+		case 'a': //left
+			left = 1;
 			break;
-		case 'd': //DERECHA
-			movx++;
+		case 'd': //right
+			right = 1;
 			break;
 		default: //otro valor (inválido)
 			out.println("Jugada inválida.");
@@ -144,31 +140,49 @@ public class SumaTres {
 			break;
 		}
 
+		if (!(up == 0 && down == 0 && left == 0 && right == 0)) {
+			addTurno();
+			
+			mover(up, down, left, right);
+			out.println(this);
 
-		if(movx != 0 && movy != 0) { //si no se desplaza el índice significa que no es una jugada válida.
-			for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) { //búsqueda de casillas que contengan valores.
-				// Paso 1: Desplazamiento de las piezas.
-				if(getTab(i, j)!=0) {
-					if(getTab(i+movx, j+movy)==0) { 
-						setTab(i+movx, j+movy, getTab(i, j));
-						setTab(i, j, 0);
-					}
+
+			sumar(up, down, left, right);
+
+			newFicha(getSiguiente());
+			newSiguiente();
+			out.println(this);
+		}
+	}
+
+	public void mover(int up, int down, int left, int right) {
+		boolean check = true;
+		while(check) {
+			for(int i=up; i+down<tablero.length; i++) for(int j=left; j+right<tablero[0].length; j++) {
+				if(getTab(i-up+down, j-left+right) == 0) {
+					setTab(i-up+down, j-left+right, getTab(i, j));
+					setTab(i, j, 0);
 				}
 			}
-			out.println(this);
-			for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) {
-				if(getTab(i, j)!=0) { // como antes, se buscan casillas que contengan valores.
-					// Paso 2: Suma de piezas.
-					if(sumaCond(i, j, movx, movy)) {
-						setTab(i+movx, j+movy, getTab(i, j) + getTab(i+movx, j+movy));
-						setTab(i, j, 0);
-						addPuntos(tablero[i+movx][j+movy]); // Se suman los puntos de la suma al total.
-					}
+
+			check = false;
+			for(int i=up; i+down<tablero.length; i++) for(int j=left; j+right<tablero[0].length; j++) {
+				if(getTab(i, j) != 0) {
+					if(getTab(i-up+down, j-left+right) == 0) check = true;
 				}
 			}
 		}
-		newFicha(getSiguiente());
-		out.println(this);
+	}
+
+	public void sumar(int up, int down, int left, int right) {
+		for(int i=up; i+down<tablero.length; i++) for(int j=left; j+right<tablero[0].length; j++) {
+			if(getTab(i-up+down, j-left+right) == getTab(i, j) && getTab(i, j) != 2 && getTab(i, j) != 1 || getTab(i, j) + getTab(i-up+down, j-left+right) == 3) {
+				setTab(i-up+down, j-left+right, getTab(i, j) + getTab(i-up+down, j-left+right));
+				setTab(i, j, 0);
+				addPuntos(getTab(i-up+down, j-left+right));
+			}
+		}
+		mover(up, down, left, right); //se mueve al terminar de suma
 	}
 
 
@@ -190,12 +204,15 @@ public class SumaTres {
 	}
 
 	/** Comprueba que si el tablero está lleno.
+	 * Si una casilla tiene un valor, se suma 1 al contador.
+	 * Si al terminar la operación, el contador es igual a la cantidad
+	 * de casillas, entonces el tablero está lleno.
 	 * @return Devuelve un booleano, 'true' si está lleno, 'false' si no.
 	 */
 	public boolean checkFull() {
 		int check = 0;
 		for(int i=0; i<tablero.length; i++) for(int j=0; j<tablero[0].length; j++) {
-			if(tablero[i][j] != 0) check++;
+			if(getTab(i, j) != 0) check++;
 		}
 		return check == tablero.length * tablero[0].length;
 	}
@@ -225,7 +242,7 @@ public class SumaTres {
 			return ableToMove;
 		}
 	}
-	
+
 	/** Condición que detecta si se puede sumar o no.
 	 * @param i Posición x del tablero.
 	 * @param j Posición y del tablero.
@@ -236,7 +253,7 @@ public class SumaTres {
 	public boolean sumaCond(int i, int j, int movx, int movy) {
 		return getTab(i, j) == getTab(i, j+movy) && getTab(i, j) != 1 && getTab(i, j) != 2 || getTab(i, j+movy) + getTab(i, j+movy) == 3;
 	}
-	
+
 	/** Coloca una nueva ficha en tablero.
 	 * Para encontrar una poisición nueva, utiliza 'newRandom()'.
 	 * Se comprueba que en la casilla no haya ya una ficha.
@@ -260,8 +277,22 @@ public class SumaTres {
 	 */
 	@Override
 	public String toString() {
-		String salida = String.format(""); //TODO completar salida para que coincida con la demo
-		return salida; //tiene que incluir "Siguiente ficha: " y "Puntos: "
-		//imprimir los turnos??? -- getTurnos()
+		String salida = String.format("_");
+		for(int i=0; i<tablero.length; i++) salida += "____";
+		salida += String.format("%n");
+		for(int i=0; i<tablero.length; i++) {
+			if(getTab(i, 0) == 0) salida += "|   |";
+			else salida += String.format("|%3d|", getTab(i, 0));
+			for(int j=1; j<tablero[0].length; j++) {
+				if(getTab(i, j) == 0) salida += "   |";
+				else salida += String.format("%3d|", getTab(i, j));
+			}
+			salida += String.format("%n");
+		}
+		salida += "-";
+		for(int i=0; i<tablero.length; i++) salida += "----";
+		salida += String.format("%n");
+		salida += String.format("Siguiente %d%nPuntos %d%nTurno %d%n", getSiguiente(), getPuntos(), getTurnos());
+		return salida;
 	}
 }
