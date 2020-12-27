@@ -18,6 +18,8 @@ public class SumaTres {
 	private int siguiente;
 	private int[][] tablero;
 	private int puntos = 0;
+	
+	public int[] ran = new int[3];
 
 	/** Constructor por defecto del tablero.
 	 * Establece 5x5 (como en las demos) para el tablero.
@@ -239,6 +241,8 @@ public class SumaTres {
 	 */
 	public void newSiguiente() {
 		setSiguiente(newRandom(3)+1);
+		ran[getSiguiente()-1]++;
+		
 	}
 
 	/** Comprueba que si el tablero está lleno.
@@ -328,7 +332,7 @@ public class SumaTres {
 	@Override
 	public String toString() {
 		String salida = String.format("╔");
-		for(int i=0; i+1<tablero.length; i++) salida += "══╦";
+		for(int i=0; i+1<tablero[0].length; i++) salida += "══╦";
 		salida += "══╗";
 		salida += String.format("%n");
 		
@@ -343,7 +347,7 @@ public class SumaTres {
 		}
 		
 		salida += "╚";
-		for(int i=0; i+1<tablero.length; i++) salida += "══╩";
+		for(int i=0; i+1<tablero[0].length; i++) salida += "══╩";
 		salida += "══╝";
 		salida += String.format("%n");
 		salida += String.format("Siguiente %d%nPuntos %d%nTurno %d%n", getSiguiente(), getPuntos(), getTurnos());

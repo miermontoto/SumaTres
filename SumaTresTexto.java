@@ -24,8 +24,9 @@ public class SumaTresTexto {
 			Juego.Jugada(jugada);
 		}
 		
-		out.printf("%nSe ha terminado la partida.%nPuntuación final: %d%nTurnos: %d", Juego.getPuntos(), Juego.getTurnos());
 		scr.close();
+		out.printf("%nSe ha terminado la partida.%nPuntuación final: %d%nTurnos: %d%n", Juego.getPuntos(), Juego.getTurnos());
+		for(int i=0; i<Juego.ran.length; i++) {out.printf("%d's: %d\t", Juego.ran[i]+1, Juego.ran[i]);}
 
 	}
 
