@@ -64,7 +64,6 @@ public class SumaTres extends JPanel {
 
 	// TODO arreglar que el programa no detecte KeyEvents hasta que se haga un MouseEvent (focus?)
 	// TODO arreglar lógica de suma en dos direcciones
-	// TODO añadir JavaDoc
 	// TODO end: documentación pdf
 	// TODO end: casos extremos
 	// TODO end: eliminar TODOs
@@ -642,97 +641,172 @@ public class SumaTres extends JPanel {
 
 	/**
 	 * Método que se accede desde el main para comprobar si el tablero entra en pantalla con la resolución
-	 * actual. Simplemente devuelve un valor booleano, la lógica y las condiciones se encuentran en el main.
-	 * @param x Dimensión 'x' del tablero.
-	 * @param y Dimensión 'y' del tablero.
-	 * @return
+	 * actual. Simplemente devuelve un valor booleano, la lógica se encuentra en el main.
+	 * @return Valor booleano que establece si la pantalla generada entra o no en la resolución actual.
 	 */
 	public boolean checkValidSize() {
 		return tablero[0].length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER < anchoPantalla &&
 				tablero.length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER < altoPantalla; 
 	}
 	
+	/**
+	 * Método que calcula el ancho total final de la pantalla. Se utiliza en el main para definir la
+	 * aplicación y también en diversos métodos dentro de esta clase para calcular posiciones respecto
+	 * a los bordes de la ventana. Depende de la matriz tablero inicializada.
+	 * @return Valor entero con el ancho de la ventana.
+	 */
 	public int defineX() {
 		return tablero[0].length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER;
 	}
 
+	/**
+	 * Método que calcula el alto total final de la pantalla. Se utiliza en el main para definir la
+	 * aplicación y también en diversos métodos dentro de esta clase para calcular posiciones respecto
+	 * a los bordes de la ventana. Depende de la matriz tablero inicializada.
+	 * @return Valor entero con el alto de la ventana.
+	 */
 	public int defineY() {
 		return tablero.length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 3 * MAIN_SPACER;
 	}
 
+	/**
+	 * Método que optimiza el cambio del tamaño de la fuente. Puesto que siempre se utiliza ARIAL como
+	 * fuente, no es necesario cambiar nada más y se acorta más de esta manera.
+	 * @param g Entorno gráfico
+	 * @param size Tamaño de la fuente a establecer
+	 */
 	public void setFontSize(Graphics g, int size) {
 		g.setFont(new Font("Arial", Font.PLAIN, size));
 	}
+	
+
 
 	/**
-	 * Método que pinta el tablero. Hace uso de las constantes
-	 * <code>BOARD_SPACER, MAIN_SPACER, SPOT_SPACER</code> y
-	 * <code>SQUARE_SIZE</code> para determinar y pintar en pantalla tanto el
-	 * tablero como las piezas.
-	 * <p>
-	 * Para determinar el color de las piezas, se utiliza el HashMap
-	 * <code>colores</code>.
-	 * <p>
-	 * Para pintar el tablero, simplemente genera un cuadrado blanco que, mediante
-	 * unos pocos cálculos, hace que todas las piezas estén encerradas dentro, como
-	 * debería ocurrir.
+	 * Método que pinta la partida en la aplicación gráfica.
+	 * <ul>
+	 * <li>Para pintar las flechas, se utiliza {@link #pintarFlechas(Graphics)}. </li>
+	 * <li>Para pintar el tablero, se utiliza {@link #pintarTablero(Graphics)}. </li>
+	 * <li>Para pintar las fichas, se utiliza {@link #pintarFichas(Graphics)}. </li>
+	 * <li>Para pintar la información, se utiliza {@link #pintarInfo(Graphics)}. </li>
+	 * </ul>
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
+		
+		pintarFlechas(g);
+		pintarTablero(g);
+		pintarFichas(g);
+		pintarInfo(g);
+	}
+	
+	/**
+	 * Método que imprime las flechas que indican dónde hacer click para realizar un movimiento
+	 * y en qué dirección, aunque sea bastante intuitivo de por sí. Los cálculos de la posición
+	 * de las flechas son aproximados a ojo, pero se mantienen en cualquier con cualquier
+	 * combinación de columnas, filas y resolución de pantalla.
+	 * @param g Entorno gráfico
+	 */
+	public void pintarFlechas(Graphics g) {
 		g.setColor(Color.blue);
 		setFontSize(g, 16);
 		g.drawString("↑", defineX() / 2, MAIN_SPACER * 14 / 24);
 		g.drawString("←", MAIN_SPACER * 9 / 24, (defineY() - MAIN_SPACER) / 2);
 		g.drawString("→", defineX() - MAIN_SPACER * 16 / 24, (defineY() - MAIN_SPACER) / 2);
 		g.drawString("↓", defineX() / 2, defineY() - MAIN_SPACER * 35 / 24);
-
+	}
+	
+	/**
+	 * Método sencillo que imprime el tablero, es decir, un rectángulo blanco, en la aplicación
+	 * gráfica. Para obtener las dimensiones del tablero, se tienen en cuenta los espaciados
+	 * entre el tablero y el borde de la ventana, el tamaño de las piezas, la separación entre
+	 * piezas y la separación entre las piezas y el tablero.
+	 * @param g Entorno gráfico
+	 */
+	public void pintarTablero(Graphics g) {
 		g.setColor(Color.white);
 		g.fillRoundRect(MAIN_SPACER, MAIN_SPACER,
 				tablero[0].length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
 				tablero.length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER, ROUND_DIAMETER,
 				ROUND_DIAMETER);
+	}
+	
+	/**
+	 * Método que imprime la siguiente ficha y los puntos actuales en la aplicación gráfica.
+	 * Se obtiene el color de la siguiente ficha con el HashMap. Para obtener el valor de la
+	 * próxima ficha, se utiliza {@link #getSiguiente()}.
+	 * @param g Entorno gráfico
+	 */
+	public void pintarInfo(Graphics g) {
+		g.setColor(Color.black);
+		setFontSize(g, 15);
+		g.drawString("Siguiente:", MAIN_SPACER, defineY() - MAIN_SPACER / 2);
+		g.drawString(String.format("Puntos: %d", getPuntos()), defineX() - 2 * MAIN_SPACER,
+				defineY() - MAIN_SPACER / 2);
 
+		g.setColor(colores.get(getSiguiente()));
+		g.fillRoundRect(MAIN_SPACER * 9 / 4, defineY() - MAIN_SPACER, SQUARE_SIZE, SQUARE_SIZE,
+				ROUND_DIAMETER, ROUND_DIAMETER);
+		g.setColor(Color.white);
+		setFontSize(g, 18);
+		g.drawString(String.format("%d", getSiguiente()), MAIN_SPACER * 123 / 48,
+				defineY() - MAIN_SPACER / 2);
+	}
+	
+	/**
+	 * Método que pinta las fichas en pantalla.
+	 * <p>
+	 * Supuestamente después de pintar el tablero mediante {@link #pintarTablero(Graphics)} se
+	 * pintan las fichas. Para esto, se examina el tablero entero. Si la posición en el tablero
+	 * tiene valor <code>0</code>, no se pinta nada.
+	 * <p>
+	 * Para obtener los colores con los que se va a pintar las piezas, se utiliza un HashMap con
+	 * los valores de las piezas como claves y los colores como valores. Si no existe una clave,
+	 * se genera un nuevo color y se guarda, de modo que todas las futuras piezas con ese valor
+	 * tengan el mismo color. Para esto, se utiliza {@link #newRandom(int)}.
+	 * @param g Entorno gráfico
+	 */
+	public void pintarFichas(Graphics g) {
 		for (int i = 0; i < tablero.length; i++)
 			for (int j = 0; j < tablero[0].length; j++) {
-				if (getTab(i, j) != 0) {
+				if (getTab(i, j) != 0) { // Al detectarse una pieza, se obtiene su color referente.
 					if (colores.containsKey(getTab(i, j))) {
 						g.setColor(colores.get(getTab(i, j)));
-					} else {
+					} else { // Si no tiene un color predeterminado, se genera uno aleatorio.
 						colores.put(getTab(i, j), new Color(newRandom(255), newRandom(255), newRandom(255)));
 						g.setColor(colores.get(getTab(i, j)));
 					}
+					
+					// Se pinta la pieza en sí.
 					g.fillRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
 							ROUND_DIAMETER, ROUND_DIAMETER);
+					
+					// Por último, se pinta el valor de la ficha.
 					g.setColor(Color.white);
 					setFontSize(g, 18 - 2 * (String.valueOf(getTab(i, j)).length() - 1));
 					// Se establece un tamaño de fuente en función de los dígitos de la ficha.
-
 					g.drawString(String.format("%d", getTab(i, j)),
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j + SQUARE_SIZE * 13 / 32,
 							SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i);
-
-					g.setColor(Color.black);
-					setFontSize(g, 15);
-					g.drawString("Siguiente:", MAIN_SPACER, defineY() - MAIN_SPACER / 2);
-					g.drawString(String.format("Puntos: %d", getPuntos()), defineX() - 2 * MAIN_SPACER,
-							defineY() - MAIN_SPACER / 2);
-
-					g.setColor(colores.get(getSiguiente()));
-					g.fillRoundRect(MAIN_SPACER * 9 / 4, defineY() - MAIN_SPACER, SQUARE_SIZE, SQUARE_SIZE,
-							ROUND_DIAMETER, ROUND_DIAMETER);
-					g.setColor(Color.white);
-					setFontSize(g, 18);
-					g.drawString(String.format("%d", getSiguiente()), MAIN_SPACER * 123 / 48,
-							defineY() - MAIN_SPACER / 2);
 				}
 			}
-
 	}
 	
+	// -------------------------------------------------------------------------------------------------------------------
 	
+	/**
+	 * Recive pulsaciones de teclas del usuario. Si el usuario pulsa una tecla correspondiente a un
+	 * movimiento (W/A/S/D o ARRIBA/IZQUIERDA/ABAJO/DERECHA), se ejecuta dicha jugada. Si el usuario
+	 * pulsa escape, se termina la partida mediante {@link #SumaTres.finalDePartida()}. Con el
+	 * objetivo de probar el rendimiento en circunstancias extremas del programa, al pulsar
+	 * AVPAG/PAGE_DOWN se mandan jugadas constantes repetidas hasta que se termina el programa.
+	 * 
+	 * @see <a href="https://rules.sonarsource.com/java/RSPEC-131"> SonarLint: RSPEC-131</a>
+	 * 		<blockquote>The requirement for a final default clause is defensive programming. The
+	 * 		clause should either take appropriate action, or contain a suitable comment as to why
+	 * 		no action is taken.</blockquote>
+	 */
 	private class KeyHandler extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent event) {
@@ -775,7 +849,7 @@ public class SumaTres extends JPanel {
 	/**
 	 * Recive los clicks del ratón en la aplicación. Si se hace click en alguna de
 	 * las cuatro direcciones, se llama a {@link #SumaTres.Jugada(char c)} con el
-	 * caracter correspondiente a dicha jugada. Se utiliza MouseHandler en una clas
+	 * caracter correspondiente a dicha jugada. Se utiliza MouseHandler en una clase
 	 * separada como indicado en el enunciado del trabajo.
 	 */
 	private class MouseHandler extends MouseAdapter {
