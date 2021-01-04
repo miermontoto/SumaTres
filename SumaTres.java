@@ -41,7 +41,7 @@ import java.awt.Toolkit;
  * 
  * @author Juan Mier
  * @author Martín Feito
- * @version v11
+ * @version v11b
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  * 		Documentación de Oracle: Number Format</a>
  *      <blockquote>A new line character appropriate to the platform running the
@@ -64,6 +64,7 @@ public class SumaTres extends JPanel {
 
 	// TODO arreglar que el programa no detecte KeyEvents hasta que se haga un MouseEvent (focus?)
 	// TODO arreglar lógica de suma en dos direcciones
+	// TODO mover a la izquierda fichas muy grandes
 	// TODO end: documentación pdf
 	// TODO end: casos extremos
 	// TODO end: eliminar TODOs
