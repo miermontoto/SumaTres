@@ -41,7 +41,7 @@ import java.awt.Toolkit;
  * 
  * @author Juan Mier
  * @author Martín Feito
- * @version v11b
+ * @version v12
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  * 		Documentación de Oracle: Number Format</a>
  *      <blockquote>A new line character appropriate to the platform running the
@@ -62,12 +62,8 @@ import java.awt.Toolkit;
  */
 public class SumaTres extends JPanel {
 
-	// TODO arreglar que el programa no detecte KeyEvents hasta que se haga un MouseEvent (focus?)
-	// TODO arreglar lógica de suma en dos direcciones
-	// TODO mover a la izquierda fichas muy grandes
+	// TODO arreglar lógica de suma en dos direcciones / error final?
 	// TODO end: documentación pdf
-	// TODO end: casos extremos
-	// TODO end: eliminar TODOs
 
 	/**
 	 * Se incluye un serial generado aleatoriamente en vez de dejar que el
@@ -90,6 +86,7 @@ public class SumaTres extends JPanel {
 	private int puntos = 0;
 	private int highestValue = 0;
 	private SecureRandom rand = new SecureRandom();
+	private int[] obtainedFromRandom = new int[3];
 
 	/**
 	 * Constructor de la clase sobrecargado por dos enteros. Se presupone que el
@@ -118,13 +115,11 @@ public class SumaTres extends JPanel {
 		newFicha(1);
 
 		newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
-
-		addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
-		addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
-		inicializarColores(); // Se populiza el HashMap de colores con los valores por defecto.
 		
-		requestFocus();
-		requestFocusInWindow(); // Pide el focus de la ventana para que se registre el tecleo.
+		addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
+		addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
+	
+		inicializarColores(); // Se populiza el HashMap de colores con los valores por defecto.
 	}
 
 	// --- sets y gets --- //
@@ -257,11 +252,31 @@ public class SumaTres extends JPanel {
 	 * Al terminar la jugada, se comprueba si se ha llegado al final de la partida.
 	 * De ser así, se termina la partida imprimiendo información por pantalla y se
 	 * hace <code>System.exit()</code>.
+	 * <p>
+	 * Se comprueba que se ha establecido una dirección válida mediante
+	 * {@link #validMovement(int, int, int, int)}. Si este no fuera un proyecto para
+	 * presentar, probablemente lo mejor sería hacer un condicional con validMovement
+	 * dentro de cada método que utiliza Jugada para evitar que se acceda a ellos con
+	 * movimientos inválidos, o incluso asegurarse que solo se puede acceder a ellos
+	 * desde este propio método. Para evitar añadir aún más complejidad con condicionales,
+	 * se ha optado por asumir que el usuario no va a modificar el programa con el
+	 * objetivo de romperlo, sino con el objetivo de mejorarlo.
+	 * <p>
+	 * Solo se imprime información extra al terminar la jugada mediante
+	 * {@link #printExtraInfo()} para evitar que el programa utilice métodos que no
+	 * son necesarios, ya que a media jugada no es necesario saber el turno ni la ficha
+	 * siguiente ni la puntuación. Para ajustarse a este cambio, en el método main se
+	 * imprime la información extra para mostrar correctamente el tablero por primera
+	 * vez.
 	 * 
 	 * @param c Caracter que determina el movimiento (w/s/a/d).
 	 */
 	public void Jugada(char c) {
 
+		// Se genera una copia del tablero para comparar después de realizar la jugada.
+		// Si al compararse el tablero nuevo con su posición anterior resulta que ambos
+		// son iguales, significa que el nuevo tablero no se ha visto modificado, por lo
+		// que no debería añadirse un turno al contador.
 		int[][] reserva = new int[tablero.length][tablero[0].length];
 		for (int i = 0; i < tablero.length; i++)
 			for (int j = 0; j < tablero.length; j++) {
@@ -295,10 +310,11 @@ public class SumaTres extends JPanel {
 				break;
 		}
 
-		if (!(up == 0 && down == 0 && left == 0 && right == 0)) { // Se comprueba que se ha seleccionado
-																  // alguna dirección.
+		if (validMovement(up, down, left, right)) { // Se comprueba que se ha seleccionado
+													// una dirección válida.
 
 			mover(up, down, left, right);
+			
 			out.println(this);
 
 			sumar(up, down, left, right);
@@ -320,7 +336,8 @@ public class SumaTres extends JPanel {
 				}
 			if (didChange) addTurno();
 
-			out.println(this);
+			out.print(this);
+			out.println(printExtraInfo()); // Se imprime información extra.
 			repaint();
 			if (!ableToMove()) finalDePartida();
 			// Si no se puede mover, se termina la partida.
@@ -402,6 +419,11 @@ public class SumaTres extends JPanel {
 			}
 		mover(up, down, left, right); // se mueve al terminar de suma
 	}
+	
+	public boolean validMovement(int up, int down, int left, int right) {
+		return (up + left + right + down == 1 &&
+				(up == 1 || up == 0) && (down == 1 || down == 0) && (left == 1 || left == 0) && (right == 1 || right == 0));
+	}
 
 	/**
 	 * Genera un número nuevo aleatorio. Como especificado en el JavaDoc de la
@@ -417,10 +439,12 @@ public class SumaTres extends JPanel {
 	/**
 	 * Genera un número para la siguiente ficha a generar. Se imprime por pantalla
 	 * mediante {@link #toString()}. Genera un número entre 1 y 3 utilizando
-	 * {@link #newRandom(int)}.
+	 * {@link #newRandom(int)}. Además, se lleva la cuenta de la cantidad de números
+	 * obtenidos por este método.
 	 */
 	public void newSiguiente() {
 		setSiguiente(newRandom(3) + 1);
+		obtainedFromRandom[getSiguiente()-1]++;
 	}
 
 	/**
@@ -491,7 +515,9 @@ public class SumaTres extends JPanel {
 	}
 
 	/**
-	 * Condición que detecta si se puede sumar o no.
+	 * Condición que detecta si se puede sumar o no. <p>
+	 * Para evitar que se introduzcan movimientos inválidos,
+	 * {@link #validMovement(int, int, int, int)} está incluído en el condicional.
 	 * 
 	 * @param i    Posición x del tablero.
 	 * @param j    Posición y del tablero.
@@ -500,7 +526,7 @@ public class SumaTres extends JPanel {
 	 * @return Un booleano, 'true' si se puede sumar, 'false' si no.
 	 */
 	public boolean sumaCond(int i, int j, int up, int down, int left, int right) {
-		return getTab(i - up + down, j - left + right) == getTab(i, j) && getTab(i, j) != 2 && getTab(i, j) != 1
+		return validMovement(up, down, left, right) && getTab(i - up + down, j - left + right) == getTab(i, j) && getTab(i, j) != 2 && getTab(i, j) != 1
 				|| getTab(i, j) + getTab(i - up + down, j - left + right) == 3;
 	}
 
@@ -521,9 +547,7 @@ public class SumaTres extends JPanel {
 	}
 
 	/**
-	 * Método que imprime la información del tablero por pantalla, incluyendo la
-	 * siguiente ficha y los puntos. Se utiliza entre los cálculos de
-	 * {@link #Jugada(char)}.
+	 * Método que devuelve una cadena con la situación actual del tablero.
 	 * <p>
 	 * Dependiendo del tamaño de la ficha máxima, es decir, de la cantidad de cifras
 	 * que tenga, el tamaño por celda cambia. Mientras la ficha máxima no supere las
@@ -533,60 +557,79 @@ public class SumaTres extends JPanel {
 	 * principal de input/output es la app gráfica, en el remoto caso de que el
 	 * usuario supere las tres cifras, el tablero sigue siendo funcional pero con
 	 * menores errores visuales.
+	 * <p>
+	 * La información extra sobre la situación actual de la partida se devuelve
+	 * mediante el método {@link #printExtraInfo()}.
 	 */
 	@Override
 	public String toString() {
-
-		String salida = String.format("%n%n╔");
+		
 		int times = String.valueOf(getHighest()).length();
+		// Se examina la cantidad de cifras que tiene la cifra más grande.
+		// En función de esto, posteriormente se imprime la matriz de manera
+		// que todas las casillas tienen el mismo tamaño, ajustado para la
+		// ficha con mayor valor.
+
+		// Por cómo está hecho el programa, es preferible imprimir los saltos de
+		// línea al principio del toString() en vez de al final para hacer más visible
+		// el tablero en consola cuando no se está haciendo ninguna jugada. El
+		// resto del programa está ajustado para que los saltos de línea concatenen con
+		// este y tenga sentido el output por consola.
+		String salida = String.format("%n%n╔");
+		// Se comienza a construir la matriz, empezando por la esquina superior izquierda.
 		
 		
+		// Se imprime el borde superior de la matriz.
 		for (int i = 0; i + 1 < tablero[0].length; i++) {
 			for (int x = 0; x < times; x++) {salida += "═";}
 			salida += "╦";
 		}
 		for (int x = 0; x < times; x++) {salida += "═";}
-		salida += String.format("╗%n");
+		salida += String.format("╗%n"); // Se imprime la esquina superior y se salta de línea.
+		
+		
 		
 		for (int i = 0; i < tablero.length; i++) {
-			if (getTab(i, 0) == 0) {
-				salida += "║";
-				for(int x=0; x<times; x++) {salida += " ";}
-				salida += "║";
-			} else {
-				salida += "║";
-				for (int x = 0; x < times - String.valueOf(getTab(i, 0)).length(); x++) {salida += " ";}
-				salida += String.format("%d", getTab(i, 0));
-				salida += "║";
-			}
-			for (int j = 1; j < tablero[0].length; j++) {
+			salida += "║"; // Para la primera columna, se imprime el borde izquierdo de la matriz.
+			for (int j = 0; j < tablero[0].length; j++) { // Se imprime la matriz en sí.
 				if (getTab(i, j) == 0) {
+					// Si la casilla está vacía, se imprime un hueco en blanco.
 					for (int x = 0; x < times; x++) {salida += " ";}
 					salida += "║";
-				} 
-				else {
-					for (int x = 0; x < times - String.valueOf(getTab(i, j)).length(); x++) {
-						salida += " ";
-					}
+				} else {
+					// De lo contrario, se imprime el valor de la casilla ajustado al tamaño de la celda.
+					for (int x = 0; x < times - String.valueOf(getTab(i, j)).length(); x++) {salida += " ";}
 					salida += String.format("%d", getTab(i, j));
 					salida += "║";
 				}
 			}
-			salida += String.format("%n");
+			salida += String.format("%n"); // Salto de línea para seguir construyendo la matriz.
 		}
-		salida += "╚";
+		salida += "╚"; // Borde inferior izquierdo de la matriz.
+		// Se imprime el borde inferior de la matriz.
 		for (int i = 0; i + 1 < tablero[0].length; i++) {
 			for (int x = 0; x < times; x++) {salida += "═";}
 			salida += "╩";
 		}
 		for (int x = 0; x < times; x++) {salida += "═";}
-		salida += String.format("╝%n");
-		
-		// Se imprime por pantalla información general sobre el estado acutal de la
-		// partida.
-		salida += String.format("Siguiente: %d%nPuntos: %d\tMáx: %d%nTurno [%d]", getSiguiente(), getPuntos(),
-				getHighest(), getTurnos());
+		salida += String.format("╝%n"); // Por último, se imprime el borde inferior derecho y se salta
+										// de línea para terminar la construcción de la matriz.
 		return salida;
+		// Para optimizar el código en tableros grandes, no se imprimen separaciones entre filas de la
+		// matriz, aunque bastaría con un bucle similar al de los bordes superiores e inferiores.
+	}
+	
+	/**
+	 * Método que devuelve una cadena con información extra sobre la partida.
+	 * Devuelve la ficha que se va a colocar aleatoriamente a continuación,
+	 * la cantidad de puntos acumulada hasta ahora, la ficha máxima en pantalla
+	 * y el número del turno.
+	 * @return Cadena con la información.
+	 */
+	public String printExtraInfo() {
+		return String.format("Siguiente [%d]%nPuntos [%d]\tMáx [%d]"
+				+ "%nTurno [%d]",
+				getSiguiente(), getPuntos(), getHighest(), getTurnos());
 	}
 
 	/**
@@ -594,13 +637,18 @@ public class SumaTres extends JPanel {
 	 * gráfico continúe ejecutándose, se utiliza <code>System.exit()</code> para
 	 * cerrar el entorno con un código normal de finalización <code>0</code>. Para
 	 * obtener la información, se utiliza {@link #getPuntos()},
-	 * {@link #getHighest()}, {@link #getTurnos()}.
+	 * {@link #getHighest()}, {@link #getTurnos()}. <p>
+	 * Además, se imprimen la cantidad de unos, doses o treses por consola, para 
+	 * comprobar que dicha cantidad es más o menos la misma y que no hay ningún
+	 * tipo de manipulación, pese a lo que pueda parecer según se juega.
 	 */
 	public void finalDePartida() {
 		String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n", getPuntos(),
 				getHighest(), getTurnos());
 		JOptionPane.showMessageDialog(null, salida);
 		out.printf("%n%s",salida);
+		out.printf("Fichas obtenidas: [1]: %d  [2]: %d  [3]: %d",
+				obtainedFromRandom[0], obtainedFromRandom[1], obtainedFromRandom[2]);
 		System.exit(0);
 	}
 
@@ -622,7 +670,7 @@ public class SumaTres extends JPanel {
 	 * posibles valores de las fichas. Más información en la documentación de la
 	 * clase.
 	 * <p>
-	 * Se inicializa en el constructor mediante {@link #inicializarColores()}
+	 * Se popula en el constructor mediante {@link #inicializarColores()}
 	 */
 	private HashMap<Integer, Color> colores = new HashMap<>();
 
@@ -693,6 +741,8 @@ public class SumaTres extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
+		requestFocusInWindow(); // Se pide el focus de la ventana al pintar para evitar pérdidas
+								// de pulsaciones de teclado, especialmente al comenzar la partida.
 		super.paintComponent(g);
 		
 		pintarFlechas(g);
@@ -764,7 +814,13 @@ public class SumaTres extends JPanel {
 	 * Para obtener los colores con los que se va a pintar las piezas, se utiliza un HashMap con
 	 * los valores de las piezas como claves y los colores como valores. Si no existe una clave,
 	 * se genera un nuevo color y se guarda, de modo que todas las futuras piezas con ese valor
-	 * tengan el mismo color. Para esto, se utiliza {@link #newRandom(int)}.
+	 * tengan el mismo color. Para esto, se utiliza {@link #newRandom(int)}. Esto puede causar
+	 * que el color de algunas piezas sea muy similar al de algunos valores predeterminados, o
+	 * que la fuente blanca no se vea encima al imprimir el valor de la ficha.
+	 * <p>
+	 * Dependiendo de la cantidad de dígitos que tiene una ficha, su valor se imprime desplazado
+	 * hacia la izquierda para centrar el valor de las fichas más grandes.
+	 * 
 	 * @param g Entorno gráfico
 	 */
 	public void pintarFichas(Graphics g) {
@@ -784,15 +840,20 @@ public class SumaTres extends JPanel {
 							ROUND_DIAMETER, ROUND_DIAMETER);
 					
 					// Por último, se pinta el valor de la ficha.
-					g.setColor(Color.white);
+					//'Y' es la luminosidad del color de la ficha. Si la luminosidad pasa de un cierto valor,
+					// el color de la fuente del valor de la ficha debería ser negro, de lo contrario es blanco.
+					double Y = (0.2126*g.getColor().getRed() + 0.7152*g.getColor().getGreen() + 0.0722*g.getColor().getBlue());
+					g.setColor(Y>=250 ? Color.black : Color.white);
 					setFontSize(g, 18 - 2 * (String.valueOf(getTab(i, j)).length() - 1));
 					// Se establece un tamaño de fuente en función de los dígitos de la ficha.
 					g.drawString(String.format("%d", getTab(i, j)),
-							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j + SQUARE_SIZE * 13 / 32,
+							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j + SQUARE_SIZE *
+							(13 - (2*(String.valueOf(getTab(i, j)).length()-1))) / 32,
 							SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i);
 				}
 			}
 	}
+
 	
 	// -------------------------------------------------------------------------------------------------------------------
 	
@@ -801,7 +862,8 @@ public class SumaTres extends JPanel {
 	 * movimiento (W/A/S/D o ARRIBA/IZQUIERDA/ABAJO/DERECHA), se ejecuta dicha jugada. Si el usuario
 	 * pulsa escape, se termina la partida mediante {@link #SumaTres.finalDePartida()}. Con el
 	 * objetivo de probar el rendimiento en circunstancias extremas del programa, al pulsar
-	 * AVPAG/PAGE_DOWN se mandan jugadas constantes repetidas hasta que se termina el programa.
+	 * AVPAG/PAGE_DOWN junto a la tecla 'control' se mandan jugadas constantes repetidas hasta que se
+	 * termina el programa.
 	 * 
 	 * @see <a href="https://rules.sonarsource.com/java/RSPEC-131"> SonarLint: RSPEC-131</a>
 	 * 		<blockquote>The requirement for a final default clause is defensive programming. The
@@ -811,16 +873,20 @@ public class SumaTres extends JPanel {
 	private class KeyHandler extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent event) {
-			requestFocus();
-			requestFocusInWindow();
 			switch (event.getKeyCode()) {
-				case KeyEvent.VK_PAGE_DOWN:
-					while (true) {
-						Jugada('w');
-						Jugada('a');
-						Jugada('s');
-						Jugada('d');
+				case KeyEvent.VK_PAGE_DOWN: // Esto rompe varios paradigmas de la programación
+					if (event.isControlDown()) {
+						while (!event.isAltDown()) {
+							// Esto arregla que el bucle no tenga una condición de salida,
+							// aunque la condición sea imposible de cumplir una vez dentro
+							// del bucle.
+							Jugada('w');
+							Jugada('a');
+							Jugada('s');
+							Jugada('d');
+						}
 					}
+					break;
 				case KeyEvent.VK_ESCAPE:
 					finalDePartida();
 					break;
@@ -856,7 +922,6 @@ public class SumaTres extends JPanel {
 	private class MouseHandler extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent event) {
-			requestFocusInWindow();
 			if (event.getX() < MAIN_SPACER) {
 				if (event.getY() > MAIN_SPACER) Jugada('a');
 			} else {

@@ -68,7 +68,8 @@ public class SumaTresTexto {
 		app.setResizable(false);
 		app.setFocusable(true);
 
-		out.print(Juego);
+		out.println(Juego);
+		out.println(Juego.printExtraInfo());
 	}
 
 }
