@@ -13,9 +13,7 @@ import java.awt.Toolkit;
  * <h1> Clase principal del proyecto SumaTres </h1>
  * 
  * Se inicializa o bien con el constructor por defecto o bien sobrecargando dos
- * enteros que delimitan el tamaño del tablero. Se utiliza %n en vez de \n por
- * recomendación de Oracle. Además, se utiliza <code>java.security.SecureRandom</code>
- * en vez de <code>java.util.Random</code>. Cada método está documentado.
+ * enteros que delimitan el tamaño del tablero.
  * 
  * <p>
  * 
@@ -23,10 +21,7 @@ import java.awt.Toolkit;
  * un HashMap. El HashMap es necesario si se quiere almacenar todos los valores
  * predeterminados en {@link #inicializarColores()} y, además, se generan
  * colores aleatoriamente utilizando {@link #newRandom(int)} para los valores
- * que no están ya determinados. Esta opción es mucho más práctica que un
- * ArrayList, mucho más elegante y funcional que simplemente implementar un
- * <code>switch(int val)</code> y algo innovador que no se ha visto en las
- * prácticas.
+ * que no están ya determinados.
  * 
  * <p>
  * 
@@ -37,33 +32,38 @@ import java.awt.Toolkit;
  * 
  * <p>
  * 
- * Para la entrada, se utiliza MouseEvent y KeyEvent para detectar la entrada.
+ * Para la entrada, se utiliza MouseEvent y KeyEvent.
+ * 
+ * <p>
+ * 
+ * Cada vez que se genera una nueva pieza, aparece un rectángulo anaranjado alrededor
+ * de la ficha para señalarla. Se guarda la posición de la nueva ficha en un vector y
+ * luego se genera un rectángulo basado en ese vector.
+ * 
+ * <p> Code coverage: ~95% - Programas utilizados: Eclipse, VSCode.
  * 
  * @author Juan Mier
  * @author Martín Feito
- * @version v12
+ * @version v13
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
- * 		Documentación de Oracle: Number Format</a>
+ * 		Documentación de Oracle: Number Format </a>
  *      <blockquote>A new line character appropriate to the platform running the
  *      application. You should always use %n, rather than \n. </blockquote>
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/security/SecureRandom.html">
- * 		Documentación de Oracle: SecureRandom</a>
+ * 		Documentación de Oracle: SecureRandom </a>
  * @see <a href="https://rules.sonarsource.com/java/RSPEC-2119">
- * 		Regla SonarLint:2119</a>
+ * 		Regla SonarLint:2119 </a>
  *  	<blockquote>SecureRandom is preferred to Random</blockquote>
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html">
- * 		Documentación de Oracle: HashMap</a>
+ * 		Documentación de Oracle: HashMap </a>
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/awt/Toolkit.html">
- * 		Documentación de Oracle: Toolkit</a>
+ * 		Documentación de Oracle: Toolkit </a>
  * @see <a href="https://docs.oracle.com/javase/tutorial/uiswing/events/keylistener.html">
- * 		Documentación de Oracle: Tutorial de KeyListener</a>
- * @see <a href="https://www.github.com/GijonDev/SumaTres">Repositorio de GitHub</a>
+ * 		Documentación de Oracle: Tutorial de KeyListener </a>
+ * @see <a href="https://www.github.com/GijonDev/SumaTres"> Repositorio de GitHub </a>
  * 
  */
 public class SumaTres extends JPanel {
-
-	// TODO arreglar lógica de suma en dos direcciones / error final?
-	// TODO end: documentación pdf
 
 	/**
 	 * Se incluye un serial generado aleatoriamente en vez de dejar que el
@@ -71,26 +71,29 @@ public class SumaTres extends JPanel {
 	 * Oracle. Si no se declarara uno, podría generar excepciones como
 	 * 'InvalidClassExceptions'.
 	 * <p>
-	 * El serial ha sido generado mediante la herramienta de Eclipse 'Quick Fix'. Si
-	 * SumaTres no fuera una subclase de JPanel, no sería necesario declarar un
-	 * serial. El serial debe de ser obligatoriamente final y de tipo 'double'. El
-	 * programa no utiliza serialización explícitamente.
+	 * El serial ha sido generado automáticamente por Eclipse. Si SumaTres no fuera
+	 * una subclase de JPanel, no sería necesario declarar un serial. El serial debe
+	 * de ser obligatoriamente final y de tipo 'double'. El programa no utiliza
+	 * serialización explícitamente.
 	 * 
 	 * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html">
 	 * 		Documentación de Oracle: Serializable</a>
 	 */
 	private static final long serialVersionUID = -1110032705510692144L;
-	private int turnos = 1;
-	private int siguiente;
-	private int[][] tablero;
-	private int puntos = 0;
-	private int highestValue = 0;
+	private int turnos = 1; // Se comienza en el primer turno, lógicamente.
+	private int siguiente; // El valor se inicializa en el constructor.
+	private int[][] tablero; // El tablero se inicializa en el constructor.
+	private int puntos = 0; // Se comienza la partida con cero puntos.
+	private int highestValue = 0; // Se podría inicializar con el valor '3', pero es preferible que se ajuste
+								  // a lo que se declara en el constructor por si el usuario lo modifica.
 	private SecureRandom rand = new SecureRandom();
-	private int[] obtainedFromRandom = new int[3];
+	private int[] obtainedFromRandom = new int[3]; // Vector que almacena la cantidad de fichas sacadas.
+	private int[] warning = new int[2]; // Vector que define la posición de la nueva ficha.
 
 	/**
 	 * Constructor de la clase sobrecargado por dos enteros. Se presupone que el
-	 * main introduce tamaños correctos.
+	 * main introduce tamaños correctos, aunque en caso de lanzar una excepción,
+	 * se establecen los valores por defectos 5x5.
 	 * <p>
 	 * Incializa el tablero con tres fichas (1, 2, 3) utilizando
 	 * {@link #newFicha(int)}.
@@ -108,8 +111,12 @@ public class SumaTres extends JPanel {
 	 * @param y: Cantidad de columnas del tablero.
 	 */
 	public SumaTres(int x, int y) {
-		tablero = new int[x][y];
-		
+		try {
+			tablero = new int[x][y];
+		} catch (Exception ex) {
+			out.printf("ERROR: Se ha detectado la excepción %s. Establecido tablero por defecto 5x5.", ex);
+			tablero = new int[5][5];
+		}
 		newFicha(3);
 		newFicha(2); // Se inicializa el tablero.
 		newFicha(1);
@@ -119,10 +126,23 @@ public class SumaTres extends JPanel {
 		addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
 		addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
 	
-		inicializarColores(); // Se populiza el HashMap de colores con los valores por defecto.
+		inicializarColores(); // Se popula el HashMap de colores con los valores por defecto.
 	}
 
 	// --- sets y gets --- //
+	/**
+	 * Devuelve el vector que define la posición de la nueva ficha.
+	 * @return vector con las coordenadas.
+	 */
+	public int[] getWarning() {return this.warning;}
+	
+	/**
+	 * Establece las coordenadas de la nueva ficha.
+	 * @param x Coordenada x de la ficha
+	 * @param y Coordenada y de la ficha
+	 */
+	public void setWarning(int x, int y) {this.warning[0] = x; this.warning[1] = y;}
+	
 	/**
 	 * Devuelve la ficha de mayor valor actual.
 	 * 
@@ -149,18 +169,13 @@ public class SumaTres extends JPanel {
 	public int getPuntos() {return this.puntos;}
 
 	/**
-	 * Establece unos puntos determinados.
-	 * 
-	 * @param puntos que se quieren establecer.
-	 */
-	public void setPuntos(int puntos) {this.puntos = puntos;}
-
-	/**
 	 * Añade puntos al contador actual.
+	 * El valor tiene que ser <code>3</code> o superior. Es imposible
+	 * que la suma de puntos sea inferior a esto.
 	 * 
 	 * @param puntos que se quieren sumar.
 	 */
-	public void addPuntos(int puntos) {this.puntos += puntos;}
+	public void addPuntos(int puntos) {if(puntos>=3) this.puntos += puntos;}
 
 	/**
 	 * Devuelve el valor de la ficha que se encuentre en unas coordenadas.
@@ -200,16 +215,17 @@ public class SumaTres extends JPanel {
 	public void addTurno() {this.turnos++;}
 
 	/**
-	 * Quita un turno al contador total.
-	 */
-	public void removeTurno() {this.turnos--;}
-
-	/**
 	 * Devuelve los turnos que se han jugado hasta el momento.
 	 * 
 	 * @return tipo 'entero' con la cantidad de turnos.
 	 */
 	public int getTurnos() {return this.turnos;}
+	
+	// No existe setTurnos() porque no es necesario, los turnos son un simple contador sin ninguna
+	// implicación directa en la partida.
+	
+	// Tampoco existe setPuntos(), ya que no debería poder modificarse libremente. Se pueden añadir
+	// puntos mediante addPuntos()
 	// --- sets y gets --- //
 
 	/**
@@ -321,7 +337,7 @@ public class SumaTres extends JPanel {
 
 			// Para evitar que si el tablero está lleno el programa intente calcular
 			// infinitamente un sitio vacío de manera aleatoria, se comprueba antes
-			// que el tablero no esté lleno mediante #tableroLleno. Además, así la
+			// que el tablero no esté lleno mediante tableroLleno(). Además, así la
 			// siguiente ficha a colocar no varía.
 			if (!tableroLleno()) {
 				newFicha(getSiguiente()); // Se coloca la ficha 'siguiente'.
@@ -334,7 +350,7 @@ public class SumaTres extends JPanel {
 					if (reserva[i][j] != getTab(i, j))
 						didChange = true;
 				}
-			if (didChange) addTurno();
+			if (didChange) addTurno(); // Si el tablero ha cambiado, se añade un turno.
 
 			out.print(this);
 			out.println(printExtraInfo()); // Se imprime información extra.
@@ -363,8 +379,8 @@ public class SumaTres extends JPanel {
 	public void mover(int up, int down, int left, int right) {
 		boolean check = true;
 		while (check) {
-			for (int i = up; i + down < tablero.length; i++)
-				for (int j = left; j + right < tablero[0].length; j++) {
+			for (int i = up + down*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*down)
+				for (int j = left + right*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*right) {
 					if (getTab(i - up + down, j - left + right) == 0) {
 						setTab(i - up + down, j - left + right, getTab(i, j));
 						setTab(i, j, 0);
@@ -373,14 +389,12 @@ public class SumaTres extends JPanel {
 
 			check = false;
 			// Con un solo if, si se encuentra una pieza que contenga un valor y en la
-			// siguiente pieza
-			// en la dirección seleccionada está vacía, significa que se puede seguir
-			// moviendo el tablero.
+			// siguiente pieza en la dirección seleccionada está vacía, significa que
+			// se puede seguir moviendo el tablero.
 			// De lo contrario, check se mantiene false por lo que se sale del bucle y se
-			// termina el
-			// movimiento de las piezas.
-			for (int i = up; i + down < tablero.length; i++)
-				for (int j = left; j + right < tablero[0].length; j++) {
+			// termina el movimiento de las piezas.
+			for (int i = up + down*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*down)
+				for (int j = left + right*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*right) {
 					if (getTab(i, j) != 0 && (getTab(i - up + down, j - left + right) == 0))
 						check = true;
 				}
@@ -408,8 +422,8 @@ public class SumaTres extends JPanel {
 	 * @param right '1' o '0' para el movimiento hacia la derecha.
 	 */
 	public void sumar(int up, int down, int left, int right) {
-		for (int i = up; i + down < tablero.length; i++)
-			for (int j = left; j + right < tablero[0].length; j++) {
+		for (int i = up + down*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*down)
+			for (int j = left + right*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*right) {
 				if (sumaCond(i, j, up, down, left, right)) {
 					setTab(i - up + down, j - left + right, getTab(i, j) + getTab(i - up + down, j - left + right));
 					setTab(i, j, 0);
@@ -417,12 +431,61 @@ public class SumaTres extends JPanel {
 					setHighest(getTab(i - up + down, j - left + right));
 				}
 			}
-		mover(up, down, left, right); // se mueve al terminar de suma
+		mover(up, down, left, right); // Se mueve al terminar de suma para evitar que queden
+									  // huecos vacíos. Esto no significa que se sume dos veces.
+		
+		// Definitivamente hay algo incorrecto en la lógica de la suma. En casos muy aislados y extremos,
+		// hay veces que no se suma todo lo que debería. La verdad es que no tengo ni idea de por qué
+		// pasa esto, y ya son varias las revisiones que he hecho a los bucles que recorren la matriz.
+		// Tal y como está ahora mismo, todos los bucles se invierten para los movimientos hacia abajo y
+		// hacia la derecha, para evitar que se sumen duplicadamente las piezas en algunas situaciones.
+		// Esto tiene todo el sentido del mundo en la teoría, pero en la práctica causa que no se sumen
+		// algunas piezas. Se puede comprobar fácilmente el funcionamiento del programa colocando piezas
+		// manualmente mediante 'debugColocarPieza()'.
 	}
 	
+	/**
+	 * Método debug que coloca piezas manualmente. NO es accesible por el usuario. <p>
+	 * Antes de colocar la ficha, comprueba que se trata de una ficha válida y que no se trata de
+	 * una posición OutOfBounds para evitar exepciones. Se ha utilizado durante el desarrollo del
+	 * programa. Quizás no debería estar presente en la versión final (?)
+	 */
+	public void debugColocarPiezas(int x, int y, int nv) {
+		if(x>=0 && y >= 0 && x<tablero.length && y<tablero.length &&
+				(nv == 1 || nv == 2 || nv == 3 || nv%6 == 0)) {
+			setTab(x, y, nv);
+		}
+	}
+
+	
+	/**
+	 * Método que comprueba que la combinación de índices de movimientos sean un
+	 * movimiento válido para el programa.
+	 * <p>
+	 * En este caso, un movimiento lógico es un solo desplazamiento en una sola
+	 * dirección en cualquier dirección.
+	 * <p>
+	 * Este método se utiliza como comprobación antes de realizar alguna acción que
+	 * utiliza el mismo movimiento sobrecargado.
+	 * <p>
+	 * Si solo se mueve en una dirección y el valor de todos los movimientos son o
+	 * <code>1</code> o <code>0</code>, entonces se trata de un movimiento válido y
+	 * el programa debería continuar.
+	 * <p>
+	 * Por defecto, es imposible que el código introduzca un movimiento inválido que
+	 * haga que este método devuelva un booleano falso, pero está pensado para casos
+	 * de actualización y de modificaciones por otros usuarios.
+	 * 
+	 * @param up    '1' o '0' para el movimiento hacia arriba.
+	 * @param down  '1' o '0' para el movimiento hacia abajo.
+	 * @param left  '1' o '0' para el movimiento hacia la izquierda.
+	 * @param right '1' o '0' para el movimiento hacia la derecha.
+	 * @return Valor booleano que confirma la validez del set de movimientos.
+	 */
 	public boolean validMovement(int up, int down, int left, int right) {
 		return (up + left + right + down == 1 &&
-				(up == 1 || up == 0) && (down == 1 || down == 0) && (left == 1 || left == 0) && (right == 1 || right == 0));
+				(up == 1 || up == 0) && (down == 1 || down == 0) &&
+				(left == 1 || left == 0) && (right == 1 || right == 0));
 	}
 
 	/**
@@ -430,7 +493,7 @@ public class SumaTres extends JPanel {
 	 * clase, <code>rand</code> es un SecureRandom, no un Random normal.
 	 * 
 	 * @param val un entero cualquiera.
-	 * @return Un entero aleatorio entre 0 y val.
+	 * @return Un entero aleatorio entre 0 y val-1.
 	 */
 	public int newRandom(int val) {
 		return this.rand.nextInt(val);
@@ -484,18 +547,16 @@ public class SumaTres extends JPanel {
 	public boolean ableToMove() {
 		boolean ableToMove = false;
 		if (tableroLleno()) {
-			if (checkEndLoop(1, 0, 0, 0)) ableToMove = true;
-			if (checkEndLoop(0, 1, 0, 0)) ableToMove = true;
-			if (checkEndLoop(0, 0, 1, 0)) ableToMove = true;
-			if (checkEndLoop(0, 0, 0, 1)) ableToMove = true;
+			if (checkEndLoop(1, 0, 0, 0) || checkEndLoop(0, 1, 0, 0)
+				|| checkEndLoop(0, 0, 1, 0) || checkEndLoop(0, 0, 0, 1)) ableToMove = true;
 		} else ableToMove = true;
 		return ableToMove;
 	}
 
 	/**
-	 * Es el bucle perteneciente a checkEnd(). Comprueba si en alguna parte del
-	 * tablero es posible. Al método se le sobrecarga con el movimiento del tablero
-	 * que se desea comprobar.
+	 * Es el bucle perteneciente a {@link #ableToMove()}. Comprueba si en alguna parte
+	 * del tablero es posible mover o sumar. Al método se le sobrecarga con el movimiento
+	 * del tablero que se desea comprobar.
 	 * 
 	 * @param up    Valor '1' o '0' para el movimiento hacia arriba.
 	 * @param down  Valor '1' o '0' para el movimiento hacia atrás.
@@ -515,14 +576,17 @@ public class SumaTres extends JPanel {
 	}
 
 	/**
-	 * Condición que detecta si se puede sumar o no. <p>
+	 * Condición que detecta si se puede sumar o no.
+	 * <p>
 	 * Para evitar que se introduzcan movimientos inválidos,
 	 * {@link #validMovement(int, int, int, int)} está incluído en el condicional.
 	 * 
-	 * @param i    Posición x del tablero.
-	 * @param j    Posición y del tablero.
-	 * @param movx Dirección de la suma horizontal (si no hay, es igual a 0).
-	 * @param movy Dirección de la suma vertical (si no hay, es igual a 0).
+	 * @param i     Posición x del tablero.
+	 * @param j     Posición y del tablero.
+	 * @param up    Valor '1' o '0' para el movimiento hacia arriba.
+	 * @param down  Valor '1' o '0' para el movimiento hacia atrás.
+	 * @param left  Valor '1' o '0' para el movimiento hacia la izquierda.
+	 * @param right Valor '1' o '0' para el movimiento hacia la derecha.
 	 * @return Un booleano, 'true' si se puede sumar, 'false' si no.
 	 */
 	public boolean sumaCond(int i, int j, int up, int down, int left, int right) {
@@ -531,8 +595,8 @@ public class SumaTres extends JPanel {
 	}
 
 	/**
-	 * Coloca una nueva ficha en tablero. Para encontrar una poisición nueva,
-	 * utiliza 'newRandom()'. Se comprueba que en la casilla no haya ya una ficha.
+	 * Coloca una nueva ficha en tablero. Para encontrar una poisición nueva, utiliza
+	 * {@link #newRandom(int)}. Se comprueba que en la casilla no haya ya una ficha.
 	 * 
 	 * @param nV El valor que tendrá la nueva ficha.
 	 */
@@ -544,6 +608,7 @@ public class SumaTres extends JPanel {
 			nY = newRandom(tablero[0].length);
 		}
 		setTab(nX, nY, nV);
+		setWarning(nX, nY);
 	}
 
 	/**
@@ -649,7 +714,7 @@ public class SumaTres extends JPanel {
 		out.printf("%n%s",salida);
 		out.printf("Fichas obtenidas: [1]: %d  [2]: %d  [3]: %d",
 				obtainedFromRandom[0], obtainedFromRandom[1], obtainedFromRandom[2]);
-		System.exit(0);
+		System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
 	}
 
 	// ----------------------------------------------------------------------------------------------------
@@ -675,8 +740,8 @@ public class SumaTres extends JPanel {
 	private HashMap<Integer, Color> colores = new HashMap<>();
 
 	/**
-	 * Se inicializan los colores para las fichas por defecto. Es similar a los
-	 * colores del enunciado.
+	 * Método que inicializa los colores para las fichas por defecto.
+	 * Idealmente, solo debería utilizarse en el único constructor.
 	 */
 	public void inicializarColores() {
 		colores.put(1, Color.red);
@@ -807,7 +872,7 @@ public class SumaTres extends JPanel {
 	/**
 	 * Método que pinta las fichas en pantalla.
 	 * <p>
-	 * Supuestamente después de pintar el tablero mediante {@link #pintarTablero(Graphics)} se
+	 * Supuestamente, después de pintar el tablero mediante {@link #pintarTablero(Graphics)} se
 	 * pintan las fichas. Para esto, se examina el tablero entero. Si la posición en el tablero
 	 * tiene valor <code>0</code>, no se pinta nada.
 	 * <p>
@@ -830,7 +895,7 @@ public class SumaTres extends JPanel {
 					if (colores.containsKey(getTab(i, j))) {
 						g.setColor(colores.get(getTab(i, j)));
 					} else { // Si no tiene un color predeterminado, se genera uno aleatorio.
-						colores.put(getTab(i, j), new Color(newRandom(255), newRandom(255), newRandom(255)));
+						colores.put(getTab(i, j), new Color(newRandom(256), newRandom(256), newRandom(256)));
 						g.setColor(colores.get(getTab(i, j)));
 					}
 					
@@ -839,17 +904,40 @@ public class SumaTres extends JPanel {
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
 							ROUND_DIAMETER, ROUND_DIAMETER);
 					
-					// Por último, se pinta el valor de la ficha.
-					//'Y' es la luminosidad del color de la ficha. Si la luminosidad pasa de un cierto valor,
-					// el color de la fuente del valor de la ficha debería ser negro, de lo contrario es blanco.
+					// 'Y' es la luminosidad del color de la ficha.
 					double Y = (0.2126*g.getColor().getRed() + 0.7152*g.getColor().getGreen() + 0.0722*g.getColor().getBlue());
-					g.setColor(Y>=250 ? Color.black : Color.white);
-					setFontSize(g, 18 - 2 * (String.valueOf(getTab(i, j)).length() - 1));
+					
+					// Si la pieza es demasiado clara, se le pinta un reborde para que se aprecie.
+					if(Y>=210) {
+						g.setColor(Color.gray);
+						g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
+								MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
+								ROUND_DIAMETER, ROUND_DIAMETER);
+					}
+					
+					// Si no se está en el primer turno, se imprime un rectángulo alrededor de la nueva ficha
+					// para diferenciarla. (debería haber alguna manera mejor de señalarla?)
+					if(getTurnos() > 1) {
+						g.setColor(Color.yellow);
+						g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * getWarning()[1],
+								MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * getWarning()[0], SQUARE_SIZE, SQUARE_SIZE,
+								ROUND_DIAMETER, ROUND_DIAMETER);
+					}
+					
+					// Por último, se pinta el valor de la ficha.
+				    // Si la luminosidad pasa de un cierto valor, el color de la fuente del valor
+					// de la ficha debería ser negro, de lo contrario es blanco. Si la ficha es la
+					g.setColor(Y>=210 ? Color.black : Color.white);
+					
 					// Se establece un tamaño de fuente en función de los dígitos de la ficha.
+					setFontSize(g, 18 - 2 * (String.valueOf(getTab(i, j)).length() - 1));
+					
 					g.drawString(String.format("%d", getTab(i, j)),
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j + SQUARE_SIZE *
 							(13 - (2*(String.valueOf(getTab(i, j)).length()-1))) / 32,
 							SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i);
+					// Dependiendo del tamaño de la pieza, se desplaza ligeramente a la izquierda para que siga centrada
+					// en concordancia con el resto de piezas.
 				}
 			}
 	}
@@ -860,12 +948,12 @@ public class SumaTres extends JPanel {
 	/**
 	 * Recive pulsaciones de teclas del usuario. Si el usuario pulsa una tecla correspondiente a un
 	 * movimiento (W/A/S/D o ARRIBA/IZQUIERDA/ABAJO/DERECHA), se ejecuta dicha jugada. Si el usuario
-	 * pulsa escape, se termina la partida mediante {@link #SumaTres.finalDePartida()}. Con el
+	 * pulsa escape, se termina la partida mediante {@link #SumaTres.finalDePartida()}. <p> Con el
 	 * objetivo de probar el rendimiento en circunstancias extremas del programa, al pulsar
-	 * AVPAG/PAGE_DOWN junto a la tecla 'control' se mandan jugadas constantes repetidas hasta que se
+	 * AVPAG/PAGE_DOWN junto a la tecla 'control', se mandan jugadas constantes repetidas hasta que se
 	 * termina el programa.
 	 * 
-	 * @see <a href="https://rules.sonarsource.com/java/RSPEC-131"> SonarLint: RSPEC-131</a>
+	 * @see <a href="https://rules.sonarsource.com/java/RSPEC-131"> SonarLint: RSPEC-131 </a>
 	 * 		<blockquote>The requirement for a final default clause is defensive programming. The
 	 * 		clause should either take appropriate action, or contain a suitable comment as to why
 	 * 		no action is taken.</blockquote>
@@ -874,7 +962,7 @@ public class SumaTres extends JPanel {
 		@Override
 		public void keyPressed(KeyEvent event) {
 			switch (event.getKeyCode()) {
-				case KeyEvent.VK_PAGE_DOWN: // Esto rompe varios paradigmas de la programación
+				case KeyEvent.VK_PAGE_DOWN: // Esto rompe varios paradigmas de la programación.
 					if (event.isControlDown()) {
 						while (!event.isAltDown()) {
 							// Esto arregla que el bucle no tenga una condición de salida,
@@ -888,7 +976,8 @@ public class SumaTres extends JPanel {
 					}
 					break;
 				case KeyEvent.VK_ESCAPE:
-					finalDePartida();
+					if (JOptionPane.showConfirmDialog(null, "¿Desea salir de la partida?", "SumaTres", JOptionPane.YES_NO_OPTION)
+							== JOptionPane.YES_OPTION) finalDePartida();
 					break;
 				case KeyEvent.VK_W:
 				case KeyEvent.VK_UP:
