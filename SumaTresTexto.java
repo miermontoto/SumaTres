@@ -1,6 +1,7 @@
 import static java.lang.System.out; //se importa de esta manera para acortar durante el resto del programa
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import java.awt.Color; // Es necesario importar esto para cambiar el color del fondo de la aplicación.
+import javax.swing.JFrame; // Necesario para crear la ventana gráfica en sí.
+import javax.swing.JOptionPane; // Necesario para preguntarle al usuario de manera gráfica en vez de por consola.
 
 public class SumaTresTexto {
 
@@ -19,17 +20,20 @@ public class SumaTresTexto {
 		int value;
 		try {
 			String respuesta = JOptionPane.showInputDialog(s);
-			if(respuesta == null || respuesta.length() == 0) System.exit(0);
+			if(respuesta == null || respuesta.length() == 0) System.exit(0); // Si se cancela, simplemente
+																			 // se cierra el programa.
 			value = Integer.parseInt(respuesta);
 			
 			while (value < 4) {
 				JOptionPane.showMessageDialog(null, "Debe de ser mayor o igual a 4.");
 				value = Integer.parseInt(JOptionPane.showInputDialog(s));
+				if(respuesta == null || respuesta.length() == 0) System.exit(0);
 			}
 		} catch (Exception ex) {
 			out.println("Valor inválido. Establecido valor por defecto '5'.");
 			value = 5;
 		}
+		
 		return value;
 	}
 
@@ -67,8 +71,9 @@ public class SumaTresTexto {
 		app.setVisible(true);
 		app.setResizable(false);
 		app.setFocusable(true);
+		app.getContentPane().setBackground(Color.white);
 
-		out.println(Juego);
-		out.println(Juego.printExtraInfo());
+		//out.println(Juego);
+		//out.println(Juego.printExtraInfo());
 	}
 }

@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.*;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.util.HashMap;
 import java.awt.Toolkit;
 
@@ -32,19 +31,30 @@ import java.awt.Toolkit;
  * 
  * <p>
  * 
- * Para la entrada, se utiliza MouseEvent y KeyEvent.
+ * Para generar la siguiente ficha que colocar en el tablero, la piscina de valores
+ * que se pueden generar depende de la ficha máxima en el tablero en cada momento. 
  * 
  * <p>
  * 
+ * Para la entrada, se utiliza MouseEvent y KeyEvent.
+
+ * <p>
  * Cada vez que se genera una nueva pieza, aparece un rectángulo anaranjado alrededor
  * de la ficha para señalarla. Se guarda la posición de la nueva ficha en un vector y
  * luego se genera un rectángulo basado en ese vector.
  * 
- * <p> Code coverage: ~95% - Programas utilizados: Eclipse, VSCode.
+ * <p>
+ * 
+ * En determinadas ocasiones, los valores de las fichas pueden hacer overflow y
+ * convertirse en negativos. No merece la pena cambiar todo el programa para
+ * corregir esto, ya que tan solo en jugadas automáticas se puede alcanzar esos valores.
+ * 
+ * <p> Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode.
+ * <p> Desde la versión 14, el proyecto ya no forma parte del trabajo en grupo para 
+ * 	   la EPI. La versión entregada fue 'v13'.
  * 
  * @author Juan Mier
- * @author Martín Feito
- * @version v13
+ * @version v14
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  * 		Documentación de Oracle: Number Format </a>
  *      <blockquote>A new line character appropriate to the platform running the
@@ -83,12 +93,23 @@ public class SumaTres extends JPanel {
 	private int turnos = 1; // Se comienza en el primer turno, lógicamente.
 	private int siguiente; // El valor se inicializa en el constructor.
 	private int[][] tablero; // El tablero se inicializa en el constructor.
-	private int puntos = 0; // Se comienza la partida con cero puntos.
+	private long puntos = 0; // Se comienza la partida con cero puntos.
 	private int highestValue = 0; // Se podría inicializar con el valor '3', pero es preferible que se ajuste
 								  // a lo que se declara en el constructor por si el usuario lo modifica.
 	private SecureRandom rand = new SecureRandom();
-	private int[] obtainedFromRandom = new int[3]; // Vector que almacena la cantidad de fichas sacadas.
 	private int[] warning = new int[2]; // Vector que define la posición de la nueva ficha.
+	
+	// TODO: almacenar una cola de fichas siguientes
+	// TODO: volver a la jugada anterior(con la nueva ficha en el mismo sitio)
+	// TODO: cheat mode en el que se puede eliminar y colocar fichas al gusto
+	// TODO: JButton?
+	// TODO: mejora visual de la interfaz
+	// TODO: debug escondido en el input del tamaño del programa
+	// TODO: implementar probabilidades en la selección de la siguiente ficha para mejorar jugabilidad
+	// TODO: cambiar tamaño puntuación en ventana gráfica
+	// TODO: arreglar desplazamiento de la siguiente pieza
+	// TODO: toggle información por consola
+	
 
 	/**
 	 * Constructor de la clase sobrecargado por dos enteros. Se presupone que el
@@ -106,20 +127,19 @@ public class SumaTres extends JPanel {
 	 * <p>
 	 * Se comienza a esperar por clicks del usuario mediante
 	 * {@link #addMouseListener(java.awt.event.MouseListener)}.
+	 * <p>
+	 * Dependiendo del tamaño del tablero establecido, se generan varios sets de piezas
+	 * en el tablero para que siempre queden el mismo porcentaje de fichas en el tablero.
 	 * 
 	 * @param x: Cantidad de filas del tablero.
 	 * @param y: Cantidad de columnas del tablero.
 	 */
 	public SumaTres(int x, int y) {
-		try {
-			tablero = new int[x][y];
-		} catch (Exception ex) {
-			out.printf("ERROR: Se ha detectado la excepción %s. Establecido tablero por defecto 5x5.", ex);
-			tablero = new int[5][5];
+		tablero = new int[x][y];
+
+		for(int i = 0; i < (int) (0.12 * tablero.length * tablero[0].length) / 3; i++) {
+			generarSetFichas();
 		}
-		newFicha(3);
-		newFicha(2); // Se inicializa el tablero.
-		newFicha(1);
 
 		newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
 		
@@ -127,6 +147,12 @@ public class SumaTres extends JPanel {
 		addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
 	
 		inicializarColores(); // Se popula el HashMap de colores con los valores por defecto.
+	}
+	
+	public void generarSetFichas() {
+		newFicha(3);
+		newFicha(2);
+		newFicha(1);
 	}
 
 	// --- sets y gets --- //
@@ -151,22 +177,18 @@ public class SumaTres extends JPanel {
 	public int getHighest() {return this.highestValue;}
 
 	/**
-	 * Establece el mayor valor de cualquier ficha en el tablero. Para que el valor
-	 * sea realmente el mayor, se realiza un condicional sencillo antes de
-	 * establecerlo.
+	 * Comprueba y establece el mayor valor de cualquier ficha en el tablero.
 	 * 
 	 * @param valor que se quiera establecer.
 	 */
-	public void setHighest(int puntos) {
-		if (puntos > this.getHighest()) this.highestValue = puntos;
-	}
+	public void setHighest(int puntos) {if (puntos > this.getHighest()) this.highestValue = puntos;}
 
 	/**
 	 * Devuelve los puntos.
 	 * 
 	 * @return entero con los puntos actuales.
 	 */
-	public int getPuntos() {return this.puntos;}
+	public long getPuntos() {return this.puntos;}
 
 	/**
 	 * Añade puntos al contador actual.
@@ -234,9 +256,8 @@ public class SumaTres extends JPanel {
 	 * <p>
 	 * Se mueven todas las piezas en la dirección seleccionada hasta encontrar otra
 	 * pieza o hasta llegar al borde del tablero. Si la casilla destino es igual o
-	 * suman 3 (1+2 || 2+1), se suman. Se utiliza
-	 * {@link #sumaCond(int, int, int, int, int, int)} para verificar si la suma es
-	 * posible o no.
+	 * suman 3 (1+2 || 2+1), se suman. Se utiliza {@link #sumaCond(int, int, Jugada)}
+	 * para verificar si la suma es posible o no.
 	 * <p>
 	 * Al final de la jugada, se establece el valor de la siguiente ficha con
 	 * {@link #newSiguiente()}. Al final de la jugada, se pone la nueva ficha en el
@@ -251,32 +272,18 @@ public class SumaTres extends JPanel {
 	 * Después de cada suma satisfactoria, se añade el valor de la suma al total de
 	 * puntuación mediante {@link #addPuntos(int)}.
 	 * <p>
-	 * Se utilizan de manera extensiva los atributos <code>up</code>,
-	 * <code>down</code>, <code>left</code> y <code>right</code>:
-	 * <ul>
-	 * <li>Indican la dirección señalada en el main.</li>
-	 * <li>Se utilizan valores enteros y no booleanos porque es necesario para los
-	 * movimientos y las comprobaciones.</li>
-	 * <li>Se selecciona cada dirección mediante un switch dependiendo del caracter
-	 * sobrecargado.</li>
-	 * </ul>
+	 * Para indicar la dirección de la jugada, se utiliza un objeto de la clase
+	 * 'Jugada', que está preparado para acortar condiciones y ser más limpio que
+	 * valores separados para cada dirección del movimiento. Además, no es necesario
+	 * comprobar que los valores de la jugada sean válidos.
 	 * <p>
 	 * Para optimizar el uso del código, los métodos para sumar y mover las piezas
-	 * están separados: Para sumar, se utiliza {@link #sumar(int, int, int, int)},
-	 * para mover, se utiliza {@link #mover(int, int, int, int)}.
+	 * están separados: Para sumar, se utiliza {@link #sumar(Jugada)},
+	 * para mover, se utiliza {@link #mover(Jugada)}.
 	 * <p>
 	 * Al terminar la jugada, se comprueba si se ha llegado al final de la partida.
 	 * De ser así, se termina la partida imprimiendo información por pantalla y se
-	 * hace <code>System.exit()</code>.
-	 * <p>
-	 * Se comprueba que se ha establecido una dirección válida mediante
-	 * {@link #validMovement(int, int, int, int)}. Si este no fuera un proyecto para
-	 * presentar, probablemente lo mejor sería hacer un condicional con validMovement
-	 * dentro de cada método que utiliza Jugada para evitar que se acceda a ellos con
-	 * movimientos inválidos, o incluso asegurarse que solo se puede acceder a ellos
-	 * desde este propio método. Para evitar añadir aún más complejidad con condicionales,
-	 * se ha optado por asumir que el usuario no va a modificar el programa con el
-	 * objetivo de romperlo, sino con el objetivo de mejorarlo.
+	 * hace <code>System.exit()</code> con valor <code>0</code>.
 	 * <p>
 	 * Solo se imprime información extra al terminar la jugada mediante
 	 * {@link #printExtraInfo()} para evitar que el programa utilice métodos que no
@@ -297,92 +304,57 @@ public class SumaTres extends JPanel {
 		for (int i = 0; i < tablero.length; i++)
 			for (int j = 0; j < tablero.length; j++) {
 				reserva[i][j] = getTab(i, j);
-		}
-
-		char d = String.format("%s", c).toLowerCase().charAt(0);
-		// Se convierte la letra a minúsculas para evitar que, por cualquier motivo, se introduzca
-		// un caracter en mayúsculas y el switch no lo detecte pese a que es un movimiento válido.
-
-		int up = 0;
-		int down = 0;
-		int left = 0;
-		int right = 0;
-
-		switch (d) {
-			case 'w': // ARRIBA
-				up = 1;
-				break;
-			case 's': // ABAJO
-				down = 1;
-				break;
-			case 'a': // IZQUIERDA
-				left = 1;
-				break;
-			case 'd': // DERECHA
-				right = 1;
-				break;
-			default: // otro valor (inválido)
-				out.println("Jugada inválida.");
-				break;
-		}
-
-		if (validMovement(up, down, left, right)) { // Se comprueba que se ha seleccionado
-													// una dirección válida.
-
-			mover(up, down, left, right);
-			
-			out.println(this);
-
-			sumar(up, down, left, right);
-
-			// Para evitar que si el tablero está lleno el programa intente calcular
-			// infinitamente un sitio vacío de manera aleatoria, se comprueba antes
-			// que el tablero no esté lleno mediante tableroLleno(). Además, así la
-			// siguiente ficha a colocar no varía.
-			if (!tableroLleno()) {
-				newFicha(getSiguiente()); // Se coloca la ficha 'siguiente'.
-				newSiguiente(); // Se calcula el valor de ficha 'siguiente'.
 			}
-
-			boolean didChange = false;
-			for (int i = 0; i < tablero.length; i++)
-				for (int j = 0; j < tablero[0].length; j++) {
-					if (reserva[i][j] != getTab(i, j))
-						didChange = true;
-				}
-			if (didChange) addTurno(); // Si el tablero ha cambiado, se añade un turno.
-
-			out.print(this);
-			out.println(printExtraInfo()); // Se imprime información extra.
-			repaint();
-			if (!ableToMove()) finalDePartida();
-			// Si no se puede mover, se termina la partida.
+	
+		Jugada x = new Jugada(c);	
+			
+		mover(x);
+		//out.println(this);
+		sumar(x);
+			
+		// Para evitar que si el tablero está lleno el programa intente calcular
+		// infinitamente un sitio vacío de manera aleatoria, se comprueba antes
+		// que el tablero no esté lleno mediante tableroLleno(). Además, así la
+		// siguiente ficha a colocar no varía.
+		if (!tableroLleno()) {
+			newFicha(getSiguiente()); // Se coloca la ficha 'siguiente'.
+			newSiguiente(); // Se calcula el valor de ficha 'siguiente'.
 		}
+			
+		boolean didChange = false;
+		for (int i = 0; i < tablero.length; i++)
+			for (int j = 0; j < tablero[0].length; j++) {
+				if (reserva[i][j] != getTab(i, j))
+					didChange = true;
+			}
+		if (didChange) addTurno(); // Si el tablero ha cambiado, se añade un turno.
+			
+		//out.print(this);
+		//out.println(printExtraInfo()); // Se imprime información extra.
+		repaint(); // Se pinta la situación actual de la partida.
+		if (!ableToMove()) finalDePartida(); // Si no se puede mover, se termina la partida.
 	}
+	
 
 	/**
-	 * Método utilizado {@link #Jugada(char)} para mover las piezas. Se mueven las
+	 * Método utilizado por {@link #Jugada(char)} para mover las piezas. Se mueven las
 	 * piezas hasta que hay otra pieza en la dirección o se encuentra con el borde
 	 * del tablero. Después de mover las piezas, se comprueba si se pueden mover más
 	 * las piezas mediante un recorrido de todo el tablero. Si se encuentra alguna
 	 * pieza que se pueda mover, el atributo 'check' se convierte en true, con lo
 	 * que se mantiene el bucle while y se vuelven a mover todas las piezas.
 	 * Obviamente, aquellas piezas que no se puedan mover más en la dirección
-	 * escogida, se quedarán en la misma casilla. Se introduce la dirección mediante
-	 * los enteros 'up', 'down', 'left' y 'right'.
+	 * escogida, se quedarán en la misma casilla.
 	 * 
-	 * @param up    '1' o '0' para el movimiento hacia arriba.
-	 * @param down  '1' o '0' para el movimiento hacia abajo.
-	 * @param left  '1' o '0' para el movimiento hacia la izquierda.
-	 * @param right '1' o '0' para el movimiento hacia la derecha.
+	 * @param x Objeto de la clase 'Jugada' que define el movimiento.
 	 */
-	public void mover(int up, int down, int left, int right) {
+	public void mover(Jugada x) {
 		boolean check = true;
 		while (check) {
-			for (int i = up + down*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*down)
-				for (int j = left + right*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*right) {
-					if (getTab(i - up + down, j - left + right) == 0) {
-						setTab(i - up + down, j - left + right, getTab(i, j));
+			for (int i = x.getUp() + x.getDown()*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*x.getDown())
+				for (int j = x.getLeft() + x.getRight()*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*x.getRight()) {
+					if (getTab(i + x.moveVert(), j + x.moveHorz()) == 0) {
+						setTab(i + x.moveVert(), j + x.moveHorz(), getTab(i, j));
 						setTab(i, j, 0);
 					}
 				}
@@ -393,9 +365,9 @@ public class SumaTres extends JPanel {
 			// se puede seguir moviendo el tablero.
 			// De lo contrario, check se mantiene false por lo que se sale del bucle y se
 			// termina el movimiento de las piezas.
-			for (int i = up + down*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*down)
-				for (int j = left + right*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*right) {
-					if (getTab(i, j) != 0 && (getTab(i - up + down, j - left + right) == 0))
+			for (int i = x.getUp() + x.getDown() * (tablero.length - 2); i < tablero.length && i >= 0; i += 1 - 2 * x.getDown())
+				for (int j = x.getLeft() + x.getRight() * (tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2 * x.getRight()) {
+					if (getTab(i, j) != 0 && (getTab(i + x.moveVert(), j + x.moveHorz()) == 0))
 						check = true;
 				}
 		}
@@ -407,32 +379,32 @@ public class SumaTres extends JPanel {
 	 * tablero examinando las piezas en la dirección seleccionada. Obviamente, si no
 	 * se encuentra ninguna suma, no se suma nada.
 	 * <p>
-	 * Al terminar, el módulo vuelve a ejecutar {@link #mover(int, int, int, int)}.
+	 * Al terminar, el módulo vuelve a ejecutar {@link #mover(Jugada)}.
 	 * Aunque esto ya se haya hecho supuestamente en Jugada(), dependiendo del
 	 * posicionamiento de las fichas puede quedar sitio para que la ficha se siga
 	 * moviendo en la dirección seleccionada después de moverse. Se mueve
 	 * directamente porque así se evitan bucles innecesarios y evitar que se añadan
 	 * las siguientes fichas y que se imprima más veces de las necesarias
-	 * información por pantalla. Además, se comprueba si la ficha que resulta de la
-	 * suma es la mayor en el tablero a través de {@link #checkHighestValue(int)}.
+	 * información por pantalla.
+	 * <p>
+	 * Se comprueba si la ficha que resulta de la suma es la mayor en el tablero a
+	 * través de {@link #setHighest(int)}.
 	 * 
-	 * @param up    '1' o '0' para el movimiento hacia arriba.
-	 * @param down  '1' o '0' para el movimiento hacia abajo.
-	 * @param left  '1' o '0' para el movimiento hacia la izquierda.
-	 * @param right '1' o '0' para el movimiento hacia la derecha.
+	 * @param x Objeto de la clase 'Jugada' que define el movimiento.
 	 */
-	public void sumar(int up, int down, int left, int right) {
-		for (int i = up + down*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*down)
-			for (int j = left + right*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*right) {
-				if (sumaCond(i, j, up, down, left, right)) {
-					setTab(i - up + down, j - left + right, getTab(i, j) + getTab(i - up + down, j - left + right));
+	public void sumar(Jugada x) {
+		for (int i = x.getUp() + x.getDown() * (tablero.length - 2); i < tablero.length && i >= 0; i += 1 - 2 * x.getDown())
+			for (int j = x.getLeft() + x.getRight() * (tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2 * x.getRight()) {
+				if (sumaCond(i, j, x)) { // Si se puede sumar, se convierte la nueva casilla en la suma y la antigua en 0.
+					setTab(i + x.moveVert(), j + x.moveHorz(), getTab(i, j) + getTab(i + x.moveVert(), j + x.moveHorz()));
 					setTab(i, j, 0);
-					addPuntos(getTab(i - up + down, j - left + right));
-					setHighest(getTab(i - up + down, j - left + right));
+					addPuntos(getTab(i + x.moveVert(), j + x.moveHorz()));
+					setHighest(getTab(i + x.moveVert(), j + x.moveHorz()));
+					// NO se establece directamente la mayor pieza, se comprueba dentro de setHighest().
 				}
 			}
-		mover(up, down, left, right); // Se mueve al terminar de suma para evitar que queden
-									  // huecos vacíos. Esto no significa que se sume dos veces.
+		mover(x);
+		// Se mueve al terminar de suma para evitar que queden huecos vacíos. NO se suma dos veces.
 		
 		// Definitivamente hay algo incorrecto en la lógica de la suma. En casos muy aislados y extremos,
 		// hay veces que no se suma todo lo que debería. La verdad es que no tengo ni idea de por qué
@@ -446,46 +418,39 @@ public class SumaTres extends JPanel {
 	
 	/**
 	 * Método debug que coloca piezas manualmente. NO es accesible por el usuario. <p>
-	 * Antes de colocar la ficha, comprueba que se trata de una ficha válida y que no se trata de
-	 * una posición OutOfBounds para evitar exepciones. Se ha utilizado durante el desarrollo del
-	 * programa. Quizás no debería estar presente en la versión final (?)
+	 * Antes de colocar la ficha, comprueba  que se trata de una ficha válida y que
+	 * no se trata de una posición OutOfBounds para evitar exepciones. Además, no se
+	 * puede colocar una pieza donde ya hay otra. <p>Se ha utilizado durante el
+	 * desarrollo del programa.
+	 * 
+	 * @param x Coordenada horizontal de la ficha que se desea colocar
+	 * @param y Coordenada vertical de la ficha que se desea colocar
+	 * @param nv Valor de la pieza que se desea colocar.
 	 */
 	public void debugColocarPiezas(int x, int y, int nv) {
-		if(x>=0 && y >= 0 && x<tablero.length && y<tablero.length &&
-				(nv == 1 || nv == 2 || nv == 3 || nv%6 == 0)) {
-			setTab(x, y, nv);
+		if (x >= 0 && y >= 0 && x < tablero.length && y < tablero.length && getTab(x, y) == 0) {
+			if (nv == 1 || nv == 2 || nv == 3) {setTab(x, y, nv);}
+			else {
+				int i = 0;
+				while(nv>6*Math.pow(2, i)) {i++;}
+				if(6*Math.pow(2, i) == nv) {setTab(x, y, nv);}
+			}
 		}
 	}
-
 	
 	/**
-	 * Método que comprueba que la combinación de índices de movimientos sean un
-	 * movimiento válido para el programa.
-	 * <p>
-	 * En este caso, un movimiento lógico es un solo desplazamiento en una sola
-	 * dirección en cualquier dirección.
-	 * <p>
-	 * Este método se utiliza como comprobación antes de realizar alguna acción que
-	 * utiliza el mismo movimiento sobrecargado.
-	 * <p>
-	 * Si solo se mueve en una dirección y el valor de todos los movimientos son o
-	 * <code>1</code> o <code>0</code>, entonces se trata de un movimiento válido y
-	 * el programa debería continuar.
-	 * <p>
-	 * Por defecto, es imposible que el código introduzca un movimiento inválido que
-	 * haga que este método devuelva un booleano falso, pero está pensado para casos
-	 * de actualización y de modificaciones por otros usuarios.
+	 * Método debug que quita piezas manualmente. NO es accesible por el usuario. <p>
+	 * Obviamente, solo se puede quitar el valor de una ficha que existe. Comprueba
+	 * que se trata de una ficha válida y que no se trata de una posición OutOfBounds
+	 * para evitar exepciones.
 	 * 
-	 * @param up    '1' o '0' para el movimiento hacia arriba.
-	 * @param down  '1' o '0' para el movimiento hacia abajo.
-	 * @param left  '1' o '0' para el movimiento hacia la izquierda.
-	 * @param right '1' o '0' para el movimiento hacia la derecha.
-	 * @return Valor booleano que confirma la validez del set de movimientos.
+	 * @param x Coordenada horizontal de la ficha que se quiere quitar.
+	 * @param y Coordenada vertical de la ficha que se quiere quitar.
 	 */
-	public boolean validMovement(int up, int down, int left, int right) {
-		return (up + left + right + down == 1 &&
-				(up == 1 || up == 0) && (down == 1 || down == 0) &&
-				(left == 1 || left == 0) && (right == 1 || right == 0));
+	public void debugQuitarPiezas(int x, int y) {
+		if (x >= 0 && y >= 0 && x < tablero.length && y < tablero.length && getTab(x, y) != 0) {
+			setTab(x, y, 0);
+		}
 	}
 
 	/**
@@ -500,14 +465,41 @@ public class SumaTres extends JPanel {
 	}
 
 	/**
-	 * Genera un número para la siguiente ficha a generar. Se imprime por pantalla
+	 * Genera un número para la siguiente ficha a colocar. Se imprime por pantalla
 	 * mediante {@link #toString()}. Genera un número entre 1 y 3 utilizando
-	 * {@link #newRandom(int)}. Además, se lleva la cuenta de la cantidad de números
-	 * obtenidos por este método.
+	 * {@link #newRandom(int)}. Es el método clásico que sigue con las reglas originales
+	 * del enunciado.
+	 */
+	public void newSiguienteOld() {
+		setSiguiente(newRandom(3) + 1);
+		//obtainedFromRandom[getSiguiente()-1]++;
+	}
+	
+	/**
+	 * Genera un número para la siguiente ficha a colocar. La diferencia con {@link #newSiguiente()}
+	 * es que se generan valores progresivamente mayores a lo largo del transcurso del programa acordes
+	 * con el valor de la máxima ficha en pantalla. <p>
+	 * Para generar el siguiente valor, se define un vector y se rellena con los posibles valores.
+	 * Obviamente, el 1, 2 y 3 siempre se introducen por defecto. Además, hasta que no se llega al valor
+	 * 24, solo se puede sacar uno de esos tres valores. <p> A partir de 24, la siguiente ficha posible
+	 * se añade a la pool, es decir, 6. Al llegar a la 98, se añade 12, etc.
 	 */
 	public void newSiguiente() {
-		setSiguiente(newRandom(3) + 1);
-		obtainedFromRandom[getSiguiente()-1]++;
+		int i = 0;
+		while(getHighest()>6*Math.pow(2, i)) {i++;}
+		int[] vlsSig = new int[getHighest()<13 ? 3 : i+1]; // Si la ficha no supera 12, el método de
+														   // obtener el valor de la siguiente ficha
+														   // es el clásico.
+		
+		for(int h=0; h<3; h++) {vlsSig[h] = h+1;} // Se introducen 1, 2 y 3 en el vector de posibles
+												  // valores.
+		
+		for(int j=0; j < vlsSig.length - 3; j++) {
+			vlsSig[3+j] = (int) (6 * Math.pow(2, j)); 
+		}
+		
+
+		setSiguiente(vlsSig[newRandom(vlsSig.length)]);
 	}
 
 	/**
@@ -547,8 +539,8 @@ public class SumaTres extends JPanel {
 	public boolean ableToMove() {
 		boolean ableToMove = false;
 		if (tableroLleno()) {
-			if (checkEndLoop(1, 0, 0, 0) || checkEndLoop(0, 1, 0, 0)
-				|| checkEndLoop(0, 0, 1, 0) || checkEndLoop(0, 0, 0, 1)) ableToMove = true;
+			if (checkEndLoop(new Jugada('w')) || checkEndLoop(new Jugada('s'))
+				|| checkEndLoop(new Jugada('a')) || checkEndLoop(new Jugada('d'))) ableToMove = true;
 		} else ableToMove = true;
 		return ableToMove;
 	}
@@ -558,18 +550,15 @@ public class SumaTres extends JPanel {
 	 * del tablero es posible mover o sumar. Al método se le sobrecarga con el movimiento
 	 * del tablero que se desea comprobar.
 	 * 
-	 * @param up    Valor '1' o '0' para el movimiento hacia arriba.
-	 * @param down  Valor '1' o '0' para el movimiento hacia atrás.
-	 * @param left  Valor '1' o '0' para el movimiento hacia la izquierda.
-	 * @param right Valor '1' o '0' para el movimiento hacia la derecha.
+	 * @param x Objeto de la clase 'Jugada' que define el movimiento.
 	 * @return Devuelve 'true' si se puede sumar alguna casilla y 'false' si no se
 	 *         puede sumar ninguna.
 	 */
-	public boolean checkEndLoop(int up, int down, int left, int right) {
+	public boolean checkEndLoop(Jugada x) {
 		boolean check = false;
-		for (int i = up; i + down < tablero.length; i++)
-			for (int j = left; j + right < tablero[0].length; j++) {
-				if (sumaCond(i, j, up, down, left, right))
+		for (int i = x.getUp(); i + x.getDown() < tablero.length; i++)
+			for (int j = x.getLeft(); j + x.getRight() < tablero[0].length; j++) {
+				if (sumaCond(i, j, x))
 					check = true;
 			}
 		return check;
@@ -583,15 +572,12 @@ public class SumaTres extends JPanel {
 	 * 
 	 * @param i     Posición x del tablero.
 	 * @param j     Posición y del tablero.
-	 * @param up    Valor '1' o '0' para el movimiento hacia arriba.
-	 * @param down  Valor '1' o '0' para el movimiento hacia atrás.
-	 * @param left  Valor '1' o '0' para el movimiento hacia la izquierda.
-	 * @param right Valor '1' o '0' para el movimiento hacia la derecha.
+	 * @param x Objeto de la clase 'Jugada' que define el movimiento.
 	 * @return Un booleano, 'true' si se puede sumar, 'false' si no.
 	 */
-	public boolean sumaCond(int i, int j, int up, int down, int left, int right) {
-		return validMovement(up, down, left, right) && getTab(i - up + down, j - left + right) == getTab(i, j) && getTab(i, j) != 2 && getTab(i, j) != 1
-				|| getTab(i, j) + getTab(i - up + down, j - left + right) == 3;
+	public boolean sumaCond(int i, int j, Jugada x) {
+		return getTab(i + x.moveVert(), j + x.moveHorz()) == getTab(i, j) && getTab(i, j) != 2 && getTab(i, j) != 1
+				|| getTab(i, j) + getTab(i + x.moveVert(), j + x.moveHorz()) == 3;
 	}
 
 	/**
@@ -613,6 +599,7 @@ public class SumaTres extends JPanel {
 
 	/**
 	 * Método que devuelve una cadena con la situación actual del tablero.
+	 * <h3> NO se utiliza en versiones fuera del trabajo de grupo. </h3>
 	 * <p>
 	 * Dependiendo del tamaño de la ficha máxima, es decir, de la cantidad de cifras
 	 * que tenga, el tamaño por celda cambia. Mientras la ficha máxima no supere las
@@ -712,8 +699,8 @@ public class SumaTres extends JPanel {
 				getHighest(), getTurnos());
 		JOptionPane.showMessageDialog(null, salida);
 		out.printf("%n%s",salida);
-		out.printf("Fichas obtenidas: [1]: %d  [2]: %d  [3]: %d",
-				obtainedFromRandom[0], obtainedFromRandom[1], obtainedFromRandom[2]);
+		//out.printf("Fichas obtenidas: [1]: %d  [2]: %d  [3]: %d",
+		//		obtainedFromRandom[0], obtainedFromRandom[1], obtainedFromRandom[2]);
 		System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
 	}
 
@@ -796,7 +783,9 @@ public class SumaTres extends JPanel {
 
 
 	/**
-	 * Método que pinta la partida en la aplicación gráfica.
+	 * Método que pinta la partida en la aplicación gráfica. El programa NO se basa en
+	 * {@link #toString()} para pintar el tablero, con lo que no siempre existe la misma
+	 * información en ambas salidas.
 	 * <ul>
 	 * <li>Para pintar las flechas, se utiliza {@link #pintarFlechas(Graphics)}. </li>
 	 * <li>Para pintar el tablero, se utiliza {@link #pintarTablero(Graphics)}. </li>
@@ -930,16 +919,117 @@ public class SumaTres extends JPanel {
 					g.setColor(Y>=210 ? Color.black : Color.white);
 					
 					// Se establece un tamaño de fuente en función de los dígitos de la ficha.
-					setFontSize(g, 18 - 2 * (String.valueOf(getTab(i, j)).length() - 1));
-					
+					int desiredFontSize = 18 - 1 * (String.valueOf(getTab(i, j)).length() - 1);
+					setFontSize(g, getTab(i, j) >= 350000 ? 10 : desiredFontSize);
+					int sizer = getTab(i, j) >= 100000 ? (13 - (String.valueOf(getTab(i, j)).length()-1)) : (13 - (2*(String.valueOf(getTab(i, j)).length()-1)));
 					g.drawString(String.format("%d", getTab(i, j)),
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j + SQUARE_SIZE *
-							(13 - (2*(String.valueOf(getTab(i, j)).length()-1))) / 32,
+							 sizer / 32,
 							SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i);
 					// Dependiendo del tamaño de la pieza, se desplaza ligeramente a la izquierda para que siga centrada
 					// en concordancia con el resto de piezas.
 				}
 			}
+	}
+	
+	/**
+	 * <h2>Clase que define las jugadas del juego en el tablero.</h2>
+	 * 
+	 * Contiene valores para cada sentido del movimiento bidimensional. Por defecto,
+	 * todos los movimientos tienen valor '0'. Cuando se define un movimiento, dicho
+	 * movimiento pasa a tener valor '1'. Esto permite que el programa funcione de
+	 * la misma manera que con valores separados como se hacía antes sin necesidad
+	 * de comprobar que la jugada sea válida, puesto que la clase Jugada solo puede
+	 * definir jugadas válidas.
+	 * <p>
+	 * El constructor por defecto utiliza un caracter que coincide con las teclas
+	 * con las que se quiere jugar al programa. Podría implementarse fácilmente
+	 * otros constructores que definieran la jugada a partir cadenas o de enteros,
+	 * pero solo se utiliza el método más corto.
+	 * <p>
+	 * Si se introduce una jugada inválida, el programa se cierra, puesto que no
+	 * endría sentido que se introdujera una jugada con varios movimientos (?)
+	 * <p>
+	 * Contiene dos métodos (<code>moveVert()</code> y <code>moveHorz()</code>).
+	 * Estos dos métodos existen para que las detecciones de movimiento sean más
+	 * cortas y más sencillas, ya que todas usan el desplazamiento de la misma
+	 * manera.
+	 */
+	private class Jugada {
+
+		private int up = 0;
+		private int down = 0;
+		private int left = 0;
+		private int right = 0;
+
+		public Jugada(char c) {
+			switch (Character.toString(c).toLowerCase().charAt(0)) {
+				case 'w': this.Up(); break;
+				case 'a': this.Left(); break;
+				case 's': this.Down(); break;
+				case 'd': this.Right(); break;
+				default:
+					out.print("ERROR: Jugada inválida.");
+					System.exit(0);
+					break;
+			}
+		}
+
+		/**
+		 * Establece el movimiento de la jugada hacia arriba.
+		 */
+		public void Up() {this.up = 1;}
+		
+		/**
+		 * Establece el movimiento de la jugada hacia abajo.
+		 */
+		public void Down() {this.down = 1;}
+		
+		/**
+		 * Establece el movimiento de la jugada hacia la izquierda.
+		 */
+		public void Left() {this.left = 1;}
+		
+		/**
+		 * Establece el movimiento de la jugada hacia la derecha.
+		 */
+		public void Right() {this.right = 1;}
+		
+		/**
+		 * Devuelve el valor del movimiento hacia arriba de la jugada.
+		 * @return Valor entero
+		 */
+		public int getUp() {return this.up;}
+		
+		/**
+		 * Devuelve el valor del movimiento hacia abajo de la jugada.
+		 * @return Valor entero
+		 */
+		public int getDown() {return this.down;}
+		
+		/**
+		 * Devuelve el valor del movimiento hacia la izquierda de la jugada.
+		 * @return Valor entero
+		 */
+		public int getLeft() {return this.left;}
+		
+		/**
+		 * Devuelve el valor del movimiento hacia la derecha de la jugada.
+		 * @return Valor entero
+		 */
+		public int getRight() {return this.right;}
+		
+		/**
+		 * Devuelve el movimiento horizontal de la jugada.
+		 * @return Valor entero
+		 */
+		public int moveVert() {return this.getDown() - this.getUp();}
+		
+		/**
+		 * Devuelve el movimiento horizontal de la jugada.
+		 * @return Valor entero
+		 */
+		public int moveHorz() {return this.getRight() - this.getLeft();}
 	}
 
 	
@@ -1016,10 +1106,13 @@ public class SumaTres extends JPanel {
 			} else {
 				if (event.getY() < MAIN_SPACER) Jugada('w');
 				else {
-					if (event.getY() > (defineY() - 2*MAIN_SPACER) && event.getY() < (defineY() - MAIN_SPACER)) Jugada('s');
+					if (event.getY() > (defineY() - 2 * MAIN_SPACER)
+							&& event.getY() < (defineY() - MAIN_SPACER)) Jugada('s');
 					else if (event.getX() > (defineX() - MAIN_SPACER)) Jugada('d');
 				}
 			}
 		}
 	}
+	
+	
 }
