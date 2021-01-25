@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.Toolkit;
 
@@ -31,11 +32,6 @@ import java.awt.Toolkit;
  * 
  * <p>
  * 
- * Para generar la siguiente ficha que colocar en el tablero, la piscina de valores
- * que se pueden generar depende de la ficha máxima en el tablero en cada momento. 
- * 
- * <p>
- * 
  * Para la entrada, se utiliza MouseEvent y KeyEvent.
 
  * <p>
@@ -54,7 +50,7 @@ import java.awt.Toolkit;
  * 	   la EPI. La versión entregada fue 'v13'.
  * 
  * @author Juan Mier
- * @version v14
+ * @version v15
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  * 		Documentación de Oracle: Number Format </a>
  *      <blockquote>A new line character appropriate to the platform running the
@@ -91,33 +87,35 @@ public class SumaTres extends JPanel {
 	 */
 	private static final long serialVersionUID = -1110032705510692144L;
 	private int turnos = 1; // Se comienza en el primer turno, lógicamente.
+	private int numTablero = 0; // Índice del array list de tableros.
 	private int siguiente; // El valor se inicializa en el constructor.
-	private int[][] tablero; // El tablero se inicializa en el constructor.
+	private Tablero tablero; // El tablero se inicializa en el constructor.
+	private ArrayList<Tablero> tableros = new ArrayList<>(); // Se genera un ArrayList que guarda las tableros.
 	private long puntos = 0; // Se comienza la partida con cero puntos.
 	private int highestValue = 0; // Se podría inicializar con el valor '3', pero es preferible que se ajuste
 								  // a lo que se declara en el constructor por si el usuario lo modifica.
 	private SecureRandom rand = new SecureRandom();
 	private int[] warning = new int[2]; // Vector que define la posición de la nueva ficha.
+	private boolean cheatsUsed = false; // Estado de los trucos.
+	private boolean experimental = false; // Determina el modo de juego. Por defecto, el modo de juego es clásico.
+	private int numPlayers = 1;
+	private boolean consoleStatus = false; // Por defecto, la consola está desactivada.
 	
 	// TODO: almacenar una cola de fichas siguientes
 	// TODO: volver a la jugada anterior(con la nueva ficha en el mismo sitio)
 	// TODO: cheat mode en el que se puede eliminar y colocar fichas al gusto
-	// TODO: JButton?
 	// TODO: mejora visual de la interfaz
-	// TODO: debug escondido en el input del tamaño del programa
 	// TODO: implementar probabilidades en la selección de la siguiente ficha para mejorar jugabilidad
-	// TODO: cambiar tamaño puntuación en ventana gráfica
-	// TODO: arreglar desplazamiento de la siguiente pieza
-	// TODO: toggle información por consola
+	// TODO: multijugador
+	// TODO: bonus por desactivar ayudas visuales
+	// TODO: arreglar el undo()
+	// TODO: MUCHO JavaDoc y comentarios para organizar el archivo.
+	// TODO: los colores aleatorios no deberían parecerse a los ya existentes (de manera automática)
 	
 
 	/**
 	 * Constructor de la clase sobrecargado por dos enteros. Se presupone que el
-	 * main introduce tamaños correctos, aunque en caso de lanzar una excepción,
-	 * se establecen los valores por defectos 5x5.
-	 * <p>
-	 * Incializa el tablero con tres fichas (1, 2, 3) utilizando
-	 * {@link #newFicha(int)}.
+	 * main introduce tamaños correctos.
 	 * <p>
 	 * Rellena la lista de colores por valor según los valores por defecto
 	 * utilizando {@link #inicializarColores()}.
@@ -130,14 +128,32 @@ public class SumaTres extends JPanel {
 	 * <p>
 	 * Dependiendo del tamaño del tablero establecido, se generan varios sets de piezas
 	 * en el tablero para que siempre queden el mismo porcentaje de fichas en el tablero.
+	 * <p>
+	 * Se utiliza un switch para activar los modos dependiendo del entero 'type' sobrecargado
+	 * desde el main. En el main se encuentra un showInputMessage con botones que devuelve
+	 * directamente el valor que se debe pasar a este constructor.
 	 * 
 	 * @param x: Cantidad de filas del tablero.
 	 * @param y: Cantidad de columnas del tablero.
+	 * @param type: Valor entero que define el modo de juego.
 	 */
-	public SumaTres(int x, int y) {
-		tablero = new int[x][y];
+	public SumaTres(int x, int y, int type) {
+		tablero = new Tablero(x, y);
+		switch(type) {
+			case 0: setClassicMode(); break; //     Clásico
+			case 1: setExperimentalMode(); break;// Experimental
+			case 2: setMultiplayer(); break; //     Multijugador
+			case 3: System.exit(0); //              Cancelar
+		}
+		
+		inicializarColores(); // Se popula el HashMap de colores con los valores por defecto.
+		// Debido a cómo funciona la clase 'Pieza', se debe de inicializar los colores ANTES de
+		// generar el set de fichas inicial. De lo contrario, la primera jugada contaría con piezas
+		// de colores aleatorios durante ese turno solamente.
 
-		for(int i = 0; i < (int) (0.12 * tablero.length * tablero[0].length) / 3; i++) {
+		if(getMode()) {
+			for(int i = 0; i < (int) (0.12 * tablero.getSizeX() * tablero.getSizeY()) / 3; i++) {generarSetFichas();}
+		} else {
 			generarSetFichas();
 		}
 
@@ -145,10 +161,13 @@ public class SumaTres extends JPanel {
 		
 		addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
 		addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
-	
-		inicializarColores(); // Se popula el HashMap de colores con los valores por defecto.
+		
+		
 	}
 	
+	/**
+	 * Método que genera un set estándar de tres fichas: 1, 2 y 3.
+	 */
 	public void generarSetFichas() {
 		newFicha(3);
 		newFicha(2);
@@ -206,7 +225,7 @@ public class SumaTres extends JPanel {
 	 * @param y Coordenada y que se desea analizar.
 	 * @return tipo 'entero' con el valor de la casilla.
 	 */
-	public int getTab(int x, int y) {return this.tablero[x][y];}
+	public int getTab(int x, int y) {return this.tablero.getPieza(x, y).getValor();}
 
 	/**
 	 * Establece el valor de una ficha para una casilla.
@@ -215,7 +234,7 @@ public class SumaTres extends JPanel {
 	 * @param y  Coordenada y que se desea cambiar.
 	 * @param nv Nuevo Valor de la casilla.
 	 */
-	public void setTab(int x, int y, int nv) {this.tablero[x][y] = nv;}
+	public void setTab(int x, int y, int nv) {this.tablero.getPieza(x, y).setValor(nv);}
 
 	/**
 	 * Devuelve el valor de la próxima ficha.
@@ -234,7 +253,7 @@ public class SumaTres extends JPanel {
 	/**
 	 * Añade un turno al contador total.
 	 */
-	public void addTurno() {this.turnos++;}
+	public void addTurno() {this.turnos++; this.numTablero++;}
 
 	/**
 	 * Devuelve los turnos que se han jugado hasta el momento.
@@ -242,6 +261,62 @@ public class SumaTres extends JPanel {
 	 * @return tipo 'entero' con la cantidad de turnos.
 	 */
 	public int getTurnos() {return this.turnos;}
+	
+	/**
+	 * Activa el modo clásico.
+	 * <p> Al establecer el modo clásico, se activa la consola.
+	 */
+	public void setClassicMode() {this.consoleStatus = true;}
+	
+	/**
+	 * Activa el modo de juego experimental.
+	 * <p> Al establecer el modo experimental, se desactiva la consola.
+	 */
+	public void setExperimentalMode() {this.experimental = true; this.consoleStatus = false;}
+	
+	/**
+	 * Devuelve el estado del modo. False para modo clásico.
+	 * @return Valor booleano con el estado del modo experimental.
+	 */
+	public boolean getMode() {return this.experimental;}
+	
+	/**
+	 * Activa el modo multijugador. No activable ahora mismo.
+	 */
+	public void setMultiplayer() {this.numPlayers = 2;}
+	
+	/**
+	 * Devuelve la cantidad de jugadores.
+	 * @return Valor entero con la cantidad de jugadores actualmente.
+	 */
+	public int getPlayers() {return this.numPlayers;}
+	
+	/**
+	 * Activa o desactiva el toString() por consola.
+	 */
+	public void toggleConsole() {
+		this.consoleStatus = !consoleStatus;
+		if(consoleStatus) {out.print(this); out.println(printExtraInfo());}
+		}
+	
+	/**
+	 * Activa los trucos en la partida actual.
+	 */
+	public void enableCheats() {
+		if (JOptionPane.showConfirmDialog(null, "¿Desea activar los trucos?", "SumaTres", JOptionPane.YES_NO_OPTION)
+				== JOptionPane.YES_OPTION) this.cheatsUsed = true; repaint();
+		}
+	
+	/**
+	 * Devuelve el estado de los trucos.
+	 */
+	public boolean cheatsUsed() {return this.cheatsUsed;}
+	
+	/**
+	 * Devuelve el estado de la consola. 'true' en caso de que esté activada.
+	 * @return Valor booleano.
+	 */
+	public boolean consoleStatus() {return this.consoleStatus;}
 	
 	// No existe setTurnos() porque no es necesario, los turnos son un simple contador sin ninguna
 	// implicación directa en la partida.
@@ -300,16 +375,15 @@ public class SumaTres extends JPanel {
 		// Si al compararse el tablero nuevo con su posición anterior resulta que ambos
 		// son iguales, significa que el nuevo tablero no se ha visto modificado, por lo
 		// que no debería añadirse un turno al contador.
-		int[][] reserva = new int[tablero.length][tablero[0].length];
-		for (int i = 0; i < tablero.length; i++)
-			for (int j = 0; j < tablero.length; j++) {
-				reserva[i][j] = getTab(i, j);
-			}
+		tableros.add(new Tablero(tablero.getSizeX(), tablero.getSizeY()));
+		for(int i=0; i<tablero.getSizeX(); i++) for(int j=0; j<tablero.getSizeY(); j++) {
+			tableros.get(numTablero).getPieza(i, j).setValor(getTab(i, j));
+		}
 	
 		Jugada x = new Jugada(c);	
 			
 		mover(x);
-		//out.println(this);
+		if(consoleStatus()) out.println(this);
 		sumar(x);
 			
 		// Para evitar que si el tablero está lleno el programa intente calcular
@@ -322,15 +396,17 @@ public class SumaTres extends JPanel {
 		}
 			
 		boolean didChange = false;
-		for (int i = 0; i < tablero.length; i++)
-			for (int j = 0; j < tablero[0].length; j++) {
-				if (reserva[i][j] != getTab(i, j))
+		for (int i = 0; i < tablero.getSizeX(); i++)
+			for (int j = 0; j < tablero.getSizeY(); j++) {
+				if (tableros.get(numTablero).getPieza(i, j).getValor() != getTab(i, j))
 					didChange = true;
 			}
 		if (didChange) addTurno(); // Si el tablero ha cambiado, se añade un turno.
 			
-		//out.print(this);
-		//out.println(printExtraInfo()); // Se imprime información extra.
+		if(consoleStatus()) {
+			out.print(this);
+			out.print(printExtraInfo()); // Se imprime información extra.
+		}
 		repaint(); // Se pinta la situación actual de la partida.
 		if (!ableToMove()) finalDePartida(); // Si no se puede mover, se termina la partida.
 	}
@@ -351,8 +427,8 @@ public class SumaTres extends JPanel {
 	public void mover(Jugada x) {
 		boolean check = true;
 		while (check) {
-			for (int i = x.getUp() + x.getDown()*(tablero.length - 2); i < tablero.length && i >= 0; i += 1 -2*x.getDown())
-				for (int j = x.getLeft() + x.getRight()*(tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2*x.getRight()) {
+			for (int i = x.getUp() + x.getDown()*(tablero.getSizeX() - 2); i < tablero.getSizeX() && i >= 0; i += 1 -2*x.getDown())
+				for (int j = x.getLeft() + x.getRight()*(tablero.getSizeY() - 2); j < tablero.getSizeY() && j >= 0; j += 1 - 2*x.getRight()) {
 					if (getTab(i + x.moveVert(), j + x.moveHorz()) == 0) {
 						setTab(i + x.moveVert(), j + x.moveHorz(), getTab(i, j));
 						setTab(i, j, 0);
@@ -365,8 +441,8 @@ public class SumaTres extends JPanel {
 			// se puede seguir moviendo el tablero.
 			// De lo contrario, check se mantiene false por lo que se sale del bucle y se
 			// termina el movimiento de las piezas.
-			for (int i = x.getUp() + x.getDown() * (tablero.length - 2); i < tablero.length && i >= 0; i += 1 - 2 * x.getDown())
-				for (int j = x.getLeft() + x.getRight() * (tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2 * x.getRight()) {
+			for (int i = x.getUp() + x.getDown() * (tablero.getSizeX() - 2); i < tablero.getSizeX() && i >= 0; i += 1 - 2 * x.getDown())
+				for (int j = x.getLeft() + x.getRight() * (tablero.getSizeY() - 2); j < tablero.getSizeY() && j >= 0; j += 1 - 2 * x.getRight()) {
 					if (getTab(i, j) != 0 && (getTab(i + x.moveVert(), j + x.moveHorz()) == 0))
 						check = true;
 				}
@@ -393,8 +469,8 @@ public class SumaTres extends JPanel {
 	 * @param x Objeto de la clase 'Jugada' que define el movimiento.
 	 */
 	public void sumar(Jugada x) {
-		for (int i = x.getUp() + x.getDown() * (tablero.length - 2); i < tablero.length && i >= 0; i += 1 - 2 * x.getDown())
-			for (int j = x.getLeft() + x.getRight() * (tablero[0].length - 2); j < tablero[0].length && j >= 0; j += 1 - 2 * x.getRight()) {
+		for (int i = x.getUp() + x.getDown() * (tablero.getSizeX() - 2); i < tablero.getSizeX() && i >= 0; i += 1 - 2 * x.getDown())
+			for (int j = x.getLeft() + x.getRight() * (tablero.getSizeY() - 2); j < tablero.getSizeY() && j >= 0; j += 1 - 2 * x.getRight()) {
 				if (sumaCond(i, j, x)) { // Si se puede sumar, se convierte la nueva casilla en la suma y la antigua en 0.
 					setTab(i + x.moveVert(), j + x.moveHorz(), getTab(i, j) + getTab(i + x.moveVert(), j + x.moveHorz()));
 					setTab(i, j, 0);
@@ -417,6 +493,20 @@ public class SumaTres extends JPanel {
 	}
 	
 	/**
+	 * Devuelve el tablero a la situación anterior.
+	 */
+	public void undo() {
+		if(numTablero != 0) {
+			for(int i=0; i < tablero.getSizeX(); i++) for(int j=0; j < tablero.getSizeY(); j++) {
+				setTab(i, j, tableros.get(numTablero - 1).getPieza(i, j).getValor());
+			}
+			repaint();
+			tableros.remove(numTablero);
+			numTablero--;
+			}
+	}
+	
+	/**
 	 * Método debug que coloca piezas manualmente. NO es accesible por el usuario. <p>
 	 * Antes de colocar la ficha, comprueba  que se trata de una ficha válida y que
 	 * no se trata de una posición OutOfBounds para evitar exepciones. Además, no se
@@ -428,7 +518,7 @@ public class SumaTres extends JPanel {
 	 * @param nv Valor de la pieza que se desea colocar.
 	 */
 	public void debugColocarPiezas(int x, int y, int nv) {
-		if (x >= 0 && y >= 0 && x < tablero.length && y < tablero.length && getTab(x, y) == 0) {
+		if (x >= 0 && y >= 0 && x < tablero.getSizeX() && y < tablero.getSizeX() && getTab(x, y) == 0) {
 			if (nv == 1 || nv == 2 || nv == 3) {setTab(x, y, nv);}
 			else {
 				int i = 0;
@@ -448,7 +538,7 @@ public class SumaTres extends JPanel {
 	 * @param y Coordenada vertical de la ficha que se quiere quitar.
 	 */
 	public void debugQuitarPiezas(int x, int y) {
-		if (x >= 0 && y >= 0 && x < tablero.length && y < tablero.length && getTab(x, y) != 0) {
+		if (x >= 0 && y >= 0 && x < tablero.getSizeX() && y < tablero.getSizeX() && getTab(x, y) != 0) {
 			setTab(x, y, 0);
 		}
 	}
@@ -463,43 +553,39 @@ public class SumaTres extends JPanel {
 	public int newRandom(int val) {
 		return this.rand.nextInt(val);
 	}
-
+	
 	/**
-	 * Genera un número para la siguiente ficha a colocar. Se imprime por pantalla
-	 * mediante {@link #toString()}. Genera un número entre 1 y 3 utilizando
+	 * Genera un número para la siguiente ficha a colocar. Dependiendo del modo de juego, funciona de
+	 * una manera diferente. <p>
+	 * En el caso de estar jugando en el modo 'experimental',  se generan valores
+     * progresivamente mayores a lo largo del transcurso del programa acordes con el valor de la máxima
+     * ficha en pantalla.
+	 * Para generar el siguiente valor, se define un vector y se rellena con los posibles valores.
+	 * Obviamente, el 1, 2 y 3 siempre se introducen por defecto. Además, hasta que no se llega al valor
+	 * 24, solo se puede sacar uno de esos tres valores. A partir de 24, la siguiente ficha posible
+	 * se añade a la pool, es decir, 6. Al llegar a la 98, se añade 12, etc. <p>
+	 * En el modo clásico, genera un número entre 1 y 3 utilizando
 	 * {@link #newRandom(int)}. Es el método clásico que sigue con las reglas originales
 	 * del enunciado.
 	 */
-	public void newSiguienteOld() {
-		setSiguiente(newRandom(3) + 1);
-		//obtainedFromRandom[getSiguiente()-1]++;
-	}
-	
-	/**
-	 * Genera un número para la siguiente ficha a colocar. La diferencia con {@link #newSiguiente()}
-	 * es que se generan valores progresivamente mayores a lo largo del transcurso del programa acordes
-	 * con el valor de la máxima ficha en pantalla. <p>
-	 * Para generar el siguiente valor, se define un vector y se rellena con los posibles valores.
-	 * Obviamente, el 1, 2 y 3 siempre se introducen por defecto. Además, hasta que no se llega al valor
-	 * 24, solo se puede sacar uno de esos tres valores. <p> A partir de 24, la siguiente ficha posible
-	 * se añade a la pool, es decir, 6. Al llegar a la 98, se añade 12, etc.
-	 */
 	public void newSiguiente() {
-		int i = 0;
-		while(getHighest()>6*Math.pow(2, i)) {i++;}
-		int[] vlsSig = new int[getHighest()<13 ? 3 : i+1]; // Si la ficha no supera 12, el método de
-														   // obtener el valor de la siguiente ficha
-														   // es el clásico.
-		
-		for(int h=0; h<3; h++) {vlsSig[h] = h+1;} // Se introducen 1, 2 y 3 en el vector de posibles
-												  // valores.
-		
-		for(int j=0; j < vlsSig.length - 3; j++) {
-			vlsSig[3+j] = (int) (6 * Math.pow(2, j)); 
-		}
-		
+		if(getMode()) {
+			int i = 0;
+			while(getHighest()>6*Math.pow(2, i)) {i++;}
+			int[] vlsSig = new int[getHighest()<13 ? 3 : i+1]; // Si la ficha no supera 12, el método de
+			// obtener el valor de la siguiente ficha
+			// es el clásico.
 
-		setSiguiente(vlsSig[newRandom(vlsSig.length)]);
+			for(int h=0; h<3; h++) {vlsSig[h] = h+1;} // Se introducen 1, 2 y 3 en el vector de posibles
+			// valores.
+
+			for(int j=0; j < vlsSig.length - 3; j++) {
+				vlsSig[3+j] = (int) (6 * Math.pow(2, j)); 
+			}
+
+
+			setSiguiente(vlsSig[newRandom(vlsSig.length)]);
+		} else {setSiguiente(newRandom(3) + 1);}
 	}
 
 	/**
@@ -511,12 +597,12 @@ public class SumaTres extends JPanel {
 	 */
 	public boolean tableroLleno() {
 		int check = 0;
-		for (int i = 0; i < tablero.length; i++)
-			for (int j = 0; j < tablero[0].length; j++) {
+		for (int i = 0; i < tablero.getSizeX(); i++)
+			for (int j = 0; j < tablero.getSizeY(); j++) {
 				if (getTab(i, j) != 0)
 					check++;
 			}
-		return check == tablero.length * tablero[0].length;
+		return check == tablero.getSizeX() * tablero.getSizeY();
 	}
 
 	/**
@@ -541,6 +627,8 @@ public class SumaTres extends JPanel {
 		if (tableroLleno()) {
 			if (checkEndLoop(new Jugada('w')) || checkEndLoop(new Jugada('s'))
 				|| checkEndLoop(new Jugada('a')) || checkEndLoop(new Jugada('d'))) ableToMove = true;
+			if(getMode()) if(checkEndLoop(new Jugada('q')) || checkEndLoop(new Jugada('z'))
+					|| checkEndLoop(new Jugada('c')) || checkEndLoop(new Jugada('e'))) ableToMove = true;
 		} else ableToMove = true;
 		return ableToMove;
 	}
@@ -556,8 +644,8 @@ public class SumaTres extends JPanel {
 	 */
 	public boolean checkEndLoop(Jugada x) {
 		boolean check = false;
-		for (int i = x.getUp(); i + x.getDown() < tablero.length; i++)
-			for (int j = x.getLeft(); j + x.getRight() < tablero[0].length; j++) {
+		for (int i = x.getUp(); i + x.getDown() < tablero.getSizeX(); i++)
+			for (int j = x.getLeft(); j + x.getRight() < tablero.getSizeY(); j++) {
 				if (sumaCond(i, j, x))
 					check = true;
 			}
@@ -587,11 +675,11 @@ public class SumaTres extends JPanel {
 	 * @param nV El valor que tendrá la nueva ficha.
 	 */
 	public void newFicha(int nV) {
-		int nX = newRandom(tablero.length);
-		int nY = newRandom(tablero[0].length);
+		int nX = newRandom(tablero.getSizeX());
+		int nY = newRandom(tablero.getSizeY());
 		while (getTab(nX, nY) != 0) {
-			nX = newRandom(tablero.length);
-			nY = newRandom(tablero[0].length);
+			nX = newRandom(tablero.getSizeX());
+			nY = newRandom(tablero.getSizeY());
 		}
 		setTab(nX, nY, nV);
 		setWarning(nX, nY);
@@ -632,7 +720,7 @@ public class SumaTres extends JPanel {
 		
 		
 		// Se imprime el borde superior de la matriz.
-		for (int i = 0; i + 1 < tablero[0].length; i++) {
+		for (int i = 0; i + 1 < tablero.getSizeY(); i++) {
 			for (int x = 0; x < times; x++) {salida += "═";}
 			salida += "╦";
 		}
@@ -641,9 +729,9 @@ public class SumaTres extends JPanel {
 		
 		
 		
-		for (int i = 0; i < tablero.length; i++) {
+		for (int i = 0; i < tablero.getSizeX(); i++) {
 			salida += "║"; // Para la primera columna, se imprime el borde izquierdo de la matriz.
-			for (int j = 0; j < tablero[0].length; j++) { // Se imprime la matriz en sí.
+			for (int j = 0; j < tablero.getSizeY(); j++) { // Se imprime la matriz en sí.
 				if (getTab(i, j) == 0) {
 					// Si la casilla está vacía, se imprime un hueco en blanco.
 					for (int x = 0; x < times; x++) {salida += " ";}
@@ -659,7 +747,7 @@ public class SumaTres extends JPanel {
 		}
 		salida += "╚"; // Borde inferior izquierdo de la matriz.
 		// Se imprime el borde inferior de la matriz.
-		for (int i = 0; i + 1 < tablero[0].length; i++) {
+		for (int i = 0; i + 1 < tablero.getSizeY(); i++) {
 			for (int x = 0; x < times; x++) {salida += "═";}
 			salida += "╩";
 		}
@@ -697,16 +785,21 @@ public class SumaTres extends JPanel {
 	public void finalDePartida() {
 		String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n", getPuntos(),
 				getHighest(), getTurnos());
+		if (cheatsUsed()) salida += "Se han utilizado trucos.";
 		JOptionPane.showMessageDialog(null, salida);
 		out.printf("%n%s",salida);
 		//out.printf("Fichas obtenidas: [1]: %d  [2]: %d  [3]: %d",
 		//		obtainedFromRandom[0], obtainedFromRandom[1], obtainedFromRandom[2]);
 		System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
 	}
+	
+	public void initCheats() {
+		
+	}
 
 	// ----------------------------------------------------------------------------------------------------
-	private static final int anchoPantalla = Toolkit.getDefaultToolkit().getScreenSize().width;
-	private static final int altoPantalla = Toolkit.getDefaultToolkit().getScreenSize().height;
+	public static final int anchoPantalla = Toolkit.getDefaultToolkit().getScreenSize().width;
+	public static final int altoPantalla = Toolkit.getDefaultToolkit().getScreenSize().height;
 	private static final double scale = (double) altoPantalla / 720 < 0.5 ? 0.5 : (double) altoPantalla / 720;
 	// Para evitar que en pantallas muy pequeñas no haya espacio entre piezas por el redondeo, la escala mínima es 0.5,
 	// independientemente del tamaño de la pantalla. Se redondea después de multiplicar por la escala.
@@ -716,16 +809,8 @@ public class SumaTres extends JPanel {
 	private static final int BOARD_SPACER = (int) (5 * scale); // Espacio entre el borde del tablero y las piezas.
 	private static final int SQUARE_SIZE = (int) (40 * scale); // Tamaño de las piezas.
 	private static final int ROUND_DIAMETER = (int) (10 * scale); // Radio del diámetro del arco.
-
-	/**
-	 * HashMap que contiene un valor con un color para cada clave asignada a los
-	 * posibles valores de las fichas. Más información en la documentación de la
-	 * clase.
-	 * <p>
-	 * Se popula en el constructor mediante {@link #inicializarColores()}
-	 */
-	private HashMap<Integer, Color> colores = new HashMap<>();
-
+	private static final int BUTTON_SIZE = (int) (20 * scale); // Tamaño de los botones.
+	
 	/**
 	 * Método que inicializa los colores para las fichas por defecto.
 	 * Idealmente, solo debería utilizarse en el único constructor.
@@ -741,13 +826,22 @@ public class SumaTres extends JPanel {
 	}
 
 	/**
+	 * HashMap que contiene un valor con un color para cada clave asignada a los
+	 * posibles valores de las fichas. Más información en la documentación de la
+	 * clase.
+	 * <p>
+	 * Se popula en el constructor mediante {@link #inicializarColores()}
+	 */
+	private HashMap<Integer, Color> colores = new HashMap<>();
+	
+	/**
 	 * Método que se accede desde el main para comprobar si el tablero entra en pantalla con la resolución
 	 * actual. Simplemente devuelve un valor booleano, la lógica se encuentra en el main.
 	 * @return Valor booleano que establece si la pantalla generada entra o no en la resolución actual.
 	 */
 	public boolean checkValidSize() {
-		return tablero[0].length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER < anchoPantalla &&
-				tablero.length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER < altoPantalla; 
+		return getPlayers() * (tablero.getSizeY() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER) < anchoPantalla &&
+				tablero.getSizeX() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER < altoPantalla; 
 	}
 	
 	/**
@@ -757,7 +851,7 @@ public class SumaTres extends JPanel {
 	 * @return Valor entero con el ancho de la ventana.
 	 */
 	public int defineX() {
-		return tablero[0].length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER;
+		return getPlayers() * (tablero.getSizeY() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 2 * MAIN_SPACER);
 	}
 
 	/**
@@ -767,7 +861,7 @@ public class SumaTres extends JPanel {
 	 * @return Valor entero con el alto de la ventana.
 	 */
 	public int defineY() {
-		return tablero.length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 3 * MAIN_SPACER;
+		return tablero.getSizeX() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER + 3 * MAIN_SPACER;
 	}
 
 	/**
@@ -784,7 +878,7 @@ public class SumaTres extends JPanel {
 
 	/**
 	 * Método que pinta la partida en la aplicación gráfica. El programa NO se basa en
-	 * {@link #toString()} para pintar el tablero, con lo que no siempre existe la misma
+	 * {@link #toString()} para pintar el tablero, no siempre existe la misma
 	 * información en ambas salidas.
 	 * <ul>
 	 * <li>Para pintar las flechas, se utiliza {@link #pintarFlechas(Graphics)}. </li>
@@ -803,6 +897,7 @@ public class SumaTres extends JPanel {
 		pintarTablero(g);
 		pintarFichas(g);
 		pintarInfo(g);
+		pintarBotones(g);
 	}
 	
 	/**
@@ -814,26 +909,66 @@ public class SumaTres extends JPanel {
 	 */
 	public void pintarFlechas(Graphics g) {
 		g.setColor(Color.blue);
-		setFontSize(g, 16);
+		setFontSize(g, 18);
 		g.drawString("↑", defineX() / 2, MAIN_SPACER * 14 / 24);
 		g.drawString("←", MAIN_SPACER * 9 / 24, (defineY() - MAIN_SPACER) / 2);
 		g.drawString("→", defineX() - MAIN_SPACER * 16 / 24, (defineY() - MAIN_SPACER) / 2);
 		g.drawString("↓", defineX() / 2, defineY() - MAIN_SPACER * 35 / 24);
+		if(getMode()) {
+			g.drawString("🡼", MAIN_SPACER * 9 / 24, MAIN_SPACER * 14 / 24);
+			g.drawString("🡥", defineX() - MAIN_SPACER * 16 / 24, MAIN_SPACER * 14 / 24);
+			g.drawString("🡗", MAIN_SPACER * 9 / 24, defineY() - MAIN_SPACER * 35 / 24);
+			g.drawString("🡮", defineX() - MAIN_SPACER * 16 / 24, defineY() - MAIN_SPACER * 35 / 24);
+		}
 	}
 	
 	/**
 	 * Método sencillo que imprime el tablero, es decir, un rectángulo blanco, en la aplicación
 	 * gráfica. Para obtener las dimensiones del tablero, se tienen en cuenta los espaciados
 	 * entre el tablero y el borde de la ventana, el tamaño de las piezas, la separación entre
-	 * piezas y la separación entre las piezas y el tablero.
+	 * piezas y la separación entre las piezas y el tablero. También se encarga de pintar los botones.
 	 * @param g Entorno gráfico
 	 */
 	public void pintarTablero(Graphics g) {
 		g.setColor(Color.white);
 		g.fillRoundRect(MAIN_SPACER, MAIN_SPACER,
-				tablero[0].length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
-				tablero.length * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER, ROUND_DIAMETER,
+				tablero.getSizeY() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
+				tablero.getSizeX() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER, ROUND_DIAMETER,
 				ROUND_DIAMETER);
+	}
+	
+	public void pintarBotones(Graphics g) {
+		// Primero se dibujan los botones.
+		
+		g.setColor(Color.white);
+		g.fillRect(defineX() - BUTTON_SIZE, defineY() - BUTTON_SIZE,
+				BUTTON_SIZE, BUTTON_SIZE); // Botón de toggleConsole()
+		g.setColor(Color.darkGray);
+		g.drawRect(defineX() - BUTTON_SIZE,  defineY() - BUTTON_SIZE,
+				BUTTON_SIZE, BUTTON_SIZE);
+		
+		if(!cheatsUsed()) { // Botón de enableCheats()
+			g.setColor(Color.white);
+			g.fillRect(0, defineY() - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE);
+			g.setColor(Color.darkGray);
+			g.drawRect(0, defineY() - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE);
+			setFontSize(g, (int) (7 * scale * 5));
+			g.drawString("*", BUTTON_SIZE / 8, defineY() + BUTTON_SIZE / 2);
+		}
+
+		if(numTablero != 0 && cheatsUsed && numPlayers != 1) { // Botón de undo()
+			g.setColor(Color.white);
+			g.fillRect(defineX() - 2 * BUTTON_SIZE + SPOT_SPACER, defineY() - BUTTON_SIZE,
+					BUTTON_SIZE	, BUTTON_SIZE); 
+			g.setColor(Color.darkGray);
+			g.drawRect(defineX() - 2 * BUTTON_SIZE + SPOT_SPACER, defineY() - BUTTON_SIZE,
+					BUTTON_SIZE	, BUTTON_SIZE);
+			// temporalmente, el botón de undo() está desactivado. no se puede cumplir la condición
+			// "numPlayers != 1".
+		}
+				
+		
+		
 	}
 	
 	/**
@@ -844,7 +979,7 @@ public class SumaTres extends JPanel {
 	 */
 	public void pintarInfo(Graphics g) {
 		g.setColor(Color.black);
-		setFontSize(g, 15);
+		setFontSize(g, getPuntos() >= 10000000 ? 12 : 15);
 		g.drawString("Siguiente:", MAIN_SPACER, defineY() - MAIN_SPACER / 2);
 		g.drawString(String.format("Puntos: %d", getPuntos()), defineX() - 2 * MAIN_SPACER,
 				defineY() - MAIN_SPACER / 2);
@@ -853,7 +988,8 @@ public class SumaTres extends JPanel {
 		g.fillRoundRect(MAIN_SPACER * 9 / 4, defineY() - MAIN_SPACER, SQUARE_SIZE, SQUARE_SIZE,
 				ROUND_DIAMETER, ROUND_DIAMETER);
 		g.setColor(Color.white);
-		setFontSize(g, 18);
+		int desiredFontSize = 18 - 1 * (String.valueOf(getSiguiente()).length() - 1);
+		setFontSize(g, getSiguiente() >= 350000 ? 10 : desiredFontSize);
 		g.drawString(String.format("%d", getSiguiente()), MAIN_SPACER * 123 / 48,
 				defineY() - MAIN_SPACER / 2);
 	}
@@ -878,16 +1014,10 @@ public class SumaTres extends JPanel {
 	 * @param g Entorno gráfico
 	 */
 	public void pintarFichas(Graphics g) {
-		for (int i = 0; i < tablero.length; i++)
-			for (int j = 0; j < tablero[0].length; j++) {
+		for (int i = 0; i < tablero.getSizeX(); i++)
+			for (int j = 0; j < tablero.getSizeY(); j++) {
 				if (getTab(i, j) != 0) { // Al detectarse una pieza, se obtiene su color referente.
-					if (colores.containsKey(getTab(i, j))) {
-						g.setColor(colores.get(getTab(i, j)));
-					} else { // Si no tiene un color predeterminado, se genera uno aleatorio.
-						colores.put(getTab(i, j), new Color(newRandom(256), newRandom(256), newRandom(256)));
-						g.setColor(colores.get(getTab(i, j)));
-					}
-					
+					g.setColor(tablero.getPieza(i, j).getColor());
 					// Se pinta la pieza en sí.
 					g.fillRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
@@ -964,10 +1094,14 @@ public class SumaTres extends JPanel {
 
 		public Jugada(char c) {
 			switch (Character.toString(c).toLowerCase().charAt(0)) {
-				case 'w': this.Up(); break;
-				case 'a': this.Left(); break;
-				case 's': this.Down(); break;
-				case 'd': this.Right(); break;
+				case 'w': this.Up(); break; // ARRIBA
+				case 'a': this.Left(); break; // IZQUIERDA
+				case 's': this.Down(); break; // ABAJO
+				case 'd': this.Right(); break; // DERECHA
+				case 'q': this.Up(); this.Left(); break; // EXPERIMENTAL: IZQ-ARR
+				case 'z': this.Down(); this.Left(); break; // EXPERIMENTAL: IZQ-ABA
+				case 'c': this.Down(); this.Right(); break; // EXPERIMENTAL: DER-ABA
+				case 'e': this.Up(); this.Right(); break; // EXPERIMENTAL: DER-ARR
 				default:
 					out.print("ERROR: Jugada inválida.");
 					System.exit(0);
@@ -1031,6 +1165,94 @@ public class SumaTres extends JPanel {
 		 */
 		public int moveHorz() {return this.getRight() - this.getLeft();}
 	}
+	
+	public class Pieza {
+		private int valor;
+		private Color color;
+		
+		public Pieza(int nv) {this.setValor(nv);}
+		
+		/**
+		 * Método que inicializa los colores para las fichas por defecto.
+		 * Idealmente, solo debería utilizarse en el único constructor.
+		 */
+		public void inicializarColores() {
+			colores.put(1, Color.red);
+			colores.put(2, Color.orange);
+			colores.put(3, Color.cyan);
+			colores.put(6, Color.blue);
+			colores.put(12, Color.green);
+			colores.put(24, Color.magenta);
+			colores.put(48, Color.pink);
+		}
+		
+
+		public int getValor() {
+			return valor;
+		}
+
+		public void setValor(int valor) {
+			boolean check = false;
+			if(valor == 0 || valor == 1 || valor == 2 || valor == 3) check = true;
+			else {
+				int i = 0;
+				while(valor>6*Math.pow(2, i)) {i++;}
+				if(6*Math.pow(2, i) == valor) check = true;
+			}
+			if(check) {
+				this.valor = valor;
+				updateColor();
+			}
+		}
+
+		public Color getColor() {
+			return color;
+		}
+
+		/**
+		 * Método que actualiza el color de la pieza en base a su valor.
+		 * Si la ficha no tiene un valor contenido en el HashMap de colores por defecto,
+		 * se genera un color nuevo y se guarda para que todas las futuras piezas con el
+		 * mismo valor tengan el mismo color.
+		 */
+		public void updateColor() {
+			if (!colores.containsKey(getValor())) {
+				colores.put(getValor(), new Color(newRandom(256), newRandom(256), newRandom(256)));
+			}
+			this.color = colores.get(getValor());
+		}
+	}
+	
+	public class Tablero {
+		private Pieza[][] tablero;
+		private int sizeX;
+		private int sizeY;
+		
+		public Tablero(int x, int y) {
+			setSizeX(x);
+			setSizeY(y);
+			tablero = new Pieza[getSizeX()][getSizeY()];
+			for(int i=0; i<getSizeX(); i++) for(int j=0; j<getSizeY(); j++) {tablero[i][j] = new Pieza(0);}
+			
+		}
+
+		public int getSizeX() {return sizeX;}
+
+		public void setSizeX(int nv) {
+			if(nv>=4) this.sizeX = nv;
+			else this.sizeX = 5;
+		}
+
+		public int getSizeY() {return sizeY;}
+
+		public void setSizeY(int nv) {
+			if(nv>=4) this.sizeY = nv;
+			else this.sizeY = 5;
+		}
+		
+		public Pieza getPieza(int x, int y) {return this.tablero[x][y];}
+		public void setPieza(int x, int y, int nv) {this.tablero[x][y].setValor(nv);}
+	}
 
 	
 	// -------------------------------------------------------------------------------------------------------------------
@@ -1052,67 +1274,125 @@ public class SumaTres extends JPanel {
 		@Override
 		public void keyPressed(KeyEvent event) {
 			switch (event.getKeyCode()) {
-				case KeyEvent.VK_PAGE_DOWN: // Esto rompe varios paradigmas de la programación.
-					if (event.isControlDown()) {
-						while (!event.isAltDown()) {
-							// Esto arregla que el bucle no tenga una condición de salida,
-							// aunque la condición sea imposible de cumplir una vez dentro
-							// del bucle.
-							Jugada('w');
-							Jugada('a');
-							Jugada('s');
-							Jugada('d');
-						}
+			case KeyEvent.VK_PAGE_DOWN: // Esto rompe varios paradigmas de la programación.
+				if (event.isControlDown() && cheatsUsed()) {
+					while (!getMode()) {
+						// Esto arregla que el bucle no tenga una condición de salida,
+						// aunque la condición sea imposible de cumplir una vez dentro
+						// del bucle.
+						Jugada('w');
+						Jugada('a');
+						Jugada('s');
+						Jugada('d');
 					}
-					break;
-				case KeyEvent.VK_ESCAPE:
-					if (JOptionPane.showConfirmDialog(null, "¿Desea salir de la partida?", "SumaTres", JOptionPane.YES_NO_OPTION)
-							== JOptionPane.YES_OPTION) finalDePartida();
-					break;
-				case KeyEvent.VK_W:
-				case KeyEvent.VK_UP:
-					Jugada('w');
-					break;
-				case KeyEvent.VK_A:
-				case KeyEvent.VK_LEFT:
-					Jugada('a');
-					break;
-				case KeyEvent.VK_S:
-				case KeyEvent.VK_DOWN:
-					Jugada('s');
-					break;
-				case KeyEvent.VK_D:
-				case KeyEvent.VK_RIGHT:
-					Jugada('d');
-					break;
-				default:
-					// En cualquier otro caso, no se hace nada.
-					break;
+					while(getMode()) {
+						Jugada('w');
+						Jugada('q');
+						Jugada('a');
+						Jugada('z');
+						Jugada('s');
+						Jugada('c');
+						Jugada('d');
+						Jugada('e');
+					}
+				}
+				break;
+			case KeyEvent.VK_ESCAPE:
+				if (JOptionPane.showConfirmDialog(null, "¿Desea salir de la partida?", "SumaTres", JOptionPane.YES_NO_OPTION)
+						== JOptionPane.YES_OPTION) finalDePartida();
+				break;
+			case KeyEvent.VK_W:
+			case KeyEvent.VK_UP:
+				Jugada('w');
+				break;
+			case KeyEvent.VK_A:
+			case KeyEvent.VK_LEFT:
+				Jugada('a');
+				break;
+			case KeyEvent.VK_S:
+				if(!getMode()) Jugada('s'); break;
+			case KeyEvent.VK_X:
+				if(getMode()) Jugada('s'); break;
+			case KeyEvent.VK_DOWN:
+				Jugada('s');
+				break;
+			case KeyEvent.VK_D:
+			case KeyEvent.VK_RIGHT:
+				Jugada('d');
+				break;
+			case KeyEvent.VK_C:
+				if(getMode()) Jugada('c');
+				break;
+			case KeyEvent.VK_Z:
+				if(getMode()) Jugada('z');
+				break;
+			case KeyEvent.VK_Q:
+				if(getMode()) Jugada('q');
+				break;
+			case KeyEvent.VK_E:
+				if(getMode()) Jugada('e');
+				break;
+			default:
+				// En cualquier otro caso, no se hace nada.
+				break;
 			}
 		}
 	}
-
+	
 	/**
 	 * Recive los clicks del ratón en la aplicación. Si se hace click en alguna de
 	 * las cuatro direcciones, se llama a {@link #SumaTres.Jugada(char c)} con el
-	 * caracter correspondiente a dicha jugada. Se utiliza MouseHandler en una clase
-	 * separada como indicado en el enunciado del trabajo.
+	 * caracter correspondiente a dicha jugada.
 	 */
 	private class MouseHandler extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent event) {
-			if (event.getX() < MAIN_SPACER) {
-				if (event.getY() > MAIN_SPACER) Jugada('a');
+			if(event.getY() < defineY() - MAIN_SPACER) {
+				if (event.getX() < MAIN_SPACER) {
+					if (event.getY() > MAIN_SPACER) {
+						if (event.getY() > (defineY() - 2 * MAIN_SPACER)) {
+							if(getMode()) Jugada('z');
+							else Jugada('a');
+						}
+						else Jugada('a');
+					}
+					else {
+						if(getMode()) Jugada('q');
+						else Jugada('a');
+					}
+				} else {
+					if (event.getY() < MAIN_SPACER) {
+						if (event.getX() > defineX() - MAIN_SPACER) {
+							if(getMode()) Jugada('e');
+							else Jugada('w');
+						}
+						else Jugada('w');
+					}
+					else {
+						if (event.getY() > (defineY() - 2 * MAIN_SPACER)) {
+							if(event.getX() > defineX() - MAIN_SPACER) {
+								if(getMode()) Jugada('c');
+								else Jugada('s');
+							}
+							else Jugada('s');}
+						else if (event.getX() > (defineX() - MAIN_SPACER)) Jugada('d');
+					}
+				}
 			} else {
-				if (event.getY() < MAIN_SPACER) Jugada('w');
-				else {
-					if (event.getY() > (defineY() - 2 * MAIN_SPACER)
-							&& event.getY() < (defineY() - MAIN_SPACER)) Jugada('s');
-					else if (event.getX() > (defineX() - MAIN_SPACER)) Jugada('d');
+				if(event.getY() > defineY() - BUTTON_SIZE) {
+					if(event.getX() > defineX() - BUTTON_SIZE) {
+						toggleConsole();
+					} else {
+						if(event.getX() < BUTTON_SIZE && !cheatsUsed()) {
+							enableCheats();
+						} else {
+							if(event.getX() > defineX() - 2 * BUTTON_SIZE + SPOT_SPACER && numTablero != 0 && cheatsUsed()) {
+								//undo();
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-	
-	
 }
