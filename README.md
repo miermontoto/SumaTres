@@ -17,7 +17,7 @@ los que jugar a SumaTres:
 
 - El modo clásico sigue con todas las reglas establecidas en el enunciado del
 trabajo original. Existen cuatro sentidos de movimientos para las jugadas, la
-consola está activada por defecto, se generan tres fichas por defecto al principio
+consola está activada, se generan tres fichas por defecto al principio
 de la partida (1, 2 y 3) y solo se pueden generar esos tres valores como fichas
 aleatorias. Por lo general, el modo clásico mantiene el estado del programa al
 ser entregado para corrección.
