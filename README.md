@@ -25,8 +25,8 @@ ser entregado para corrección.
 - El modo experimental incluye variaciones con respecto al sistema clásico del
 enunciado. Al comenzar la partida, se generan en pantalla una cantidad de piezas
 dependiente del tamaño del tablero en sí. Además, las siguientes fichas generadas
-dependen de la ficha máxima en pantalla, con lo que el juego se facilita con lo
-que la partida sigue. En este modo, la consola está deshabilitada por defecto,
+dependen de la ficha máxima en pantalla, con lo que el juego se facilita al conseguir
+fichas más grandes. En este modo, la consola está deshabilitada por defecto,
 con lo que solo se puede observar la partida mediante la ventana gráfica. El
 cambio más importante con respecto al modo clásico es la existencia de ocho
 sentidos del movimiento frente a cuatro, añadiendo la posibilidad de mover las fichas diagonalmente. Los resultados de las partidas en modo experimental se guardan en el archivo 'resultados.txt' en el directorio actual. El modo experimental es eso, experimental, por lo que puede haber cambios más adelante y, más importante, puede que haya funciones que no estén implementadas correctamente.
