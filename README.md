@@ -24,7 +24,7 @@ ser entregado para corrección.
 
 - El modo experimental incluye variaciones con respecto al sistema clásico del
 enunciado. Al comenzar la partida, se generan en pantalla una cantidad de piezas
-dependente al tamaño del tablero en sí. Además, las siguientes fichas generadas
+dependiente del tamaño del tablero en sí. Además, las siguientes fichas generadas
 dependen de la ficha máxima en pantalla, con lo que el juego se facilita con lo
 que la partida sigue. En este modo, la consola está deshabilitada por defecto,
 con lo que solo se puede observar la partida mediante la ventana gráfica. El
