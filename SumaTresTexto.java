@@ -1,5 +1,6 @@
 import static java.lang.System.out; //se importa de esta manera para acortar durante el resto del programa
 import java.awt.Color; // Es necesario importar esto para cambiar el color del fondo de la aplicación.
+import java.io.IOException; // Necesario porque el constructor de SumaTres devuelve IOException.
 import javax.swing.JFrame; // Necesario para crear la ventana gráfica en sí.
 import javax.swing.JOptionPane; // Necesario para preguntarle al usuario de manera gráfica en vez de por consola.
 
@@ -15,11 +16,14 @@ import javax.swing.JOptionPane; // Necesario para preguntarle al usuario de mane
  * 
  * Aunque las reglas básicas son estas, existen dos modos ligeramente diferentes con
  * los que jugar a SumaTres: <ul>
+ * 
  * <li> El modo clásico sigue con todas las reglas establecidas en el enunciado del
  * 		trabajo original. Existen cuatro sentido de movimientos para las jugadas, la
  * 		consola está activada por defecto, se generan tres fichas por defecto al principio
  * 		de la partida (1, 2 y 3) y solo se pueden generar esos tres valores como fichas
- * 		aleatorias. </li>
+ * 		aleatorias. Por lo general, el modo clásico mantiene el estado del programa al
+ * 		ser entregado para corrección. </li>
+ * 
  * <li> El modo experimental incluye variaciones con respecto al sistema clásico del
  * 		enunciado. Al comenzar la partida, se generan en pantalla una cantidad de piezas
  * 		dependente al tamaño del tablero en sí. Además, las siguientes fichas generadas
@@ -28,9 +32,13 @@ import javax.swing.JOptionPane; // Necesario para preguntarle al usuario de mane
  * 		con lo que solo se puede observar la partida mediante la ventana gráfica. El
  * 		cambio más importante con respecto al modo clásico es la existencia de ocho
  * 		sentidos del movimiento frente a cuatro, añadiendo la posibilidad de mover las
- * 		fichas diagonalmente. </li> </ul>
+ * 		fichas diagonalmente. Los resultados de las partidas en modo experimental se
+ * 		guardan en el archivo 'resultados.txt' en el directorio actual. <p> El modo
+ * 		experimental es eso, experimental, por lo que puede haber cambios más adelante y,
+ * 		más importante, puede que haya funciones que no estén implementadas correctamente.
+ * 		</li>
  * 
- * <p>
+ * </ul> <p>
  * 
  * Con respecto al main, el programa se encarga de introducir y comprobar las dimensiones
  * del tablero, el tipo de jugada y la pantalla en sí.
@@ -53,14 +61,14 @@ public class SumaTresTexto {
 		int value;
 		try {
 			String respuesta = JOptionPane.showInputDialog(null, s, "SumaTres", JOptionPane.QUESTION_MESSAGE);
-			if(respuesta == null || respuesta.length() == 0) System.exit(0); // Si se cancela, simplemente
-																			 // se cierra el programa.
+			if(respuesta == null || respuesta.length() == 0) System.exit(0); // Si se cancela, simplemente se cierra el programa.
 			value = Integer.parseInt(respuesta);
 			
 			while (value < 4) {
-				JOptionPane.showMessageDialog(null, "Debe de ser mayor o igual a 4.");
-				value = Integer.parseInt(JOptionPane.showInputDialog(s));
+				JOptionPane.showMessageDialog(null, "Debe de ser mayor o igual a 4.", "SumaTres", JOptionPane.ERROR_MESSAGE);
+				respuesta = JOptionPane.showInputDialog(null, s, "SumaTres", JOptionPane.QUESTION_MESSAGE);
 				if(respuesta == null || respuesta.length() == 0) System.exit(0);
+				value = Integer.parseInt(respuesta);
 			}
 		} catch (Exception ex) {
 			out.println("Valor inválido. Establecido valor por defecto '5'.");
@@ -69,12 +77,14 @@ public class SumaTresTexto {
 		return value;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		int sizex = inputSize("Introduzca la cantidad de filas:");
 		int sizey = inputSize("Introduzca la cantidad de columnas:");
 
 		SumaTres Juego = new SumaTres(sizex, sizey, 0);
+		// Se inicializa el tablero para comprobar que los valores introducidos sean válidos.
+		
 		
 		/**
 		 * Utilizando {@link #SumaTres.checkValidSize()}, se comprueba que el tablero
@@ -110,6 +120,7 @@ public class SumaTresTexto {
 		app.setResizable(false);
 		app.setFocusable(true);
 		app.getContentPane().setBackground(Color.white); // Esto no funciona???
+		app.setIconImage(SumaTres.icono.getImage());
 
 		if(Juego.consoleStatus()) {
 			out.print(Juego);
