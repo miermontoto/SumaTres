@@ -1,4 +1,7 @@
 # SumaTres
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/645541a0086c40c2af9bdcf53859de47)](https://app.codacy.com/gh/miermontoto/SumaTres?utm_source=github.com&utm_medium=referral&utm_content=miermontoto/SumaTres&utm_campaign=Badge_Grade_Settings)
+
 Proyecto de grupo, IP - PL4 2020
 
 La versión entregada fue la versión 13, el 14/01/2021.
