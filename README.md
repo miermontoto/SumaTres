@@ -1,4 +1,4 @@
-![Codacy grade](https://img.shields.io/codacy/grade/645541a0086c40c2af9bdcf53859de47) ![GitHub repo size](https://img.shields.io/github/repo-size/miermontoto/SumaTres) ![Codacy coverage](https://img.shields.io/codacy/coverage/645541a0086c40c2af9bdcf53859de47) ![Sonar Tests](https://img.shields.io/sonar/tests/3dd4b49f2ba3814f1405750ebf84e5e627a43837?compact_message)
+![Codacy grade](https://img.shields.io/codacy/grade/645541a0086c40c2af9bdcf53859de47) ![GitHub repo size](https://img.shields.io/github/repo-size/miermontoto/SumaTres) 
 # SumaTres
 Proyecto de grupo, IP - PL4 2020
 
