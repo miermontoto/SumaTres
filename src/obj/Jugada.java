@@ -43,6 +43,7 @@ public class Jugada {
 			default:
 				System.out.println("ERROR: Caracter de jugada inválido.");
 				System.exit(0);
+				break;
 		}
 	}
 	
