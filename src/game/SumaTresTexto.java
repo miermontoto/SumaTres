@@ -1,9 +1,10 @@
 package game;
-import util.*;
-
 import javax.swing.JFrame; // Necesario para crear la ventana gráfica en sí.
 import javax.swing.JOptionPane; // Necesario para preguntarle al usuario de manera gráfica en vez de por consola.
 import javax.swing.WindowConstants; // Necesario para obtener la acción de cerrar la ventana.
+
+import utils.Input;
+import utils.Graphic;
 
 /**
  * El main se encarga de introducir y comprobar las

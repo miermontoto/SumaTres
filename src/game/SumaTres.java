@@ -1,7 +1,13 @@
 package game;
-import obj.*;
-import util.*;
-import handler.*;
+
+import obj.Jugada;
+import obj.Tablero;
+import obj.Pieza;
+import utils.Graphic;
+import utils.Paint;
+import utils.Turno;
+import handler.Mouse;
+import handler.Keyboard;
 
 import static java.lang.System.out;
 import java.awt.event.*;

@@ -1,4 +1,4 @@
-package util;
+package utils;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -7,8 +7,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import game.*;
-import obj.*;
+import game.SumaTres;
+import obj.Pieza;
+
 
 public class Paint {
 

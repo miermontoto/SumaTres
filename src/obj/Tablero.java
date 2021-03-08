@@ -1,7 +1,7 @@
 package obj;
-import util.*;
-
 import javax.swing.JOptionPane;
+
+import utils.Input;
 
 /**
  * Clase que genera objetos tipo 'Tablero'. Contiene tres atributos: una matriz
