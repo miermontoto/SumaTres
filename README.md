@@ -1,3 +1,4 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/be114b8467cc4bff91684f200b6f6f89)](https://www.codacy.com/gh/miermontoto/SumaTres/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=miermontoto/SumaTres&amp;utm_campaign=Badge_Grade)
 # SumaTres
 Proyecto de grupo, IP - PL4 2020
 
