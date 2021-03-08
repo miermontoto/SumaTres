@@ -2,10 +2,10 @@ package game;
 
 import obj.Jugada;
 import obj.Tablero;
+import util.Graphic;
+import util.Paint;
+import util.Turno;
 import obj.Pieza;
-import utils.Graphic;
-import utils.Paint;
-import utils.Turno;
 import handler.Mouse;
 import handler.Keyboard;
 

@@ -1,8 +1,8 @@
 package handler;
 
 import game.SumaTres;
-import utils.Graphic;
-import utils.Paint;
+import util.Graphic;
+import util.Paint;
 
 public class Mouse {
 

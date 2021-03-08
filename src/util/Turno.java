@@ -1,4 +1,4 @@
-package utils;
+package util;
 
 import game.SumaTres;
 import obj.Jugada;
