@@ -1,31 +1,10 @@
-/SumaTres$Pieza.class
-/SumaTres$Tablero.class
 resultados.txt
 workspace.code-workspace
 .classpath
-.gitattributes
 .project
-*target*
 *.jar
-*.war
-*.ear
 *.class
-# eclipse specific git ignore
-*.pydevproject
-.project
 .metadata
-bin/**
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
 .classpath
-.settings/
-\.settings
-\.metadata
-\.metadata\
-.loadpath
-# pasted gitignore from stackoverflow
+bin
+coverage
