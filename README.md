@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/be114b8467cc4bff91684f200b6f6f89)](https://www.codacy.com/gh/miermontoto/SumaTres/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=miermontoto/SumaTres&amp;utm_campaign=Badge_Grade)
+![Codacy grade](https://img.shields.io/codacy/grade/645541a0086c40c2af9bdcf53859de47) ![GitHub top language](https://img.shields.io/github/languages/top/miermontoto/SumaTres) ![GitHub repo size](https://img.shields.io/github/repo-size/miermontoto/SumaTres) ![Codacy coverage](https://img.shields.io/codacy/coverage/645541a0086c40c2af9bdcf53859de47)
 # SumaTres
 Proyecto de grupo, IP - PL4 2020
 
