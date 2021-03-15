@@ -1,6 +1,6 @@
 package obj;
-import javax.swing.JOptionPane;
 
+import util.Dialog;
 import util.Input;
 
 /**
@@ -118,22 +118,22 @@ public class Tablero {
 			if (nY != 1) {
 				int nV;
 				try {
-					String respuesta = JOptionPane.showInputDialog(null, "Introduzca un valor para la pieza", "SumaTres", JOptionPane.QUESTION_MESSAGE);
+					String respuesta = Dialog.input("Introduzca un valor para la pieza");
 					if (respuesta == null || respuesta.length() == 0) nV = -1;
 					else nV = Integer.parseInt(respuesta);
 
-					while (nV < -1 && !Pieza.validValue(nV)) {
-						JOptionPane.showMessageDialog(null, "Valor inválido", "SumaTres", JOptionPane.ERROR_MESSAGE);
-						respuesta = JOptionPane.showInputDialog(null, "Introduzca un valor para la pieza", "SumaTres", JOptionPane.QUESTION_MESSAGE);
+					while (nV < 1 && !Pieza.validValue(nV) || nV == -1) {
+						Dialog.showError();
+						respuesta = Dialog.input("Introduzca un valor para la pieza");
 						if (respuesta == null || respuesta.length() == 0) nV = -1;
 						else nV = Integer.parseInt(respuesta);
 					}
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "Valor catastrófico.", "SumaTres", JOptionPane.ERROR_MESSAGE);
+					Dialog.showExceptionError(ex);
 					nV = -1;
 				}
 				if(nV != -1) {
-					this.getPieza(nX, nY).setValor(nV);
+					this.setTab(nX, nY, nV);
 					completed = true;
 				}
 			}
@@ -143,17 +143,17 @@ public class Tablero {
 
 	/**
 	 * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
-	 * son correctas mediante {@link #inputCoord(String, int)}. <p>
+	 * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
 	 * El método debería ser accesible solamente cuando los trucos estén activados.
-	 * @return 
+	 * @return Valor booleano que determina si se ha eliminado o no una pieza.
 	 */
 	public boolean quitarPieza() {
 		boolean completed = false;
-		int nX = Input.input("Introduzca la coordenada x de la pieza que desea colocar", 0, this.getSizeX());
+		int nX = Input.input("Introduzca la coordenada x de la pieza que desea eliminar", 0, this.getSizeX());
 		if(nX != -1) {
-			int nY = Input.input("Introduzca la coordenada y de la pieza que desea colocar", 0, this.getSizeY());
+			int nY = Input.input("Introduzca la coordenada y de la pieza que desea eliminar", 0, this.getSizeY());
 			if (nY != -1 && this.getPieza(nX, nY).getValor() != 0) {
-				this.getPieza(nX, nY).setValor(0);
+				this.setTab(nX, nY, 0);
 				completed = true;
 			}
 		}

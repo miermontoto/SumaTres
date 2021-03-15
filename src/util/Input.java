@@ -1,10 +1,7 @@
 package util;
 
-import javax.swing.JOptionPane;
-
 public class Input {
 	
-	private static final String title = Graphic.title;
 	/**
 	 * Constrctor generado para cumplir con SonarLint:S1118.
 	 * 
@@ -34,23 +31,22 @@ public class Input {
 	 */
 	public static int input(String s, int lowerLimit, int upperLimit) {
 		int value;
-		
-		int errorWildcard = lowerLimit < -1 ? 999 : -1;
+		int errorVal = lowerLimit < -1 ? 999 : -1;
 		
 		try {
-			String respuesta = JOptionPane.showInputDialog(null, s, title, JOptionPane.QUESTION_MESSAGE);
-			if(respuesta == null || respuesta.length() == 0) value = errorWildcard;
+			String respuesta = Dialog.input(s);
+			if(respuesta == null || respuesta.length() == 0) value = errorVal;
 			else value = Integer.parseInt(respuesta);
 			
-			while ((value < lowerLimit || value > upperLimit) && value != errorWildcard) {
-				JOptionPane.showMessageDialog(null, "Valor inválido", title, JOptionPane.ERROR_MESSAGE);
-				respuesta = JOptionPane.showInputDialog(null, s, title, JOptionPane.QUESTION_MESSAGE);
-				if(respuesta == null || respuesta.length() == 0) value = errorWildcard;
+			while ((value < lowerLimit || value > upperLimit) && value != errorVal) {
+				Dialog.showError();
+				respuesta = Dialog.input(s);
+				if(respuesta == null || respuesta.length() == 0) value = errorVal;
 				else value = Integer.parseInt(respuesta);
 			}
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(null, "Valor catastrófico.", title, JOptionPane.ERROR_MESSAGE);
-			value = errorWildcard;
+			Dialog.showExceptionError(ex);
+			value = errorVal;
 		}
 		return value;
 	}

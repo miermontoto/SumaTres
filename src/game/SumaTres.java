@@ -2,7 +2,7 @@ package game;
 
 import obj.Jugada;
 import obj.Tablero;
-import util.Graphic;
+import util.Dialog;
 import util.Paint;
 import util.Turno;
 import obj.Pieza;
@@ -15,7 +15,6 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.FileWriter;
 import java.security.SecureRandom;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
@@ -98,7 +97,7 @@ import java.util.HashMap;
  * Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode.
  * 
  * @author Juan Mier
- * @version v17
+ * @version v18
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  *      Documentación de Oracle: Number Format </a> <blockquote> A new line
  *      character appropriate to the platform running the application. You
@@ -161,8 +160,7 @@ public class SumaTres extends JPanel {
 	private boolean consoleStatus = false; // Por defecto, la consola está desactivada.
 	private double difficultyMultiplier = 1.0; // Multiplicador de puntuación, por defecto 1.
 	private static final File archivo = new File(".\\assets\\resultados.txt");
-	private static final String version = "v17"; // Declara la versión del programa.
-	private static final String title = Graphic.title; // Obtiene el título del programa de util.Graphic.
+	private static final String version = "v18"; // Declara la versión del programa.
 		
 	/**
 	* Constructor de la clase sobrecargado por tres enteros.
@@ -350,7 +348,7 @@ public class SumaTres extends JPanel {
 		else              s = "Activada salida por consola.";
 		this.consoleStatus = !consoleStatus;
 		if(consoleStatus) {out.print(this); out.println(printExtraInfo());}
-		JOptionPane.showMessageDialog(null, s, title, JOptionPane.INFORMATION_MESSAGE);
+		Dialog.show(s);
 	}
 	
 	/**
@@ -358,8 +356,7 @@ public class SumaTres extends JPanel {
 	 * Solo accessible en el modo experimental.
 	 */
 	public void enableCheats() {
-		if (JOptionPane.showConfirmDialog(null, "¿Desea activar los trucos?",
-			title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+		if (Dialog.confirm("¿Desea activar los trucos?")) {
 			cheatsUsed = true;
 			repaint();
 			setMultiplier(0.0);
@@ -734,7 +731,7 @@ public class SumaTres extends JPanel {
 		String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n",
 			finalPuntos, getHighest(), getTurnos());
 		if (cheatsUsed()) salida += "Se han utilizado trucos.";
-		JOptionPane.showMessageDialog(null, salida, title, JOptionPane.INFORMATION_MESSAGE);
+		Dialog.show(salida);
 		out.printf("%n%n%n%s",salida);
 		
 		if(getMode()) {
@@ -802,7 +799,7 @@ public class SumaTres extends JPanel {
 	private class KeyHandler extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent event) {
-			rerouteKeyboard(event.getKeyCode(), event.isControlDown());
+			rerouteKeyboard(event);
 		}
 	}
 	
@@ -810,7 +807,8 @@ public class SumaTres extends JPanel {
 		Mouse.mouseHandler(this, x, y);
 	}
 	
-	public void rerouteKeyboard(int keyCode, boolean ctrl) {
-		Keyboard.keyboardHandler(this, keyCode, ctrl);
+	public void rerouteKeyboard(KeyEvent e) {
+		if(Keyboard.validKeys.indexOf(e.getKeyChar()) >= 0) Keyboard.keyboardHandler(this, e.getKeyChar());
+		else Keyboard.keyboardHandler(this, e);
 	}
 }

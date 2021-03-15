@@ -1,10 +1,15 @@
 package handler;
 import game.SumaTres;
+import util.Dialog;
 
 import java.awt.event.KeyEvent;
-import javax.swing.JOptionPane;
+
 
 public class Keyboard {
+	
+	public static final String validClassicKeys = "wasd";
+	public static final String validExperimentalKeys = "qweadzxc";
+	public static final String validKeys = validClassicKeys + validExperimentalKeys;
 
 	/**
 	 * Constrctor generado para cumplir con SonarLint:S1118.
@@ -23,7 +28,7 @@ public class Keyboard {
 	 * AVPAG/PAGE_DOWN junto a la tecla 'control', se mandan jugadas constantes repetidas hasta que se
 	 * termina el programa. Para que esto funcione, es necesario que los trucos hayan sido activados
 	 * con anterioridad. <p>
- 	 * Si se pulsa la tecla escape, salta un prompt que le pregunta al usuario si desea terminar la
+	 * Si se pulsa la tecla escape, salta un prompt que le pregunta al usuario si desea terminar la
 	 * partda. En caso afirmativo, se ejecuta {@link #game.SumaTres.finalDePartida()} para finalizar la
 	 * partida en el estado actual del tablero. <p>
 	 * Si se está jugando en el modo experimental, se juega con las teclas (Q/W/E/D/C/X/Z/A), formando
@@ -35,65 +40,28 @@ public class Keyboard {
 	 * 		clause should either take appropriate action, or contain a suitable comment as to why
 	 * 		no action is taken. </blockquote>
 	 */
-	public static void keyboardHandler(SumaTres s, int code, boolean ctrl) {
-		switch (code) {
-		case KeyEvent.VK_PAGE_DOWN: // Esto rompe varios paradigmas de la programación.
-			if(ctrl) {
-				while (!s.getMode()) {
-					s.jugada('w');
-					s.jugada('a');
-					s.jugada('s');
-					s.jugada('d');
-				}
-				while(s.getMode() && s.cheatsUsed()) {
-					s.jugada('w');
-					s.jugada('q');
-					s.jugada('a');
-					s.jugada('z');
-					s.jugada('s');
-					s.jugada('c');
-					s.jugada('d');
-					s.jugada('e');
-				}
+	public static void keyboardHandler(SumaTres s, char key) {
+		if((s.getMode() && validExperimentalKeys.indexOf(key) >= 0) ||
+			   (!s.getMode() && validClassicKeys.indexOf(key) >= 0)) s.jugada(key);
+	}
+	
+	public static void keyboardHandler(SumaTres s, KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+			while (e.isControlDown()) {
+				s.jugada('w');
+				if(s.getMode()) s.jugada('q');
+				s.jugada('a');
+				if(s.getMode()) s.jugada('z');
+				if(s.getMode()) s.jugada('x');
+				else 			s.jugada('s');
+				if(s.getMode()) s.jugada('c');
+				s.jugada('d');
+				if(s.getMode()) s.jugada('e');
 			}
-			break; // break no accesible???
-		case KeyEvent.VK_ESCAPE: // Si se confirma, se termina la partida.
-			if (JOptionPane.showConfirmDialog(null, "¿Desea salir de la partida?", "SumaTres", JOptionPane.YES_NO_OPTION)
-					== JOptionPane.YES_OPTION) s.finalDePartida();
-			break;
-		case KeyEvent.VK_W:
-		case KeyEvent.VK_UP:
-			s.jugada('w');
-			break;
-		case KeyEvent.VK_A:
-		case KeyEvent.VK_LEFT:
-			s.jugada('a');
-			break;
-		case KeyEvent.VK_S:
-			if(!s.getMode()) s.jugada('s'); break;
-		case KeyEvent.VK_X:
-			if(!s.getMode()) break;
-		case KeyEvent.VK_DOWN:
-			s.jugada('s');
-			break;
-		case KeyEvent.VK_D:
-		case KeyEvent.VK_RIGHT:
-			s.jugada('d');
-			break;
-		case KeyEvent.VK_C:
-			if(s.getMode()) s.jugada('c');
-			break;
-		case KeyEvent.VK_Z:
-			if(s.getMode()) s.jugada('z');
-			break;
-		case KeyEvent.VK_Q:
-			if(s.getMode()) s.jugada('q');
-			break;
-		case KeyEvent.VK_E:
-			if(s.getMode()) s.jugada('e');
-			break;
-		default:
-			break;	// En cualquier otro caso, no se hace nada.
-		}
+
+		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE &&
+				Dialog.confirm("¿Desea salir de la partida?")) s.finalDePartida();
 	}
 }
+
+

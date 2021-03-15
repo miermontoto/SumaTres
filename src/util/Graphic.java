@@ -7,7 +7,6 @@ import game.SumaTres;
 
 public class Graphic {
 
-	public static final String title = "SumaTres";
 	public static final ImageIcon ICON = new ImageIcon(".\\assets\\icon.png");
 	public static final int SCREEN_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 	public static final int SCREEN_HEIGHT  = Toolkit.getDefaultToolkit().getScreenSize().height;

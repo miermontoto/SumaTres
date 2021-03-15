@@ -1,21 +1,19 @@
 package game;
 import javax.swing.JFrame; // Necesario para crear la ventana gráfica en sí.
-import javax.swing.JOptionPane; // Necesario para preguntarle al usuario de manera gráfica en vez de por consola.
 import javax.swing.WindowConstants; // Necesario para obtener la acción de cerrar la ventana.
 
 import util.Graphic;
 import util.Input;
+import util.Dialog;
 
 /**
  * El main se encarga de introducir y comprobar las
  * dimensiones del tablero, el tipo de jugada y la pantalla en sí.
  */
-public class SumaTresTexto {
+public class Launcher {
 	
 	private static final int min = 3;
 	private static final int max = 25;
-	private static final String title = Graphic.title;
-
 
 	public static void main(String[] args) {
 
@@ -34,20 +32,18 @@ public class SumaTresTexto {
 		 * no continúa.
 		 */
 		while (!Graphic.validSize(sizex, sizey)) {
-			JOptionPane.showMessageDialog(null, "Dimensiones inválidas de tablero.");
+			Dialog.showError("Dimensiones inválidas de tablero.");
 			sizex = Input.input("Introduzca la cantidad de filas:", min, max);
 			if(sizex == -1) System.exit(0);
 			sizey = Input.input("Introduzca la cantidad de columnas:", min, max);
 			if(sizey == -1) System.exit(0);
 		}
 
-		int type = JOptionPane.showOptionDialog(null, "¿Qué modo desea jugar?", title, JOptionPane.DEFAULT_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null,
-				new String[] { "Clásico", "Experimental", "Cancelar" }, "Clásico");
-
+		String[] modos = new String[] { "Clásico", "Experimental", "Cancelar" };
+		int type = Dialog.choices("¿Qué modo desea jugar?", modos);
 		SumaTres Juego = new SumaTres(sizex, sizey, type);
 
-		JFrame app = new JFrame(title);
+		JFrame app = new JFrame(Dialog.title);
 
 		// Todos estos comandos son, en esencia, los incluídos en el enunciado del trabajo.
 		app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
