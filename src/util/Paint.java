@@ -11,7 +11,7 @@ import game.SumaTres;
 import obj.Pieza;
 
 
-public class Paint {
+public final class Paint {
 
 	public static final int SPOT_SPACER    = (int) (3  * Graphic.SCALE); // Espacio entre piezas.
 	public static final int BOARD_SPACER   = (int) (6  * Graphic.SCALE); // Espacio entre el borde del tablero y las piezas.
@@ -19,6 +19,18 @@ public class Paint {
 	public static final int BUTTON_SIZE    = (int) (20 * Graphic.SCALE); // Tamaño de los botones.
 	public static final int SQUARE_SIZE    = (int) (40 * Graphic.SCALE); // Tamaño de las piezas.
 	public static final int MAIN_SPACER    = (int) (50 * Graphic.SCALE); // Espacio entre el tablero y el borde de la pantalla.
+	
+	public static final int STROKE_SIZE    = 3; // Tamaño de la "brocha". (i)
+	
+	private static Graphics2D g;
+	private static SumaTres s;
+	/* Se utilizan estáticos para evitar la continua llamada de los objetos entre métodos.
+	 * Siempre se utiliza el mismo motor gráfico y la misma partida a representar, por lo
+	 * que no debería haber ningún problema. Por supuesto, este método de representación
+	 * gráfica está creado muy específicamente para este juego y no puede ser utilizado ni
+	 * ajustado a otro juego sin mucho esfuerzo y sufrimiento.
+	 */
+	
 	
 	/**
 	 * Constrctor generado para cumplir con SonarLint:S1118.
@@ -39,7 +51,7 @@ public class Paint {
 	 * @param g2d  Entorno gráfico
 	 * @param size Tamaño de fuente a establecer
 	 */
-	public static void setFontSize(Graphics2D g2d, int size) {
+	private static void setFontSize(Graphics2D g2d, int size) {
 		g2d.setFont(new Font("Helvetica", Font.PLAIN, size));
 	}
 	
@@ -54,24 +66,32 @@ public class Paint {
 	 * <li>Para pintar la información, se utiliza {@link #pintarInfo(Graphics)}. </li>
 	 * </ul>
 	 */
-	public static void paint(Graphics g, SumaTres s) {
+	public static void paint(Graphics gi, SumaTres si) {
 
-		Graphics2D g2d = (Graphics2D) g;
+		g = (Graphics2D) gi;
+		s = si;
 
-		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY); // Mejora placebo
-		// Gracias al antialiasing, la fuente y, en especial los bordes de las fichas, son mucho más suaves y
-		// aptos para una pantalla de gran dpi y resolución. No afecta al rendimiento del programa.
-
-		g2d.setRenderingHints(rh);
-		g2d.setStroke(new BasicStroke(3));
+		var rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		pintarFlechas(g2d, s);
-		pintarTablero(g2d, s);
-		pintarFichas(g2d, s);
-		pintarInfo(g2d, s);
-		if(s.getMode()) pintarBotones(g2d, s);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		rh.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		rh.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		/*
+		 *  Gracias al antialiasing,  los bordes de las fichas, son mucho más suaves y
+		 *  aptos para una pantalla de gran dpi y resolución. No afecta al rendimiento del programa.
+		 *  Algunas de estas mejoras no conllevan una clara diferencia en la calidad visual del juego.
+		 */
+		
+
+		g.setRenderingHints(rh);
+		g.setStroke(new BasicStroke(STROKE_SIZE));
+		
+		pintarFlechas();
+		pintarTablero();
+		pintarFichas();
+		pintarInfo();
+		if(s.getMode()) pintarBotones(); // Solo existen botones en modo experimental.
 	}
 	
 	/**
@@ -89,18 +109,18 @@ public class Paint {
 	 * @param g Entorno gráfico
 	 * @param s Objeto SumaTres que contiene la partida en sí
 	 */
-	public static void pintarFlechas(Graphics2D g, SumaTres s) {
+	private static void pintarFlechas() {
 		g.setColor(Color.blue);
 		setFontSize(g, 18);
-		g.drawString("↑", Graphic.defineX(s) / 2, MAIN_SPACER * 14 / 24);
-		g.drawString("←", MAIN_SPACER * 9 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
-		g.drawString("→", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
-		g.drawString("↓", Graphic.defineX(s) / 2, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
+		g.drawString("\u2191", Graphic.defineX(s) / 2, MAIN_SPACER * 14 / 24);
+		g.drawString("\u2190 ", MAIN_SPACER * 9 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
+		g.drawString("\u2192", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
+		g.drawString("\u2193", Graphic.defineX(s) / 2, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
 		if(s.getMode()) {
-			g.drawString("⭶", MAIN_SPACER * 9 / 24, MAIN_SPACER * 14 / 24);
-			g.drawString("⭷", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, MAIN_SPACER * 14 / 24);
-			g.drawString("⭹", MAIN_SPACER * 9 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
-			g.drawString("⭸", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
+			g.drawString("\u2B76", MAIN_SPACER * 9 / 24, MAIN_SPACER * 14 / 24);
+			g.drawString("\u2B77", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, MAIN_SPACER * 14 / 24);
+			g.drawString("\u2B79", MAIN_SPACER * 9 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
+			g.drawString("\u2B78", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
 		}
 	}
 	
@@ -113,67 +133,67 @@ public class Paint {
 	 * @param g Entorno gráfico
 	 * @param s Objeto SumaTres que contiene la partida en sí
 	 */
-	public static void pintarTablero(Graphics2D g, SumaTres s) {
+	private static void pintarTablero() {
 		g.setColor(Color.white);
 		g.fillRoundRect(MAIN_SPACER, MAIN_SPACER,
-			s.getTablero().getSizeY() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
-			s.getTablero().getSizeX() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
+			s.getTablero().getRows() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
+			s.getTablero().getColumns() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
 			ROUND_DIAMETER, ROUND_DIAMETER);
-		}
-		
-		public static void pintarBotones(Graphics2D g, SumaTres s) {
-			// Primero se dibujan los botones. Solo se deben poder utilizar en modo experimental y cuando
-			// solo esté jugando un jugador.
-			
-			g.setColor(Color.white);
-			g.fillRoundRect(Graphic.defineX(s) - BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE,
-			BUTTON_SIZE, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER); // Botón de toggleConsole()
-			g.setColor(Color.darkGray);
-			g.drawRoundRect(Graphic.defineX(s) - BUTTON_SIZE,  Graphic.defineY(s) - BUTTON_SIZE,
-			BUTTON_SIZE, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER);
-			g.setColor(Color.black);
-			setFontSize(g, (int) (7 * Graphic.SCALE * 2));
-			g.drawString("C", Graphic.defineX(s) - BUTTON_SIZE * 3 / 4 , Graphic.defineY(s) - BUTTON_SIZE / 4);
-			
-			g.setColor(Color.white);
-			g.fillRoundRect(0, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-			ROUND_DIAMETER, ROUND_DIAMETER);
-			g.setColor(Color.darkGray);
-			g.drawRoundRect(0, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-			ROUND_DIAMETER, ROUND_DIAMETER);
-			
-			if(!s.cheatsUsed()) { // Botón de enableCheats()
-				setFontSize(g, (int) (7 * Graphic.SCALE * 5));
-				g.drawString("*", BUTTON_SIZE / 8, Graphic.defineY(s) + BUTTON_SIZE / 2);
-			} else {
-				setFontSize(g, (int) (7 * Graphic.SCALE * 4));
-				g.drawString("+", BUTTON_SIZE / 7, Graphic.defineY(s)); // ponerPieza())
+	}
 
-				g.setColor(Color.white); // Botón de quitarPieza()
-				g.fillRoundRect(BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-						ROUND_DIAMETER, ROUND_DIAMETER);
+	private static void pintarBotones() {
+		// Primero se dibujan los botones. Solo se deben poder utilizar en modo experimental y cuando
+		// solo esté jugando un jugador.
+
+		g.setColor(Color.white);
+		g.fillRoundRect(Graphic.defineX(s) - BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE,
+				BUTTON_SIZE, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER); // Botón de toggleConsole()
+		g.setColor(Color.darkGray);
+		g.drawRoundRect(Graphic.defineX(s) - BUTTON_SIZE,  Graphic.defineY(s) - BUTTON_SIZE,
+				BUTTON_SIZE, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER);
+		g.setColor(s.consoleStatus() ? Color.green : Color.red);
+		setFontSize(g, (int) (7 * Graphic.SCALE * 2));
+		g.drawString("T", Graphic.defineX(s) - BUTTON_SIZE * 3 / 4 , Graphic.defineY(s) - BUTTON_SIZE / 4);
+
+		g.setColor(Color.white);
+		g.fillRoundRect(0, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
+				ROUND_DIAMETER, ROUND_DIAMETER);
+		g.setColor(Color.darkGray);
+		g.drawRoundRect(0, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
+				ROUND_DIAMETER, ROUND_DIAMETER);
+
+		if(!s.cheatsUsed()) { // Botón de enableCheats()
+			setFontSize(g, (int) (7 * Graphic.SCALE * 5));
+			g.drawString("*", BUTTON_SIZE / 8, Graphic.defineY(s) + BUTTON_SIZE / 2);
+		} else {
+			setFontSize(g, (int) (7 * Graphic.SCALE * 4));
+			g.drawString("+", BUTTON_SIZE / 7, Graphic.defineY(s)); // ponerPieza())
+
+			g.setColor(Color.white); // Botón de quitarPieza()
+			g.fillRoundRect(BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
+					ROUND_DIAMETER, ROUND_DIAMETER);
+			g.setColor(Color.darkGray);
+			g.drawRoundRect(BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
+					ROUND_DIAMETER, ROUND_DIAMETER);
+			setFontSize(g, (int) (7 * Graphic.SCALE * 5));
+			g.drawString("-", BUTTON_SIZE + 2*BUTTON_SIZE / 8, Graphic.defineY(s) - BUTTON_SIZE / 18);
+
+			if(s.getTurnos() > 1) { // Botón de undo()
+				g.setColor(Color.white);
+				g.fillRoundRect(Graphic.defineX(s) - 2 * BUTTON_SIZE + SPOT_SPACER, Graphic.defineY(s) - BUTTON_SIZE,
+						BUTTON_SIZE	, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER); 
 				g.setColor(Color.darkGray);
-				g.drawRoundRect(BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-						ROUND_DIAMETER, ROUND_DIAMETER);
-				setFontSize(g, (int) (7 * Graphic.SCALE * 5));
-				g.drawString("-", BUTTON_SIZE + 2*BUTTON_SIZE / 8, Graphic.defineY(s) - BUTTON_SIZE / 18);
+				g.drawRoundRect(Graphic.defineX(s) - 2 * BUTTON_SIZE + SPOT_SPACER, Graphic.defineY(s) - BUTTON_SIZE,
+						BUTTON_SIZE	, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER);
 
-				if(s.getTurnos() > 1) { // Botón de undo()
-					g.setColor(Color.white);
-					g.fillRoundRect(Graphic.defineX(s) - 2 * BUTTON_SIZE + SPOT_SPACER, Graphic.defineY(s) - BUTTON_SIZE,
-							BUTTON_SIZE	, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER); 
-					g.setColor(Color.darkGray);
-					g.drawRoundRect(Graphic.defineX(s) - 2 * BUTTON_SIZE + SPOT_SPACER, Graphic.defineY(s) - BUTTON_SIZE,
-							BUTTON_SIZE	, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER);
-
-					setFontSize(g, (int) (7 * Graphic.SCALE * 3));
-					g.drawString("⤺", Graphic.defineX(s) - 8 * BUTTON_SIZE / 4 + SPOT_SPACER,
-							Graphic.defineY(s) - BUTTON_SIZE / 6); // ponerPieza())
-				}
+				setFontSize(g, (int) (7 * Graphic.SCALE * 3));
+				g.drawString("⤺", Graphic.defineX(s) - 8 * BUTTON_SIZE / 4 + SPOT_SPACER,
+						Graphic.defineY(s) - BUTTON_SIZE / 6); // ponerPieza())
 			}
-		
-		
-		
+		}
+
+
+
 	}
 	
 	/**
@@ -184,17 +204,29 @@ public class Paint {
 	 * @param g Entorno gráfico
 	 * @param s Objeto SumaTres que contiene la partida en sí
 	 */
-	public static void pintarInfo(Graphics2D g, SumaTres s) {
+	private static void pintarInfo() {
 		g.setColor(Color.black);
 		setFontSize(g, 15);
-		g.drawString("Siguiente:", MAIN_SPACER, Graphic.defineY(s) - MAIN_SPACER / 2);
+		
+		// Siguiente:
+		g.drawString("Siguiente:", MAIN_SPACER * 2 - 75, Graphic.defineY(s) - MAIN_SPACER / 2);
+		// Turnos:
 		g.drawString(String.format("[%d]", s.getTurnos()), Graphic.defineX(s) / 2, Graphic.defineY(s) - MAIN_SPACER / 2);
+		// Puntos:
+		/*
+		 *  Primero se calcula si es necesario decrecer el tamaño de la fuente dependiendo
+		 *  de la longitud de los puntos de la ficha. Es ligeramente inncesario ya que en
+		 *  rara ocasión el usuario va a llegar a cantidades tan altas, pero eh.
+		 */
 		setFontSize(g, s.getPuntos() >= 10000000 ? 12 : 15);
 		g.drawString(String.format("Puntos: %d", s.getPuntos()), Graphic.defineX(s) - 2 * MAIN_SPACER,
 				Graphic.defineY(s) - MAIN_SPACER / 2);
+		
+		// Pieza siguiente:
 		g.setColor(Pieza.getColores().get(s.getSiguiente()));
-		g.fillRoundRect(MAIN_SPACER * 8 / 4, Graphic.defineY(s) - MAIN_SPACER, SQUARE_SIZE, SQUARE_SIZE,
-			ROUND_DIAMETER, ROUND_DIAMETER);
+		g.fillRoundRect(MAIN_SPACER * 2, Graphic.defineY(s) - MAIN_SPACER,
+				SQUARE_SIZE, SQUARE_SIZE,
+				ROUND_DIAMETER, ROUND_DIAMETER);
 		g.setColor(Color.white);
 		int desiredFontSize = s.getSiguiente() >= 350000 ? 10 : 19 - (String.valueOf(s.getSiguiente()).length() - 1);
 		setFontSize(g, desiredFontSize); // Se desplaza a la derecha cuando la pieza pasa a tener más de un dígito.
@@ -222,9 +254,9 @@ public class Paint {
 	 * @param g Entorno gráfico
 	 * @param s Objeto SumaTres que contiene la partida en sí
 	 */
-	public static void pintarFichas(Graphics2D g, SumaTres s) {
-		for (int i = 0; i < s.getTablero().getSizeX(); i++)
-			for (int j = 0; j < s.getTablero().getSizeY(); j++) { // Se recorre el tablero.
+	private static void pintarFichas() {
+		for (int i = 0; i < s.getTablero().getColumns(); i++)
+			for (int j = 0; j < s.getTablero().getRows(); j++) { // Se recorre el tablero.
 				if (s.getTab(i, j) != 0) { // Al detectarse una pieza, se obtiene su color referente.
 					g.setColor(s.getTablero().getPieza(i, j).getColor());
 					// Se pinta la pieza en sí.
@@ -236,11 +268,13 @@ public class Paint {
 					double Y = (0.2126*g.getColor().getRed() + 0.7152*g.getColor().getGreen() + 0.0722*g.getColor().getBlue());
 					
 					// Si la pieza es demasiado clara, se le pinta un reborde para que se aprecie.
-					if(Y>=210) {
+					if(Y>=211) {
+						g.setStroke(new BasicStroke(1));
 						g.setColor(Color.gray);
 						g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
 							MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
 							ROUND_DIAMETER, ROUND_DIAMETER);
+						g.setStroke(new BasicStroke(STROKE_SIZE));
 					}
 					
 					// Si no se está en el primer turno, se imprime un rectángulo alrededor de la nueva ficha

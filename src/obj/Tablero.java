@@ -13,8 +13,8 @@ import util.Input;
  */
 public class Tablero {
 	private Pieza[][] tablero;
-	private int sizeX;
-	private int sizeY;
+	private int columns;
+	private int rows;
 
 	/**
 	 * Constructor que inicializa el tablero. Para hacerlo, se toman las dimensiones
@@ -22,16 +22,29 @@ public class Tablero {
 	 * de modo que no aparecen ni en la ventana gráfica ni en la consola, en caso de
 	 * que esté activada.
 	 * 
-	 * @param x Cantidad de filas de la matriz.
-	 * @param y Cantidad de columnas de la matriz.
+	 * @param x Cantidad de columnas de la matriz.
+	 * @param y Cantidad de filas de la matriz.
 	 */
 	public Tablero(int x, int y) {
-		this.setSize(x, y);
-		tablero = new Pieza[x][y];
-		for (int i = 0; i < x; i++)
-			for (int j = 0; j < y; j++)
-				tablero[i][j] = new Pieza();
-
+		try {tablero = new Pieza[x][y];} catch (Exception ex) {
+			Dialog.showError(ex);
+			x = 5;
+			y = 5;
+			tablero = new Pieza[x][y];
+		} finally {
+			this.setSize(x, y);
+			for (int i = 0; i < x; i++) for (int j = 0; j < y; j++) tablero[i][j] = new Pieza();
+		}
+	}
+	
+	/**
+	 * Constructor que copia los parámetros y valores de las piezas de otro tablero.
+	 * 
+	 * @param x Objeto tablero a copiar.
+	 */
+	public Tablero(Tablero x) {
+		this.setSize(x.getColumns(), x.getRows());
+		tablero = x.tablero;
 	}
 
 	/**
@@ -39,8 +52,8 @@ public class Tablero {
 	 * 
 	 * @return Valor entero
 	 */
-	public int getSizeX() {
-		return sizeX;
+	public int getColumns() {
+		return columns;
 	}
 
 	/**
@@ -51,8 +64,8 @@ public class Tablero {
 	 * @param nv
 	 */
 	public void setSize(int nx, int ny) {
-		this.sizeX = nx;
-		this.sizeY = ny;
+		this.columns = nx;
+		this.rows = ny;
 	}
 
 	/**
@@ -60,8 +73,8 @@ public class Tablero {
 	 * 
 	 * @return Valor entero
 	 */
-	public int getSizeY() {
-		return sizeY;
+	public int getRows() {
+		return rows;
 	}
 	
 	public void setTab(int x, int y, int nv) {this.getPieza(x, y).setValor(nv);}
@@ -70,14 +83,20 @@ public class Tablero {
 	/**
 	 * Método que devuelve la pieza localizada en la posición especificada. Se puede
 	 * utilizar para acceder a piezas cuando no sea posible con
-	 * <code>setTab(int, int)</code> o <code>getTab(int, int)</code>.
+	 * <code>setTab(int, int)</code> o <code>getTab(int, int)</code>. <p>
+	 * Si no puede devolver la ficha especificada, devuelve la ficha 0, 0.
 	 * 
 	 * @param x Coordenada x de la pieza que se desea obtener.
 	 * @param y Coordenada y de la pieza que se desea obtener.
 	 * @return Objeto tipo 'pieza'
 	 */
 	public Pieza getPieza(int x, int y) {
-		return this.tablero[x][y];
+		try {
+			return this.tablero[x][y];
+		} catch (Exception ex) {
+			Dialog.showError(ex);
+			return this.tablero[0][0];
+		}
 	}
 	
 	/**
@@ -91,9 +110,9 @@ public class Tablero {
 	public boolean isFull() {
 		int i = 0;
 		boolean full = true;
-		while (full && i < this.getSizeX()) {
+		while (full && i < this.getColumns()) {
 			int j = 0;
-			while(j < this.getSizeY()) {
+			while(j < this.getRows()) {
 				if(this.getPieza(i, j).getValor() == 0) full = false;
 				j++;
 			}
@@ -112,9 +131,9 @@ public class Tablero {
 	 */
 	public boolean colocarPieza() {
 		boolean completed = false;
-		int nX = Input.input("Introduzca la coordenada x de la pieza que desea colocar", 0, this.getSizeX());
+		int nX = Input.input("Introduzca la coordenada x de la pieza que desea colocar", 0, this.getColumns(), false);
 		if(nX != -1) {
-			int nY = Input.input("Introduzca la coordenada y de la pieza que desea colocar", 0, this.getSizeY());
+			int nY = Input.input("Introduzca la coordenada y de la pieza que desea colocar", 0, this.getRows(), false);
 			if (nY != 1) {
 				int nV;
 				try {
@@ -129,7 +148,7 @@ public class Tablero {
 						else nV = Integer.parseInt(respuesta);
 					}
 				} catch (Exception ex) {
-					Dialog.showExceptionError(ex);
+					Dialog.showError(ex);
 					nV = -1;
 				}
 				if(nV != -1) {
@@ -149,14 +168,45 @@ public class Tablero {
 	 */
 	public boolean quitarPieza() {
 		boolean completed = false;
-		int nX = Input.input("Introduzca la coordenada x de la pieza que desea eliminar", 0, this.getSizeX());
+		int nX = Input.input("Introduzca la coordenada x de la pieza que desea eliminar", 0, this.getColumns(), false);
 		if(nX != -1) {
-			int nY = Input.input("Introduzca la coordenada y de la pieza que desea eliminar", 0, this.getSizeY());
+			int nY = Input.input("Introduzca la coordenada y de la pieza que desea eliminar", 0, this.getRows(), false);
 			if (nY != -1 && this.getPieza(nX, nY).getValor() != 0) {
 				this.setTab(nX, nY, 0);
 				completed = true;
 			}
 		}
 		return completed;
+	}
+	
+	
+	/**
+	 * Método <code>toString()</code> que devuelve una cadena con el valor de todas las piezas del tablero.
+	 */
+	@Override
+	public String toString() {
+		String s = "";
+		for(int i=0; i < this.getColumns(); i++) for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
+		return s;
+	}
+	
+	public String formattedToString() {
+		String s = "";
+		for(int i=0; i < this.getColumns(); i++) {
+			for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
+			s += String.format("%n");
+		}
+		return s;
+	}
+	
+	/**
+	 * Método que compara los <code>toString()</code> de dos objetos y devuelve verdadero si son iguales.
+	 * Se da por supuesto que ningún otro objeto devolvería una cadena ni siquiera similar al <code>toString()</code>
+	 * de un objeto de tipo Tablero. Por eso, no es necesario siquiera examinar la clase del objeto, simplemente
+	 * igualar las cadenas resultantes. <p> Este método evita tener que comparar una a una el valor de cada pieza.
+	 */
+	@Override
+	public boolean equals(Object x) {
+		return x.toString() == this.toString();
 	}
 }

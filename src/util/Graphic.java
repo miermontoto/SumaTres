@@ -5,23 +5,27 @@ import javax.swing.ImageIcon;
 
 import game.SumaTres;
 
-public class Graphic {
+public final class Graphic {
 
 	public static final ImageIcon ICON = new ImageIcon(".\\assets\\icon.png");
 	public static final int SCREEN_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 	public static final int SCREEN_HEIGHT  = Toolkit.getDefaultToolkit().getScreenSize().height;
 	public static final double SCALE = (double) SCREEN_HEIGHT / 720 < 0.5 ? 0.5 : (double) SCREEN_HEIGHT / 720;
-	// La escala ayuda a mantener un tamaño jugable tanto de tamaño de ventana como de objetos pintados
-	// gráficamente. En algunos casos extremos, como es el caso de resoluciones pequeñas y poco comunes
-	// hoy en día (640x480, 800x600), la escala y las posiciones de objetos son ligeramente incorrectos,
-	// con lo que el texto no está bien colocado del todo.
+	/*
+	 * La escala ayuda a mantener un tamaño jugable tanto de tamaño de ventana como de objetos pintados
+	 * gráficamente. En algunos casos extremos, como es el caso de resoluciones pequeñas y poco comunes
+	 * hoy en día (640x480, 800x600), la escala y las posiciones de objetos son ligeramente incorrectos,
+	 * con lo que el texto no está bien colocado del todo.
+	 */
 
-	// Lo negativo de que los tamaños de la pantalla sean fijos y no se actualicen es que el tablero
-	// mantiene el tamaño establecido al principio de la partida, con lo que al cambiar de resolución
-	// a mitad de partida, no se ajustan todos los datos correctamente. No merece la pena crear métodos
-	// que actualicen los datos sobre la pantalla y la escala porque este error se encuuentra solo en
-	// casos muy remotos, a menos que el usuario cambie de resolución intencionalmente para romper
-	// visualmente el programa.
+	/*
+	 * Lo negativo de que los tamaños de la pantalla sean fijos y no se actualicen
+	 * es que el tablero mantiene el tamaño establecido al principio de la partida,
+	 * con lo que al cambiar de resolución a mitad de partida, no se ajusta nada. 
+	 * No merece la pena crear métodos que obtenga constantemente la resolución de
+	 * la pantalla porque realísticamente nadie cambia la resolución constantemente
+	 * a menos que se quiera romper visualmente el programa.
+	 */
 
 	/**
 	 * Constrctor generado para cumplir con SonarLint:S1118.
@@ -45,7 +49,7 @@ public class Graphic {
 	}
 	
 	public static int defineX(SumaTres s) {
-		return s.getTablero().getSizeY() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER;
+		return s.getTablero().getRows() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER;
 	}
 	
 	/**
@@ -65,14 +69,15 @@ public class Graphic {
 	* @return Valor entero con el alto de la ventana.
 	*/
 	public static int defineY(SumaTres s) {
-		return s.getTablero().getSizeX() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 3 * Paint.MAIN_SPACER;
+		return s.getTablero().getColumns() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 3 * Paint.MAIN_SPACER;
 	}
 	
 	
 	
 	/**
-	* Método que se accede desde el main para comprobar si el tablero entra en pantalla con la resolución
-	* actual. Simplemente devuelve un valor booleano, la lógica se encuentra en el main.
+	* Método que comprueba si el tablero entra en pantalla con la resolución
+	* actual.
+	* 
 	* @return Valor booleano que establece si la pantalla generada entra o no en la resolución actual.
 	*/
 	public static boolean validSize(int x, int y) {

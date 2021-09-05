@@ -1,5 +1,7 @@
 package handler;
 
+import java.awt.event.MouseEvent;
+
 import game.SumaTres;
 import util.Graphic;
 import util.Paint;
@@ -16,7 +18,29 @@ public class Mouse {
 		throw new IllegalStateException("Event handling class");
 	}
 
-	public static void mouseHandler(SumaTres s, int x, int y) {
+	/**
+	 * Método que diferencia entre eventos y los redirige.
+	 * 
+	 * @param s Partida en la que se está jugando.
+	 * @param e Evento del ratón.
+	 */
+	public static void mouseHandler(SumaTres s, MouseEvent e) {
+		if(e.getButton() == MouseEvent.BUTTON1) mouseClicked(s, e);
+	}
+	
+	/**
+	 * Método principal que permite el uso del ratón con la interfaz básica. <p>
+	 * Debido a que este es actualmente el método más antiguo, es bastante ofensivo
+	 * a la vista e ilegible. Se ha ido parcheado con el tiempo para que siga funcionando
+	 * con toda las nuevas características del programa, pero necesita un rewrite.
+	 * 
+	 * @param s Partida en la que se está jugando.
+	 * @param e Evento del ratón.
+	 */
+	private static void mouseClicked(SumaTres s, MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		
 		if(y < Graphic.defineY(s) - Paint.MAIN_SPACER) {
 			if (x < Paint.MAIN_SPACER) {
 				if (y > Paint.MAIN_SPACER) {
@@ -45,7 +69,7 @@ public class Mouse {
 						}
 						else s.jugada('s');
 					}
-					else if (x > (Graphic.defineX(s.getTablero().getSizeX()) - Paint.MAIN_SPACER)) s.jugada('d');
+					else if (x > (Graphic.defineX(s.getTablero().getColumns()) - Paint.MAIN_SPACER)) s.jugada('d');
 				}
 			}
 		} else { // Botonera

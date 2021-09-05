@@ -45,22 +45,23 @@ public class Pieza {
 	 * piezas.
 	 */
 	public static void inicializarColores() {
-		colores.put(0 , Color.white  );
-		colores.put(1 , Color.red    );
-		colores.put(2 , Color.orange );
-		colores.put(3 , Color.cyan   );
-		colores.put(6 , Color.blue   );
-		colores.put(12, Color.green  );
-		colores.put(24, Color.magenta);
-		colores.put(48, Color.pink   );
+		colores.put(-2, Color.black   );
+		colores.put(-1, Color.darkGray);
+		colores.put(0 , Color.white   );
+		colores.put(1 , Color.red     );
+		colores.put(2 , Color.orange  );
+		colores.put(3 , Color.cyan    );
+		colores.put(6 , Color.blue    );
+		colores.put(12, Color.green   );
+		colores.put(24, Color.magenta );
+		colores.put(48, Color.pink    );
 	}
 	
 	public static HashMap<Integer, Color> getColores() {return colores;}
 
 	/**
-	 * Constructor que inicializa la pieza con el valor sobrecargado.
-	 * 
-	 * @param nv Valor entero con el valor que se desea establecer a la pieza.
+	 * Constructor que inicializa la pieza con valor 0. <p>
+	 * Las piezas con valor 0 no se representan.
 	 */
 	public Pieza() {
 		this.setValor(0);
@@ -88,7 +89,7 @@ public class Pieza {
 	 * @param valor que desea asignarle a la pieza.
 	 */
 	public void setValor(int valor) {
-		if (validValue(valor) || valor == 0) {
+		if (validValue(valor)) {
 			this.valor = valor;
 			updateColor();
 		}
@@ -119,23 +120,26 @@ public class Pieza {
 	 */
 	public void updateColor() {
 		if (!colores.containsKey(this.getValor())) {
-			Color newColor = Color.white; // Es necesario inicializar el color.
-			/*
-			 * boolean check = true; while(check) { check = false; newColor = new
-			 * Color(newRandom(256), newRandom(256), newRandom(256)); for(Color compare :
-			 * colores.values()) { double mediaR = (newColor.getRed() + compare.getRed()) /
-			 * 2.0; double distancia = Math.sqrt( (2 + mediaR / 256) * Math.pow((double)
-			 * newColor.getRed() - compare.getRed(), 2) + 4 * Math.pow((double)
-			 * newColor.getGreen() - compare.getGreen(), 2) + (2 + (255 - mediaR) / 256.0));
-			 * if (distancia < 200) check = true; } }
-			 */
-			newColor = new Color(SumaTres.newRandom(256), SumaTres.newRandom(256), SumaTres.newRandom(256));
-			colores.put(getValor(), newColor);
-
-			// No tengo tiempo ni ganas de dedicar el esfuerzo y el sufrimiento necesario
-			// para
-			// arreglar el cálculo de la distancia entre colores nuevos. En algún momento lo
-			// arreglaré.
+			Color c1 = Color.white; // Es necesario inicializar el color.
+			boolean check = true;
+			while(check) {
+				check = false;
+				c1 = new Color(SumaTres.newRandom(256), SumaTres.newRandom(256), SumaTres.newRandom(256));
+				for(Color c2 : colores.values()) {
+					double aR, aG, aB, rR, aC;
+					rR = (c1.getRed() + c2.getRed()) / 2.0;
+					aR = Math.pow(c1.getRed() - c2.getRed(), 2);
+					aG = Math.pow(c1.getGreen() - c2.getGreen(), 2);
+					aB = Math.pow(c1.getBlue() - c2.getBlue(), 2);
+					
+					aC = Math.sqrt((2 + rR / 256) * aR + 4 * aG + (2 + (255 - rR) / 256) * aB);
+					// fórmula "redmean"
+					if(aC < 200) check = true;
+					//System.out.printf("%f%n", aC); // Imprime la distancia entre el color a comparar.
+				}
+			}
+			colores.put(getValor(), c1);
+			
 		}
 		this.color = colores.get(getValor());
 	}
@@ -150,7 +154,7 @@ public class Pieza {
 	 */
 	public static boolean validValue(int x) {
 		boolean check = false;
-		if (x<=3 && x>=1)  check = true;
+		if (x<=3 && x>=0)  check = true;
 		else {
 			int i = 0;
 			while (x > 6 * Math.pow(2, i)) i++;
