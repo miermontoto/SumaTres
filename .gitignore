@@ -12,3 +12,4 @@ bin
 coverage
 Libro1.xlsx
 nbproject
+/dist/

@@ -209,7 +209,7 @@ public class SumaTres extends JPanel {
 		warning = new int[2];
 		puntos = 0;
 		highestValue = 3;
-		turno = 1;
+		turno = 0;
 		
 		try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
 			err.printf("ERROR: %s."
@@ -601,7 +601,7 @@ public class SumaTres extends JPanel {
 	 * 
 	 * @return
 	 */
-	private int[] possibleValuesNewSiguiente() {
+	public int[] possibleValuesNewSiguiente() {
 		if(getHighest() <= 12) {
 			// Si la ficha no supera 12, el método de obtener el valor de
 			// la siguiente ficha es el clásico.

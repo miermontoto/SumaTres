@@ -22,7 +22,6 @@ public class LauncherRF extends javax.swing.JFrame {
     
     public void launch(Settings op) {
         juego = new SumaTres(op);
-        add(juego);
         setBounds(0, 0, Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
         setVisible(true);
         
@@ -31,6 +30,8 @@ public class LauncherRF extends javax.swing.JFrame {
          * actual es experimental o no. Siguiendo las reglas del enunciado
          * original, el modo clásico es imperturbable por estos cambios.
          */
+        
+        jPanel1.add(juego);
         jmiTrucos.setEnabled(op.isExperimental());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoClassic.setEnabled(op.isExperimental());
@@ -51,9 +52,11 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiModoGroup = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jToolBar1 = new javax.swing.JToolBar();
+        pneInfo = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jmiResultados = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiSalir = new javax.swing.JMenuItem();
@@ -99,13 +102,13 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Juego", jPanel1);
 
-        jToolBar1.setRollover(true);
-        jToolBar1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jToolBar1KeyPressed(evt);
+        pneInfo.setEditable(false);
+        pneInfo.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                pneInfoComponentShown(evt);
             }
         });
-        jTabbedPane1.addTab("Info", jToolBar1);
+        jTabbedPane1.addTab("Info", pneInfo);
 
         mnuArchivo.setText("Archivo");
         mnuArchivo.addActionListener(new java.awt.event.ActionListener() {
@@ -114,12 +117,25 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
 
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem1.setText("Guardar");
+        mnuArchivo.add(jMenuItem1);
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem2.setText("Cargar");
+        mnuArchivo.add(jMenuItem2);
+
         jmiResultados.setText("Resultados prev.");
         mnuArchivo.add(jmiResultados);
         mnuArchivo.add(jSeparator1);
 
         jmiSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_DOWN_MASK));
         jmiSalir.setText("Salir");
+        jmiSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiSalirActionPerformed(evt);
+            }
+        });
         mnuArchivo.add(jmiSalir);
 
         jMenuBar1.add(mnuArchivo);
@@ -265,7 +281,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTrucosUndoActionPerformed
 
     private void mnuArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuArchivoActionPerformed
-        juego.finalDePartida();
+
     }//GEN-LAST:event_mnuArchivoActionPerformed
 
     private void jmiTrucosPuntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosPuntosActionPerformed
@@ -294,14 +310,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosActionPerformed(evt); // se activan los trucos.
     }//GEN-LAST:event_jmiModoExperimentalActionPerformed
 
-    private void jToolBar1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jToolBar1KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jToolBar1KeyPressed
-
-    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
-        juego.rerouteKeyboard(evt);
-    }//GEN-LAST:event_jPanel1KeyPressed
-
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
         juego.toggleConsole();
     }//GEN-LAST:event_jmiExtrasConsoleActionPerformed
@@ -311,8 +319,37 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuExtrasActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        //juego.rerouteKeyboard(evt);
+        juego.rerouteKeyboard(evt);
     }//GEN-LAST:event_formKeyPressed
+
+    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
+        juego.rerouteKeyboard(evt);
+    }//GEN-LAST:event_jPanel1KeyPressed
+
+    /**
+     * Actualiza el panel de información cada vez que se muestra. Este listener
+     * evita tener que estar actualizando constantemente o tener un botón con el
+     * que tenga que interactuar el usuario.
+     * @param evt 
+     */
+    private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
+        pneInfo.setText(String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
+                + "Turnos jugados: %d%n"
+                + "Siguiente ficha: %d%n"
+                + "Posibles siguientes: ",
+                (int) (juego.getPuntos()*juego.getMultiplier()), juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente()));
+        for(int i : juego.possibleValuesNewSiguiente()) {
+            pneInfo.setText(String.format("%s%d ", pneInfo.getText(), i));
+        }
+        pneInfo.setText(String.format("%s%n%n"
+                + "Modo: %s%n"
+                + "Trucos: %s%n", pneInfo.getText(), juego.getMode() ? "experimental" : "clásico",
+                juego.cheatsUsed() ? "activados" : "desactivados"));
+    }//GEN-LAST:event_pneInfoComponentShown
+
+    private void jmiSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSalirActionPerformed
+        juego.finalDePartida();
+    }//GEN-LAST:event_jmiSalirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -352,11 +389,12 @@ public class LauncherRF extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
     private javax.swing.JRadioButtonMenuItem jmiModoClassic;
     private javax.swing.JRadioButtonMenuItem jmiModoExperimental;
@@ -372,5 +410,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenu mnuExtras;
     private javax.swing.JMenu mnuModo;
     private javax.swing.JMenu mnuTrucos;
+    private javax.swing.JTextPane pneInfo;
     // End of variables declaration//GEN-END:variables
 }
