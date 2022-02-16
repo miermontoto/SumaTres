@@ -47,6 +47,7 @@ public class PrePartida extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres - Prepartida");
+        setAlwaysOnTop(true);
         setName("Prepartida"); // NOI18N
         setResizable(false);
 
@@ -90,10 +91,10 @@ public class PrePartida extends javax.swing.JFrame {
         });
 
         grpModo.add(bttExperimental);
+        bttExperimental.setSelected(true);
         bttExperimental.setText("Modo experimental");
 
         grpModo.add(bttClásico);
-        bttClásico.setSelected(true);
         bttClásico.setText("Modo clásico");
 
         btnJugar.setFont(new java.awt.Font("Cantarell", 1, 36)); // NOI18N
