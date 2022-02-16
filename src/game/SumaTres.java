@@ -197,9 +197,7 @@ public class SumaTres extends JPanel {
 	* try/catch para evitar exepciones molestas en caso de que alguien manipule
 	* el código de manera incorrecta.
 	* 
-	* @param x: Cantidad de filas del tablero.
-	* @param y: Cantidad de columnas del tablero.
-	* @param type: Valor entero que define el modo de juego.
+	* @param op: Objeto de tipo obj.Settings que defina la partida.
 	*/
 	public SumaTres(Settings op) {
 		
@@ -834,7 +832,7 @@ public class SumaTres extends JPanel {
 	}
 	
 	public void loop() {
-		while(!Keyboard.isControlDown) {
+		while(true) { // <- lo siento!
 		              jugada('w');
 		if(getMode()) jugada('q');
 		              jugada('a');
