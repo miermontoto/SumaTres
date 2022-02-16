@@ -8,8 +8,8 @@ import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
 
+//@DisplayNameGeneration(DisplayNameGenerator.IndicativeSentences.class)
 @DisplayName("Movimiento")
-@DisplayNameGeneration(DisplayNameGenerator.IndicativeSentences.class)
 class MoverTest {
 
 	private Tablero tabCuadrado, tabIrregular1, tabIrregular2;

@@ -160,7 +160,7 @@ public class SumaTres extends JPanel {
 	 */
 	public static final long serialVersionUID = -1110032705510692144L;
 	public static final SecureRandom RAND = new SecureRandom();
-	public static final File ARCHIVO = new File(".\\assets\\resultados.txt");
+	public static final File ARCHIVO = new File("./assets/resultados.txt");
 	public static final String VERSION = "v19";
 	
 	private HashMap<Integer, Integer> obtainedFromRandom; // Vector que almacena las fichas obtenidas en el modo clásico.

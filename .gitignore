@@ -1,3 +1,5 @@
+manifest.mf
+build*
 resultados.txt
 workspace.code-workspace
 .classpath
@@ -9,3 +11,4 @@ workspace.code-workspace
 bin
 coverage
 Libro1.xlsx
+nbproject

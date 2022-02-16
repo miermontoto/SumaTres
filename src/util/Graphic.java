@@ -65,7 +65,7 @@ public final class Graphic {
 	/**
 	* Método que calcula el alto total final de la pantalla. 
 	*
-	* @param x Valor entero con la cantidad de filas.
+	* @param s Objeto tipo 'SumaTres' con el que se está jugando.
 	* @return Valor entero con el alto de la ventana.
 	*/
 	public static int defineY(SumaTres s) {

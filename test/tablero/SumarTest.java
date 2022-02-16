@@ -9,7 +9,6 @@ import obj.Tablero;
 import obj.Turno;
 
 @DisplayName("Suma")
-@DisplayNameGeneration(DisplayNameGenerator.IndicativeSentences.class)
 class SumarTest {
 	private SumaTres s = new SumaTres(3, 3, 0);
 
