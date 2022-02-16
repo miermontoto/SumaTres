@@ -3,6 +3,7 @@ package game;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
+import obj.Settings;
 import util.Dialog;
 import util.Paint;
 import obj.Pieza;
@@ -200,7 +201,7 @@ public class SumaTres extends JPanel {
 	* @param y: Cantidad de columnas del tablero.
 	* @param type: Valor entero que define el modo de juego.
 	*/
-	public SumaTres(int x, int y, int type) {
+	public SumaTres(Settings op) {
 		
 		// Se inicializan variables.
 		difficultyMultiplier = 1.0;
@@ -212,23 +213,14 @@ public class SumaTres extends JPanel {
 		highestValue = 3;
 		turno = 1;
 		
-		try {t = new Tablero(x, y);} catch (Exception ex) {
-			out.printf("ERROR: Se ha detectado la excepción %s."
+		try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
+			err.printf("ERROR: %s."
 					+ " Estableciendo tablero por defecto 5x5.", ex);
 			t = new Tablero(5, 5);
 		}
 		
-		/*
-		 * El hecho de que se cree un objeto de tipo SumaTres antes de salir si se
-		 * introduce un número inválido o si se presiona el botón de cancelar es un
-		 * poco ineficiente técnicamente hablando, pero es visualmente más limpio.
-		 */
-		switch(type) {
-			case 0: setClassicMode(); break;      // Clásico
-			case 1: setExperimentalMode(); break; // Experimental
-			default: System.exit(0); break;       // Cancelar
-			// Se cancela si el tipo introducido es 2 o -1.
-		}
+		if(op.isExperimental()) setExperimentalMode();
+                else setClassicMode();
 		
 		/*
 		 * Debido a cómo funciona la clase 'Pieza', se debe de inicializar los colores ANTES de
@@ -691,7 +683,7 @@ public class SumaTres extends JPanel {
 	 * Coloca una ficha en el tablero. Para encontrar una poisición nueva, utiliza
 	 * {@link #validLocation()}.
 	 * 
-	 * @param nV El valor que tendrá la nueva ficha.
+	 * @param nv El valor que tendrá la nueva ficha.
 	 */
 	public void newFicha(int nv) {
 		int[] x = validLocation();

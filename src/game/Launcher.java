@@ -5,6 +5,7 @@ import javax.swing.WindowConstants; // Necesario para obtener la acción de cerr
 import util.Graphic; // Se utiliza para definir dimensiones, escala, etc.
 import util.Input; // Se utiliza para preguntarle al usuario por el tamaño del tablero.
 import util.Dialog; // Se utiliza para preguntarle al usuario otra información.
+import obj.Settings;
 
 /**
  * El main se encarga de introducir y comprobar las
@@ -36,7 +37,7 @@ public class Launcher {
 
 		var modos = new String[] { "Clásico", "Experimental", "Cancelar" };
 		int type = Dialog.choices("¿Qué modo desea jugar?", modos);
-		var Juego = new SumaTres(sizex, sizey, type);
+		var Juego = new SumaTres(new Settings(sizex, sizey, type==1));
 		var app = new JFrame(Dialog.title);
 
 		// Todos estos comandos son, en esencia, los incluídos en el enunciado del trabajo.
