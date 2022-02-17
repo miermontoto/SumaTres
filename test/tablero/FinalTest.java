@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 
 import game.SumaTres;
 import obj.Turno;
+import obj.Settings;
 
 /**
  * Test que comprueba la correcta detección del final de partida
@@ -26,11 +27,11 @@ class FinalTest {
 	@Test
 	@DisplayName("en partida clásica")
 	void ClassicTest() {
-		SumaTres s1 = new SumaTres(3, 3, 0);
-		SumaTres s2 = new SumaTres(3, 3, 0);
-		SumaTres s3 = new SumaTres(3, 3, 0);
-		SumaTres s4 = new SumaTres(3, 3, 0);
-		SumaTres s5 = new SumaTres(3, 3, 0);
+		SumaTres s1 = new SumaTres(new Settings(3, 3, false));
+		SumaTres s2 = new SumaTres(new Settings(3, 3, false));
+		SumaTres s3 = new SumaTres(new Settings(3, 3, false));
+		SumaTres s4 = new SumaTres(new Settings(3, 3, false));
+		SumaTres s5 = new SumaTres(new Settings(3, 3, false));
 		
 		for (int i=0; i<3; i++) for(int j=0; j<3; j++) s1.setTab(i, j, 3);
 		s1.setTab(0, 0, 2);
@@ -68,12 +69,12 @@ class FinalTest {
 	@DisplayName("en partida experimental")
 	void ExperimentalTest() {
 		// Se establecen seis escenarios diferentes para evaluar.
-		SumaTres s1 = new SumaTres(3, 3, 1);
-		SumaTres s2 = new SumaTres(3, 3, 1);
-		SumaTres s3 = new SumaTres(3, 3, 1);
-		SumaTres s4 = new SumaTres(3, 3, 1);
-		SumaTres s5 = new SumaTres(3, 3, 1);
-		SumaTres s6 = new SumaTres(3, 3, 1);
+		SumaTres s1 = new SumaTres(new Settings(3, 3, true));
+		SumaTres s2 = new SumaTres(new Settings(3, 3, true));
+		SumaTres s3 = new SumaTres(new Settings(3, 3, true));
+		SumaTres s4 = new SumaTres(new Settings(3, 3, true));
+		SumaTres s5 = new SumaTres(new Settings(3, 3, true));
+		SumaTres s6 = new SumaTres(new Settings(3, 3, true));
 		
 		/*
 		 * En el primer tablero, se rellena el tablero con un patrón repetitivo

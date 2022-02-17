@@ -1,14 +1,15 @@
 package game;
 
-import java.awt.event.KeyEvent;
+import gui.PrePartida;
+import gui.EditarColores;
 import obj.Settings;
-import util.Dialog;
-import util.Graphic; // Se utiliza para definir dimensiones, escala, etc.
+import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
+import util.Graphic; // Se utiliza para definir las dimensiones de la ventana.
 
 public class LauncherRF extends javax.swing.JFrame {
     
-    private PrePartida secundaria;
-    private EditarColores ventanaColores;
+    private final PrePartida secundaria;
+    private final EditarColores ventanaColores;
     private SumaTres juego;
     
 
@@ -23,6 +24,13 @@ public class LauncherRF extends javax.swing.JFrame {
         ventanaColores.setVisible(false);
     }
     
+    /**
+     * Método que lanza la partida como tal. Solo debería accederse una vez.
+     * Establece el tamaño de ventana dependiendo del tamaño del tablero,
+     * hace visible esta ventana y crea un objeto de tipo SumaTres según las
+     * opciones introducidas.
+     * @param op Opciones con las que se pretende inicializar la partida.
+     */
     public void launch(Settings op) {
         juego = new SumaTres(op);
         setBounds(0, 0, Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
@@ -35,7 +43,7 @@ public class LauncherRF extends javax.swing.JFrame {
          */
         
         jPanel1.add(juego); // TODO: arreglar esto!!!
-        jmiTrucos.setEnabled(op.isExperimental());
+        jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoClassic.setEnabled(op.isExperimental());
         jmiModoClassic.setSelected(op.isExperimental());
@@ -332,7 +340,7 @@ public class LauncherRF extends javax.swing.JFrame {
         if(!juego.cheatsUsed()) check = Dialog.confirm("Esta acción activa los trucos. ¿Desea continuar?");
         if(check) {
             juego.enableCheats();
-            juego.setClassicMode();
+            juego.getSettings().setExperimentalMode(false);
             jmiTrucos.setEnabled(false);
             setCheatsEnabled(false);
         }
@@ -349,7 +357,7 @@ public class LauncherRF extends javax.swing.JFrame {
         // Si se llega aquí, significa que el usuario partió del modo experimental,
         // pasó al modo clásico y con esta acción vuelve al modo experimental, por
         // lo que no es necesario volver a activar los trucos ni mostrar alertas.
-        juego.setExperimentalMode();
+        juego.getSettings().setExperimentalMode(true);
         setCheatsEnabled(true); // se activan los trucos.
     }//GEN-LAST:event_jmiModoExperimentalActionPerformed
 
@@ -386,8 +394,11 @@ public class LauncherRF extends javax.swing.JFrame {
         }
         pneInfo.setText(String.format("%s%n%n"
                 + "Modo: %s%n"
-                + "Trucos: %s%n", pneInfo.getText(), juego.getMode() ? "experimental" : "clásico",
-                juego.cheatsUsed() ? "activados" : "desactivados"));
+                + "Trucos: %s%n"
+                + "Tamaño del tablero: %d x %d%n",
+                pneInfo.getText(), juego.getSettings().isExperimental() ? "experimental" : "clásico",
+                juego.cheatsUsed() ? "activados" : "desactivados",
+                juego.getTablero().getRows(), juego.getTablero().getColumns()));
     }//GEN-LAST:event_pneInfoComponentShown
 
     private void jmiSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSalirActionPerformed
@@ -403,7 +414,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTrucosComponentShown
 
     private void jmiTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmiTrucosMouseEntered
-        jmiTrucos.setToolTipText(String.format("%s",  juego.getMode() ? "Los trucos no se pueden desactivar una vez habilitados." : "Los trucos no se pueden activar en modo clásico."));
+        jmiTrucos.setToolTipText(String.format("%s",  juego.getSettings().isPossibleCheats() ? "Los trucos no se pueden desactivar una vez habilitados." : "Los trucos no se pueden activar en modo clásico."));
     }//GEN-LAST:event_jmiTrucosMouseEntered
 
     private void mnuTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuTrucosMouseEntered

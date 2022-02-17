@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static java.lang.System.out;
 
 import org.junit.jupiter.api.*;
+import org.opentest4j.*;
 
 import obj.Jugada;
 import obj.Tablero;
@@ -56,7 +57,7 @@ class MoverTest {
 				() -> assertEquals(1, tabCuadrado.getTab(0, 0)),
 				() -> assertEquals(1, tabIrregular1.getTab(0, 0)),
 				() -> assertEquals(1, tabIrregular2.getTab(0, 0)),
-				
+                                
 				() -> assertAll("extendido",
 						() -> assertEquals(3, tabCuadrado.getTab(0, 4)),
 						() -> assertEquals(3, tabIrregular1.getTab(0, 5)),

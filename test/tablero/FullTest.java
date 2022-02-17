@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import game.SumaTres;
+import obj.Settings;
 
 @DisplayName("Detección de tablero lleno")
 class FullTest {
@@ -15,7 +16,7 @@ class FullTest {
 
 	@BeforeEach
 	void setUp() {
-		s = new SumaTres(3, 3, 0);
+		s = new SumaTres(new Settings(3, 3, false));
 	}
 
 	@Test

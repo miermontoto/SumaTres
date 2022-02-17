@@ -34,7 +34,7 @@ public final class Turno {
 	 * escogida, se quedarán en la misma casilla.
 	 * 
 	 * @param x Objeto de la clase 'Jugada' que define el movimiento.
-	 * @param s Objeto de la clase 'SumaTres' del que obtener información.
+	 * @param t Objeto de la clase 'Tablero' del que obtener información.
 	 */
 	public static void mover(Jugada x, Tablero t) {
 		boolean check = true;
@@ -115,9 +115,8 @@ public final class Turno {
 	 * comprobando si la partida está acabada. Si el tablero no está lleno, es
 	 * imposible que la partida esté terminada.
 	 * <p>
-	 * Si se está jugando en el modo experimental, se comprueba que no se pueda
-	 * mover en diagonal para completar los posibles movimientos.
-	 * 
+	 * Si se está jugando con movimientos diagonales, los comprueba también.
+	 * @param s: Objeto de tipo 'SumaTres' que se desea analizar.
 	 * @return Valor 'booleano' definiendo si es posible algún movimiento.
 	 */
 	public static boolean ableToMove(SumaTres s) {
@@ -125,14 +124,14 @@ public final class Turno {
 		Tablero t = s.getTablero();
 		if (t.isFull()) {
 			check = false;
-			String movesToCheck = s.getMode() ? 
-					Keyboard.validExperimentalKeys : Keyboard.validClassicKeys;
+			String movesToCheck = s.getSettings().isDiagonalMovementEnabled() ? 
+					Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
 			int b = 0;
 			while(b < movesToCheck.length() && !check) {
 				Jugada x = new Jugada(movesToCheck.charAt(b));
 				for (int i = x.getUp(); i + x.getDown() < t.getColumns(); i++)
 					for (int j = x.getLeft(); j + x.getRight() < t.getRows(); j++) {
-						if (sumaCond(i, j, x, t)) check = true;
+						check = sumaCond(i, j, x, t);
 					}
 				b++;
 			}
@@ -146,7 +145,7 @@ public final class Turno {
 	 * <p>
 	 * Para determinar que sea una suma válida, se comprueba: o bien que sean piezas
 	 * iguales (excepto 1 y 2), o bien que una de las piezas sea 1 y la otra 2. <p>
-	 * Esto es FUNDAMENTAL!!! para el funcionamiento del juego. No recomiendo tocarlo.
+	 * Esto es FUNDAMENTAL!!! para el funcionamiento del juego.
 	 * 
 	 * @param i Posición x del tablero.
 	 * @param j Posición y del tablero.
