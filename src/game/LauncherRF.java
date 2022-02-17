@@ -8,6 +8,7 @@ import util.Graphic; // Se utiliza para definir dimensiones, escala, etc.
 public class LauncherRF extends javax.swing.JFrame {
     
     private PrePartida secundaria;
+    private EditarColores ventanaColores;
     private SumaTres juego;
     
 
@@ -18,6 +19,8 @@ public class LauncherRF extends javax.swing.JFrame {
         initComponents();
         secundaria = new PrePartida(this);
         secundaria.setVisible(true);
+        ventanaColores = new EditarColores(this);
+        ventanaColores.setVisible(false);
     }
     
     public void launch(Settings op) {
@@ -31,14 +34,25 @@ public class LauncherRF extends javax.swing.JFrame {
          * original, el modo clásico es imperturbable por estos cambios.
          */
         
-        jPanel1.add(juego);
+        jPanel1.add(juego); // TODO: arreglar esto!!!
         jmiTrucos.setEnabled(op.isExperimental());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoClassic.setEnabled(op.isExperimental());
         jmiModoClassic.setSelected(op.isExperimental());
         jmiModoExperimental.setSelected(op.isExperimental());
         jmiExtrasConsole.setSelected(!op.isExperimental());
+        
+        // TODO: habilitar estas funciones
+        jmiCargar.setEnabled(false);
+        jmiGuardar.setEnabled(false);
+        jmiResultados.setEnabled(false);
     }
+    
+    /**
+     * Método que devuelve el objeto de la partida que se está jugando.
+     * @return Objeto de tipo 'SumaTres'.
+     */
+    public SumaTres getJuego() {return this.juego;}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,11 +69,19 @@ public class LauncherRF extends javax.swing.JFrame {
         pneInfo = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jmiGuardar = new javax.swing.JMenuItem();
+        jmiCargar = new javax.swing.JMenuItem();
         jmiResultados = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiSalir = new javax.swing.JMenuItem();
+        mnuExtras = new javax.swing.JMenu();
+        jmiExtrasConsole = new javax.swing.JCheckBoxMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jmiColores = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jmiModo = new javax.swing.JMenu();
+        jmiModoClassic = new javax.swing.JRadioButtonMenuItem();
+        jmiModoExperimental = new javax.swing.JRadioButtonMenuItem();
         mnuTrucos = new javax.swing.JMenu();
         jmiTrucos = new javax.swing.JCheckBoxMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -67,11 +89,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosEliminar = new javax.swing.JMenuItem();
         jmiTrucosPuntos = new javax.swing.JMenuItem();
         jmiTrucosUndo = new javax.swing.JMenuItem();
-        mnuModo = new javax.swing.JMenu();
-        jmiModoClassic = new javax.swing.JRadioButtonMenuItem();
-        jmiModoExperimental = new javax.swing.JRadioButtonMenuItem();
-        mnuExtras = new javax.swing.JMenu();
-        jmiExtrasConsole = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres");
@@ -117,13 +134,13 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem1.setText("Guardar");
-        mnuArchivo.add(jMenuItem1);
+        jmiGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiGuardar.setText("Guardar");
+        mnuArchivo.add(jmiGuardar);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem2.setText("Cargar");
-        mnuArchivo.add(jMenuItem2);
+        jmiCargar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiCargar.setText("Cargar");
+        mnuArchivo.add(jmiCargar);
 
         jmiResultados.setText("Resultados prev.");
         mnuArchivo.add(jmiResultados);
@@ -140,10 +157,76 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jMenuBar1.add(mnuArchivo);
 
+        mnuExtras.setText("Opciones");
+        mnuExtras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExtrasActionPerformed(evt);
+            }
+        });
+
+        jmiExtrasConsole.setSelected(true);
+        jmiExtrasConsole.setText("Salida por consola");
+        jmiExtrasConsole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiExtrasConsoleActionPerformed(evt);
+            }
+        });
+        mnuExtras.add(jmiExtrasConsole);
+        mnuExtras.add(jSeparator3);
+
+        jmiColores.setText("Editar colores");
+        jmiColores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiColoresActionPerformed(evt);
+            }
+        });
+        mnuExtras.add(jmiColores);
+        mnuExtras.add(jSeparator4);
+
+        jmiModo.setText("Modo");
+
+        jmiModoGroup.add(jmiModoClassic);
+        jmiModoClassic.setSelected(true);
+        jmiModoClassic.setText("Clásico");
+        jmiModoClassic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiModoClassicActionPerformed(evt);
+            }
+        });
+        jmiModo.add(jmiModoClassic);
+
+        jmiModoGroup.add(jmiModoExperimental);
+        jmiModoExperimental.setText("Experimental");
+        jmiModoExperimental.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiModoExperimentalActionPerformed(evt);
+            }
+        });
+        jmiModo.add(jmiModoExperimental);
+
+        mnuExtras.add(jmiModo);
+
+        jMenuBar1.add(mnuExtras);
+
         mnuTrucos.setText("Trucos");
+        mnuTrucos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                mnuTrucosMouseEntered(evt);
+            }
+        });
 
         jmiTrucos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucos.setText("Trucos");
+        jmiTrucos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jmiTrucosMouseEntered(evt);
+            }
+        });
+        jmiTrucos.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jmiTrucosComponentShown(evt);
+            }
+        });
         jmiTrucos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiTrucosActionPerformed(evt);
@@ -191,47 +274,6 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jMenuBar1.add(mnuTrucos);
 
-        mnuModo.setText("Modo");
-
-        jmiModoGroup.add(jmiModoClassic);
-        jmiModoClassic.setSelected(true);
-        jmiModoClassic.setText("Clásico");
-        jmiModoClassic.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiModoClassicActionPerformed(evt);
-            }
-        });
-        mnuModo.add(jmiModoClassic);
-
-        jmiModoGroup.add(jmiModoExperimental);
-        jmiModoExperimental.setText("Experimental");
-        jmiModoExperimental.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiModoExperimentalActionPerformed(evt);
-            }
-        });
-        mnuModo.add(jmiModoExperimental);
-
-        jMenuBar1.add(mnuModo);
-
-        mnuExtras.setText("Extras");
-        mnuExtras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuExtrasActionPerformed(evt);
-            }
-        });
-
-        jmiExtrasConsole.setSelected(true);
-        jmiExtrasConsole.setText("Salida por consola");
-        jmiExtrasConsole.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiExtrasConsoleActionPerformed(evt);
-            }
-        });
-        mnuExtras.add(jmiExtrasConsole);
-
-        jMenuBar1.add(mnuExtras);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -269,11 +311,8 @@ public class LauncherRF extends javax.swing.JFrame {
         if(Dialog.confirm("Activar los trucos marcará el resultado de la partida como inválido. ¿Desea continuar?")) {
             juego.enableCheats();
             jmiTrucos.setEnabled(false);
-            jmiTrucosAñadir.setEnabled(true);
-            jmiTrucosEliminar.setEnabled(true);
-            jmiTrucosUndo.setEnabled(true);
-            jmiTrucosPuntos.setEnabled(true);
-        }
+            setCheatsEnabled(true);
+        } else {jmiTrucos.setSelected(false);}
     }//GEN-LAST:event_jmiTrucosActionPerformed
 
     private void jmiTrucosUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosUndoActionPerformed
@@ -295,19 +334,23 @@ public class LauncherRF extends javax.swing.JFrame {
             juego.enableCheats();
             juego.setClassicMode();
             jmiTrucos.setEnabled(false);
-            jmiTrucosAñadir.setEnabled(false);
-            jmiTrucosEliminar.setEnabled(false);
-            jmiTrucosPuntos.setEnabled(false);
-            jmiTrucosUndo.setEnabled(false);
+            setCheatsEnabled(false);
         }
     }//GEN-LAST:event_jmiModoClassicActionPerformed
 
+    private void setCheatsEnabled(final boolean status) {
+        jmiTrucosAñadir.setEnabled(status);
+        jmiTrucosEliminar.setEnabled(status);
+        jmiTrucosPuntos.setEnabled(status);
+        jmiTrucosUndo.setEnabled(status);
+    }
+    
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
         // Si se llega aquí, significa que el usuario partió del modo experimental,
         // pasó al modo clásico y con esta acción vuelve al modo experimental, por
         // lo que no es necesario volver a activar los trucos ni mostrar alertas.
         juego.setExperimentalMode();
-        jmiTrucosActionPerformed(evt); // se activan los trucos.
+        setCheatsEnabled(true); // se activan los trucos.
     }//GEN-LAST:event_jmiModoExperimentalActionPerformed
 
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
@@ -351,6 +394,22 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.finalDePartida();
     }//GEN-LAST:event_jmiSalirActionPerformed
 
+    private void jmiColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiColoresActionPerformed
+        ventanaColores.setVisible(true);
+    }//GEN-LAST:event_jmiColoresActionPerformed
+
+    private void jmiTrucosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jmiTrucosComponentShown
+        
+    }//GEN-LAST:event_jmiTrucosComponentShown
+
+    private void jmiTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmiTrucosMouseEntered
+        jmiTrucos.setToolTipText(String.format("%s",  juego.getMode() ? "Los trucos no se pueden desactivar una vez habilitados." : "Los trucos no se pueden activar en modo clásico."));
+    }//GEN-LAST:event_jmiTrucosMouseEntered
+
+    private void mnuTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuTrucosMouseEntered
+        jmiTrucos.setSelected(juego.cheatsUsed());
+    }//GEN-LAST:event_mnuTrucosMouseEntered
+
     /**
      * @param args the command line arguments
      */
@@ -389,13 +448,17 @@ public class LauncherRF extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JMenuItem jmiCargar;
+    private javax.swing.JMenuItem jmiColores;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
+    private javax.swing.JMenuItem jmiGuardar;
+    private javax.swing.JMenu jmiModo;
     private javax.swing.JRadioButtonMenuItem jmiModoClassic;
     private javax.swing.JRadioButtonMenuItem jmiModoExperimental;
     private javax.swing.ButtonGroup jmiModoGroup;
@@ -408,7 +471,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiTrucosUndo;
     private javax.swing.JMenu mnuArchivo;
     private javax.swing.JMenu mnuExtras;
-    private javax.swing.JMenu mnuModo;
     private javax.swing.JMenu mnuTrucos;
     private javax.swing.JTextPane pneInfo;
     // End of variables declaration//GEN-END:variables

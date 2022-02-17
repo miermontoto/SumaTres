@@ -401,11 +401,9 @@ public class SumaTres extends JPanel {
 	 * Solo accessible en el modo experimental.
 	 */
 	public void enableCheats() {
-		if (Dialog.confirm("¿Desea activar los trucos?")) {
-			cheatsUsed = true;
-			repaint();
-			setMultiplier(0.0);
-		}
+            cheatsUsed = true;
+            repaint();
+            setMultiplier(0.0);
 	}
 	
 	/**
