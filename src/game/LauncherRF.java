@@ -33,7 +33,7 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     public void launch(Settings op) {
         juego = new SumaTres(op);
-        setBounds(0, 0, Graphic.defineX(juego) + 15, (int) (Graphic.defineY(juego) + 39 + 20 * Graphic.SCALE));
+        setBounds(0, 0, Graphic.defineX(juego) + 15, (int) (Graphic.defineY(juego) + 39 + 30 * Graphic.SCALE));
         setVisible(true);
         
         /*
@@ -46,6 +46,11 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.setLocation(0,0);
         juego.setName("Juego");
         jTabbedPane1.add(juego);
+        //jTabbedPane1.setSelectedComponent(juego);
+        jTabbedPane1.setComponentAt(0, juego);
+        pneInfo.setName("Info");
+        jTabbedPane1.add(pneInfo);
+        
         jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoClassic.setEnabled(op.isExperimental());
@@ -325,21 +330,23 @@ public class LauncherRF extends javax.swing.JFrame {
      * @param evt 
      */
     private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
-        pneInfo.setText(String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
-                + "Turnos jugados: %d%n"
-                + "Siguiente ficha: %d%n"
-                + "Posibles siguientes: ",
-                (int) (juego.getPuntos()*juego.getMultiplier()), juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente()));
-        for(int i : juego.possibleValuesNewSiguiente()) {
-            pneInfo.setText(String.format("%s%d ", pneInfo.getText(), i));
+        if(juego != null) {
+            pneInfo.setText(String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
+                    + "Turnos jugados: %d%n"
+                    + "Siguiente ficha: %d%n"
+                    + "Posibles siguientes: ",
+                    (int) (juego.getPuntos()*juego.getMultiplier()), juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente()));
+            for(int i : juego.possibleValuesNewSiguiente()) {
+                pneInfo.setText(String.format("%s%d ", pneInfo.getText(), i));
+            }
+            pneInfo.setText(String.format("%s%n%n"
+                    + "Modo: %s%n"
+                    + "Trucos: %s%n"
+                    + "Tamaño del tablero: %d x %d%n",
+                    pneInfo.getText(), juego.getSettings().isExperimental() ? "experimental" : "clásico",
+                    juego.cheatsUsed() ? "activados" : "desactivados",
+                    juego.getTablero().getRows(), juego.getTablero().getColumns()));
         }
-        pneInfo.setText(String.format("%s%n%n"
-                + "Modo: %s%n"
-                + "Trucos: %s%n"
-                + "Tamaño del tablero: %d x %d%n",
-                pneInfo.getText(), juego.getSettings().isExperimental() ? "experimental" : "clásico",
-                juego.cheatsUsed() ? "activados" : "desactivados",
-                juego.getTablero().getRows(), juego.getTablero().getColumns()));
     }//GEN-LAST:event_pneInfoComponentShown
 
     private void jmiSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSalirActionPerformed
