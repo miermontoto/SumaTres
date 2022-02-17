@@ -65,6 +65,9 @@ public final class Paint {
 	 * <li>Para pintar las fichas, se utiliza {@link #pintarFichas(Graphics)}. </li>
 	 * <li>Para pintar la información, se utiliza {@link #pintarInfo(Graphics)}. </li>
 	 * </ul>
+         * 
+         * @param si: Objeto de la partida que se quiere representar.
+         * @param gi: Objeto tipo 'Graphics' con el que se quiere representar.
 	 */
 	public static void paint(Graphics gi, SumaTres si) {
 
@@ -90,8 +93,7 @@ public final class Paint {
 		pintarFlechas();
 		pintarTablero();
 		pintarFichas();
-		pintarInfo();
-		if(s.getMode()) pintarBotones(); // Solo existen botones en modo experimental.
+		if(s.getSettings().isHudEnabled()) pintarInfo();
 	}
 	
 	/**
@@ -116,7 +118,7 @@ public final class Paint {
 		g.drawString("\u2190 ", MAIN_SPACER * 9 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
 		g.drawString("\u2192", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
 		g.drawString("\u2193", Graphic.defineX(s) / 2, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
-		if(s.getMode()) {
+		if(s.getSettings().isDiagonalMovementEnabled()) {
 			g.drawString("\u2B76", MAIN_SPACER * 9 / 24, MAIN_SPACER * 14 / 24);
 			g.drawString("\u2B77", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, MAIN_SPACER * 14 / 24);
 			g.drawString("\u2B79", MAIN_SPACER * 9 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
@@ -139,61 +141,6 @@ public final class Paint {
 			s.getTablero().getRows() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
 			s.getTablero().getColumns() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
 			ROUND_DIAMETER, ROUND_DIAMETER);
-	}
-
-	private static void pintarBotones() {
-		// Primero se dibujan los botones. Solo se deben poder utilizar en modo experimental y cuando
-		// solo esté jugando un jugador.
-
-		g.setColor(Color.white);
-		g.fillRoundRect(Graphic.defineX(s) - BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE,
-				BUTTON_SIZE, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER); // Botón de toggleConsole()
-		g.setColor(Color.darkGray);
-		g.drawRoundRect(Graphic.defineX(s) - BUTTON_SIZE,  Graphic.defineY(s) - BUTTON_SIZE,
-				BUTTON_SIZE, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER);
-		g.setColor(s.consoleStatus() ? Color.green : Color.red);
-		setFontSize(g, (int) (7 * Graphic.SCALE * 2));
-		g.drawString("T", Graphic.defineX(s) - BUTTON_SIZE * 3 / 4 , Graphic.defineY(s) - BUTTON_SIZE / 4);
-
-		g.setColor(Color.white);
-		g.fillRoundRect(0, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-				ROUND_DIAMETER, ROUND_DIAMETER);
-		g.setColor(Color.darkGray);
-		g.drawRoundRect(0, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-				ROUND_DIAMETER, ROUND_DIAMETER);
-
-		if(!s.cheatsUsed()) { // Botón de enableCheats()
-			setFontSize(g, (int) (7 * Graphic.SCALE * 5));
-			g.drawString("*", BUTTON_SIZE / 8, Graphic.defineY(s) + BUTTON_SIZE / 2);
-		} else {
-			setFontSize(g, (int) (7 * Graphic.SCALE * 4));
-			g.drawString("+", BUTTON_SIZE / 7, Graphic.defineY(s)); // ponerPieza())
-
-			g.setColor(Color.white); // Botón de quitarPieza()
-			g.fillRoundRect(BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-					ROUND_DIAMETER, ROUND_DIAMETER);
-			g.setColor(Color.darkGray);
-			g.drawRoundRect(BUTTON_SIZE, Graphic.defineY(s) - BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
-					ROUND_DIAMETER, ROUND_DIAMETER);
-			setFontSize(g, (int) (7 * Graphic.SCALE * 5));
-			g.drawString("-", BUTTON_SIZE + 2*BUTTON_SIZE / 8, Graphic.defineY(s) - BUTTON_SIZE / 18);
-
-			if(s.getTurnos() > 1) { // Botón de undo()
-				g.setColor(Color.white);
-				g.fillRoundRect(Graphic.defineX(s) - 2 * BUTTON_SIZE + SPOT_SPACER, Graphic.defineY(s) - BUTTON_SIZE,
-						BUTTON_SIZE	, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER); 
-				g.setColor(Color.darkGray);
-				g.drawRoundRect(Graphic.defineX(s) - 2 * BUTTON_SIZE + SPOT_SPACER, Graphic.defineY(s) - BUTTON_SIZE,
-						BUTTON_SIZE	, BUTTON_SIZE, ROUND_DIAMETER, ROUND_DIAMETER);
-
-				setFontSize(g, (int) (7 * Graphic.SCALE * 3));
-				g.drawString("⤺", Graphic.defineX(s) - 8 * BUTTON_SIZE / 4 + SPOT_SPACER,
-						Graphic.defineY(s) - BUTTON_SIZE / 6); // ponerPieza())
-			}
-		}
-
-
-
 	}
 	
 	/**

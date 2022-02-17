@@ -3,6 +3,7 @@ package game;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
+import obj.Settings;
 import util.Dialog;
 import util.Paint;
 import obj.Pieza;
@@ -144,7 +145,7 @@ import javax.swing.JPanel;
  * @see <a href="https://www.github.com/miermontoto/SumaTres"> Repositorio de GitHub </a>
  * 
  */
-public class SumaTres extends JPanel {
+public final class SumaTres extends JPanel {
 	
 	/**
 	 * Se incluye un serial generado aleatoriamente en vez de dejar que el
@@ -172,9 +173,8 @@ public class SumaTres extends JPanel {
 	private long puntos; // Contador de puntos.
 	private double difficultyMultiplier; // Multiplicador de puntuación final.
 	private boolean cheatsUsed; // Estado de activación de los trucos.
-	private boolean experimental; // Modo de juego.
-	private boolean consoleStatus; //  Estado de activación de la salida por consola.
 	private Tablero t; // Tablero sobre el que se juega la partida.
+        private final Settings op; // Opciones de la partida.
 		
 	/**
 	* Constructor de la clase sobrecargado por tres enteros.
@@ -196,11 +196,9 @@ public class SumaTres extends JPanel {
 	* try/catch para evitar exepciones molestas en caso de que alguien manipule
 	* el código de manera incorrecta.
 	* 
-	* @param x: Cantidad de filas del tablero.
-	* @param y: Cantidad de columnas del tablero.
-	* @param type: Valor entero que define el modo de juego.
+	* @param op: Objeto de tipo obj.Settings que defina la partida.
 	*/
-	public SumaTres(int x, int y, int type) {
+	public SumaTres(Settings op) {
 		
 		// Se inicializan variables.
 		difficultyMultiplier = 1.0;
@@ -210,24 +208,13 @@ public class SumaTres extends JPanel {
 		warning = new int[2];
 		puntos = 0;
 		highestValue = 3;
-		turno = 1;
+		turno = 0;
+                this.op = op;
 		
-		try {t = new Tablero(x, y);} catch (Exception ex) {
-			out.printf("ERROR: Se ha detectado la excepción %s."
+		try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
+			err.printf("ERROR: %s."
 					+ " Estableciendo tablero por defecto 5x5.", ex);
 			t = new Tablero(5, 5);
-		}
-		
-		/*
-		 * El hecho de que se cree un objeto de tipo SumaTres antes de salir si se
-		 * introduce un número inválido o si se presiona el botón de cancelar es un
-		 * poco ineficiente técnicamente hablando, pero es visualmente más limpio.
-		 */
-		switch(type) {
-			case 0: setClassicMode(); break;      // Clásico
-			case 1: setExperimentalMode(); break; // Experimental
-			default: System.exit(0); break;       // Cancelar
-			// Se cancela si el tipo introducido es 2 o -1.
 		}
 		
 		/*
@@ -236,15 +223,16 @@ public class SumaTres extends JPanel {
 		 * de colores aleatorios durante ese turno solamente.
 		 */
 		Pieza.inicializarColores();
-		if (getMode()) 
+		if (op.isBalancedStartEnabled()) 
 			for(int i = 0; i < Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1); i++) 
 				generarSetFichas();
-		else {generarSetFichas(); out.print(fullToString());}
+		else generarSetFichas();
 		 /*
 		  * Se hace Math.max porque en el tablero 3x3, el resultado del cálculo es 0.45,
 		  * que convertido a entero es 0, lo que resulta en un tablero vacío al empezar
 		  * la partida en modo experimental.
 		  */
+                 if(op.isConsoleEnabled()) out.println(fullToString());
 		
 		
 		newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
@@ -297,7 +285,7 @@ public class SumaTres extends JPanel {
 	/**
 	 * Comprueba y establece el mayor valor de cualquier ficha en el tablero.
 	 * 
-	 * @param valor que se quiera establecer.
+	 * @param puntos que se quiera establecer como máximo.
 	 */
 	public void setHighest(int puntos) {if (puntos > this.getHighest()) this.highestValue = puntos;}
 	
@@ -313,7 +301,7 @@ public class SumaTres extends JPanel {
 	 * El valor tiene que ser <code>3</code> o superior. Es imposible
 	 * que la suma de puntos sea inferior a esto.
 	 * 
-	 * @param Puntos que se quieren sumar.
+	 * @param puntos que se quieren sumar.
 	 */
 	public void addPuntos(int puntos) {if(puntos>=3) this.puntos += puntos;}
 	
@@ -376,22 +364,10 @@ public class SumaTres extends JPanel {
 	public int getTurnos() {return this.turno;}
 	
 	/**
-	 * Activa el modo clásico.
-	 * <p> Al establecer el modo clásico, se activa la consola.
-	 */
-	public void setClassicMode() {this.experimental = false; this.consoleStatus = true;}
-	
-	/**
-	 * Activa el modo de juego experimental.
-	 * <p> Al establecer el modo experimental, se desactiva la consola.
-	 */
-	public void setExperimentalMode() {this.experimental = true; this.consoleStatus = false;}
-	
-	/**
 	 * Devuelve el estado del modo. False para modo clásico.
 	 * @return Valor booleano con el estado del modo experimental.
 	 */
-	public boolean getMode() {return this.experimental;}
+	//public boolean getMode() {return op.isExperimental();}
 	
 	/**
 	 * Activa o desactiva el toString() por consola.
@@ -399,9 +375,9 @@ public class SumaTres extends JPanel {
 	 */
 	public void toggleConsole() {
 		String s;
-		if(consoleStatus()) s = "Desactivada salida por consola.";
-		else              s = "Activada salida por consola.";
-		this.consoleStatus = !consoleStatus;
+		if(op.isConsoleEnabled()) s = "Desactivada salida por consola.";
+		else                      s = "Activada salida por consola.";
+		op.toggleConsole();
 		update();
 		Dialog.show(s);
 	}
@@ -411,23 +387,22 @@ public class SumaTres extends JPanel {
 	 * Solo accessible en el modo experimental.
 	 */
 	public void enableCheats() {
-		if (Dialog.confirm("¿Desea activar los trucos?")) {
-			cheatsUsed = true;
-			repaint();
-			setMultiplier(0.0);
-		}
+            cheatsUsed = true;
+            repaint();
+            setMultiplier(0.0);
 	}
 	
 	/**
 	 * Devuelve el estado de los trucos.
+         * @return Valor booleano.
 	 */
 	public boolean cheatsUsed() {return this.cheatsUsed;}
-	
-	/**
-	 * Devuelve el estado de la consola. 'true' en caso de que esté activada.
-	 * @return Valor booleano.
-	 */
-	public boolean consoleStatus() {return this.consoleStatus;}
+        
+        /**
+         * Método que devuelve las opciones con las que se está jugando.
+         * @return Objeto de tipo 'obj.Settings'.
+         */
+        public Settings getSettings() {return this.op;}
 
 	/**
 	 * Método que establece el multiplicador que depende de la dificultad.
@@ -543,7 +518,7 @@ public class SumaTres extends JPanel {
 		var x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
 		
 		Turno.mover(x, this);
-		if(consoleStatus()) out.println(this); //TODO: hacer que los saltos de línea coincidan
+		if(op.isConsoleEnabled()) out.println(this); //TODO: hacer que los saltos de línea coincidan
 		Turno.sumar(x, this);
 		
 		
@@ -591,7 +566,7 @@ public class SumaTres extends JPanel {
 	 */
 	public void update() {
 		repaint();
-		if(consoleStatus()) out.print(fullToString());
+		if(op.isConsoleEnabled()) out.print(fullToString());
 	}
 	
 	/**
@@ -611,7 +586,7 @@ public class SumaTres extends JPanel {
 	 * 
 	 * @return
 	 */
-	private int[] possibleValuesNewSiguiente() {
+	public int[] possibleValuesNewSiguiente() {
 		if(getHighest() <= 12) {
 			// Si la ficha no supera 12, el método de obtener el valor de
 			// la siguiente ficha es el clásico.
@@ -672,8 +647,10 @@ public class SumaTres extends JPanel {
 	 */
 	//@Deprecated (since="v18", forRemoval=false)
 	public void newSiguiente() {
-		if(getMode()) setSiguiente(possibleValuesNewSiguiente()[newRandom(possibleValuesNewSiguiente().length)]);
-		else setSiguiente(newRandom(3) + 1);
+		if(op.isMoreNextValuesEnabled()) 
+                    setSiguiente(possibleValuesNewSiguiente()[newRandom(possibleValuesNewSiguiente().length)]);
+		else 
+                    setSiguiente(newRandom(3) + 1);
 		
 		obtainedFromRandom.put(getSiguiente(),
 				obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
@@ -691,7 +668,7 @@ public class SumaTres extends JPanel {
 	 * Coloca una ficha en el tablero. Para encontrar una poisición nueva, utiliza
 	 * {@link #validLocation()}.
 	 * 
-	 * @param nV El valor que tendrá la nueva ficha.
+	 * @param nv El valor que tendrá la nueva ficha.
 	 */
 	public void newFicha(int nv) {
 		int[] x = validLocation();
@@ -822,7 +799,7 @@ public class SumaTres extends JPanel {
 		Dialog.show(salida);
 		out.printf("%n%n%s",salida);
 		
-		if(getMode()) {
+		if(op.isHudEnabled()) {
 			out.print("Fichas obtenidas: ");
 			for(int i=0; i < possibleValuesNewSiguiente().length; i++) {
 				out.printf("[%d]: %d ",
@@ -842,16 +819,16 @@ public class SumaTres extends JPanel {
 	}
 	
 	public void loop() {
-		while(!Keyboard.isControlDown) {
+		while(true) { // <- lo siento!
 		              jugada('w');
-		if(getMode()) jugada('q');
+		if(op.isDiagonalMovementEnabled()) jugada('q');
 		              jugada('a');
-		if(getMode()) jugada('z');
-		if(getMode()) jugada('x');
-		else 		  jugada('s');
-		if(getMode()) jugada('c');
+		if(op.isDiagonalMovementEnabled()) jugada('z');
+		if(op.isDiagonalMovementEnabled()) jugada('x');
+		else 	      jugada('s');
+		if(op.isDiagonalMovementEnabled()) jugada('c');
 		              jugada('d');
-		if(getMode()) jugada('e');
+		if(op.isDiagonalMovementEnabled()) jugada('e');
 		}
 	}
 	

@@ -5,12 +5,13 @@ import org.junit.jupiter.api.*;
 
 import game.SumaTres;
 import obj.Jugada;
+import obj.Settings;
 import obj.Tablero;
 import obj.Turno;
 
 @DisplayName("Suma")
 class SumarTest {
-	private SumaTres s = new SumaTres(3, 3, 0);
+	private SumaTres s = new SumaTres(new Settings(3, 3, false));
 
 	@BeforeEach
 	void setUp() throws Exception {

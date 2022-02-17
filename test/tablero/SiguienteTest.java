@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
 import game.SumaTres;
+import obj.Settings;
 
 @DisplayName("Obtención de la posición de la ficha siguiente")
 class SiguienteTest {
@@ -12,7 +13,7 @@ class SiguienteTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		s = new SumaTres(3, 3, 1);
+		s = new SumaTres(new Settings(3, 3, true));
 		for(int i=0; i<3; i++) for(int j=0; j<3; j++) s.setTab(i, j, 3);
 	}
 
