@@ -46,6 +46,11 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.setLocation(0,0);
         juego.setName("Juego");
         jTabbedPane1.add(juego);
+        //jTabbedPane1.setSelectedComponent(juego);
+        jTabbedPane1.setComponentAt(0, juego);
+        pneInfo.setName("Info");
+        jTabbedPane1.add(pneInfo);
+        
         jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoClassic.setEnabled(op.isExperimental());
