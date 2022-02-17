@@ -12,7 +12,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private final EditarColores ventanaColores;
     private SumaTres juego;
     
-
     /**
      * Creates new form LauncherRF
      */

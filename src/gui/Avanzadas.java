@@ -46,6 +46,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkInicioEquilibrado = new javax.swing.JCheckBox();
 
         setTitle("SumaTres - Opciones avanzadas");
+        setResizable(false);
 
         btgModos.add(btnClásico);
         btnClásico.setText("Modo clásico");
