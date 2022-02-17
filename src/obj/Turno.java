@@ -129,10 +129,15 @@ public final class Turno {
 			int b = 0;
 			while(b < movesToCheck.length() && !check) {
 				Jugada x = new Jugada(movesToCheck.charAt(b));
-				for (int i = x.getUp(); i + x.getDown() < t.getColumns(); i++)
-					for (int j = x.getLeft(); j + x.getRight() < t.getRows(); j++) {
-						check = sumaCond(i, j, x, t);
-					}
+                                int i = x.getUp();
+                                while(i + x.getDown() < t.getColumns() && !check) {
+                                    int j = x.getLeft();
+                                    while(j + x.getRight() < t.getRows() && !check) {
+                                        check = sumaCond(i, j, x, t);
+                                        j++;
+                                    }
+                                    i++;
+                                }
 				b++;
 			}
 		}
