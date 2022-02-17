@@ -25,6 +25,28 @@ public class Settings {
         possibleCheats = m;
         hudEnabled = true;
         moreNextValuesEnabled = m;
+        balancedStartEnabled = m;
+    }
+    
+    public Settings(String s) {
+        String[] data = s.split(" ");
+        sizex = Integer.parseInt(data[0]);
+        sizey = Integer.parseInt(data[1]);
+        experimentalMode = Boolean.parseBoolean(data[2]);
+        consoleEnabled = Boolean.parseBoolean(data[3]);
+        diagonalMovementEnabled = Boolean.parseBoolean(data[4]);
+        possibleCheats = Boolean.parseBoolean(data[5]);
+        hudEnabled = Boolean.parseBoolean(data[6]);
+        moreNextValuesEnabled = Boolean.parseBoolean(data[7]);
+        balancedStartEnabled = Boolean.parseBoolean(data[8]);
+        
+        if(!experimentalMode)
+            if(diagonalMovementEnabled || possibleCheats || !hudEnabled ||
+                    moreNextValuesEnabled || balancedStartEnabled) {
+                System.err.println("Valores inválidos leídos desde archivo.");
+                System.exit(2);
+            }
+        
     }
 
     public int getX() {
@@ -86,4 +108,10 @@ public class Settings {
     public void toggleMoreNextValues() {moreNextValuesEnabled = !moreNextValuesEnabled;}
     public void toggleBalancedStart() {balancedStartEnabled = !balancedStartEnabled;}
     
+    public String toString() {
+        return String.format("%d %d %s %s %s %s %s %s %s", 
+                sizex, sizey, experimentalMode, consoleEnabled, 
+                diagonalMovementEnabled, possibleCheats, hudEnabled, 
+                moreNextValuesEnabled, balancedStartEnabled);
+    }
 }

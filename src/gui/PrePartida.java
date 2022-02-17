@@ -27,6 +27,10 @@ public class PrePartida extends javax.swing.JFrame {
         // las opciones por defecto son: tamaño 5x5, modo experimental.
         opciones = new Settings(5, 5, true);
         avanzadas.setModoExperimental();
+        
+        // opciones a implementar
+        btnOpen.setVisible(false);
+        btnSave.setVisible(false);
     }
 
     /**
@@ -39,6 +43,8 @@ public class PrePartida extends javax.swing.JFrame {
     private void initComponents() {
 
         grpModo = new javax.swing.ButtonGroup();
+        flcOpen = new javax.swing.JFileChooser();
+        flcSave = new javax.swing.JFileChooser();
         sldVertical = new javax.swing.JSlider();
         sldHorizontal = new javax.swing.JSlider();
         txtHorizontal = new javax.swing.JTextField();
@@ -48,6 +54,14 @@ public class PrePartida extends javax.swing.JFrame {
         bttClásico = new javax.swing.JRadioButton();
         btnJugar = new javax.swing.JButton();
         bttAvanzadas = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnOpen = new javax.swing.JButton();
+
+        flcOpen.setDialogTitle("SumaTres - Cargar archivo de opciones");
+
+        flcSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
+        flcSave.setCurrentDirectory(new java.io.File("/home/JuanMier/."));
+        flcSave.setDialogTitle("SumaTres - Guardar opciones a archivo");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres - Prepartida");
@@ -85,11 +99,6 @@ public class PrePartida extends javax.swing.JFrame {
         txtVertical.setEditable(false);
         txtVertical.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtVertical.setText("5");
-        txtVertical.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                txtVerticalComponentMoved(evt);
-            }
-        });
         txtVertical.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtVerticalActionPerformed(evt);
@@ -135,12 +144,26 @@ public class PrePartida extends javax.swing.JFrame {
             }
         });
 
+        btnSave.setText("📁");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        btnOpen.setText("📂");
+        btnOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(51, 51, 51)
                         .addComponent(sldVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -150,17 +173,20 @@ public class PrePartida extends javax.swing.JFrame {
                             .addComponent(bttClásico)
                             .addComponent(bttExperimental)
                             .addComponent(btnJugar)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(41, 41, 41)
-                            .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bttAvanzadas))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(81, 81, 81)
-                            .addComponent(sldHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnOpen)
+                        .addGap(18, 18, 18)
+                        .addComponent(bttAvanzadas))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addComponent(sldHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -169,8 +195,10 @@ public class PrePartida extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bttAvanzadas))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(bttAvanzadas)
+                    .addComponent(btnSave)
+                    .addComponent(btnOpen))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnJugar)
@@ -211,11 +239,8 @@ public class PrePartida extends javax.swing.JFrame {
         this.setVisible(false);
         if(principal == null) System.exit(255);
         else principal.launch(opciones);
+        avanzadas.setVisible(false);
     }//GEN-LAST:event_btnJugarActionPerformed
-
-    private void txtVerticalComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_txtVerticalComponentMoved
-
-    }//GEN-LAST:event_txtVerticalComponentMoved
 
     private void bttClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttClásicoActionPerformed
         opciones = new Settings(Integer.parseInt(txtHorizontal.getText()), Integer.parseInt(txtVertical.getText()), false);
@@ -240,6 +265,14 @@ public class PrePartida extends javax.swing.JFrame {
     private void bttAvanzadasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttAvanzadasActionPerformed
         avanzadas.setVisible(true);
     }//GEN-LAST:event_bttAvanzadasActionPerformed
+
+    private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
+        flcOpen.setVisible(true);
+    }//GEN-LAST:event_btnOpenActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        flcSave.setVisible(true);
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     public Settings getSettings() {return this.opciones;}
     public void setSettings(Settings op) {this.opciones = op;}
@@ -283,10 +316,14 @@ public class PrePartida extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnJugar;
+    private javax.swing.JButton btnOpen;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton bttAvanzadas;
     private javax.swing.JRadioButton bttClásico;
     private javax.swing.JRadioButton bttExperimental;
     private javax.swing.JCheckBox chkCustomSizes;
+    private javax.swing.JFileChooser flcOpen;
+    private javax.swing.JFileChooser flcSave;
     private javax.swing.ButtonGroup grpModo;
     private javax.swing.JSlider sldHorizontal;
     private javax.swing.JSlider sldVertical;

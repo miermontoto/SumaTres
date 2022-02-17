@@ -55,12 +55,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiGuardar.setEnabled(false);
         jmiResultados.setEnabled(false);
     }
-    
-    /**
-     * Método que devuelve el objeto de la partida que se está jugando.
-     * @return Objeto de tipo 'SumaTres'.
-     */
-    public SumaTres getJuego() {return this.juego;}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -82,7 +76,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiResultados = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiSalir = new javax.swing.JMenuItem();
-        mnuExtras = new javax.swing.JMenu();
+        mnuOpciones = new javax.swing.JMenu();
         jmiExtrasConsole = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiColores = new javax.swing.JMenuItem();
@@ -102,11 +96,6 @@ public class LauncherRF extends javax.swing.JFrame {
         setTitle("SumaTres");
         setIconImage(Graphic.ICON.getImage());
         setResizable(false);
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-        });
 
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -136,11 +125,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jTabbedPane1.addTab("Info", pneInfo);
 
         mnuArchivo.setText("Archivo");
-        mnuArchivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuArchivoActionPerformed(evt);
-            }
-        });
 
         jmiGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiGuardar.setText("Guardar");
@@ -165,12 +149,7 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jMenuBar1.add(mnuArchivo);
 
-        mnuExtras.setText("Opciones");
-        mnuExtras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuExtrasActionPerformed(evt);
-            }
-        });
+        mnuOpciones.setText("Opciones");
 
         jmiExtrasConsole.setSelected(true);
         jmiExtrasConsole.setText("Salida por consola");
@@ -179,8 +158,8 @@ public class LauncherRF extends javax.swing.JFrame {
                 jmiExtrasConsoleActionPerformed(evt);
             }
         });
-        mnuExtras.add(jmiExtrasConsole);
-        mnuExtras.add(jSeparator3);
+        mnuOpciones.add(jmiExtrasConsole);
+        mnuOpciones.add(jSeparator3);
 
         jmiColores.setText("Editar colores");
         jmiColores.addActionListener(new java.awt.event.ActionListener() {
@@ -188,8 +167,8 @@ public class LauncherRF extends javax.swing.JFrame {
                 jmiColoresActionPerformed(evt);
             }
         });
-        mnuExtras.add(jmiColores);
-        mnuExtras.add(jSeparator4);
+        mnuOpciones.add(jmiColores);
+        mnuOpciones.add(jSeparator4);
 
         jmiModo.setText("Modo");
 
@@ -212,9 +191,9 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         jmiModo.add(jmiModoExperimental);
 
-        mnuExtras.add(jmiModo);
+        mnuOpciones.add(jmiModo);
 
-        jMenuBar1.add(mnuExtras);
+        jMenuBar1.add(mnuOpciones);
 
         mnuTrucos.setText("Trucos");
         mnuTrucos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -228,11 +207,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jmiTrucosMouseEntered(evt);
-            }
-        });
-        jmiTrucos.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                jmiTrucosComponentShown(evt);
             }
         });
         jmiTrucos.addActionListener(new java.awt.event.ActionListener() {
@@ -327,10 +301,6 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.undo();
     }//GEN-LAST:event_jmiTrucosUndoActionPerformed
 
-    private void mnuArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuArchivoActionPerformed
-
-    }//GEN-LAST:event_mnuArchivoActionPerformed
-
     private void jmiTrucosPuntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosPuntosActionPerformed
         juego.addPuntos(Integer.parseInt(Dialog.input("Número de puntos a añadir:")));
     }//GEN-LAST:event_jmiTrucosPuntosActionPerformed
@@ -364,14 +334,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
         juego.toggleConsole();
     }//GEN-LAST:event_jmiExtrasConsoleActionPerformed
-
-    private void mnuExtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExtrasActionPerformed
-
-    }//GEN-LAST:event_mnuExtrasActionPerformed
-
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        juego.rerouteKeyboard(evt);
-    }//GEN-LAST:event_formKeyPressed
 
     private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
         juego.rerouteKeyboard(evt);
@@ -409,10 +371,6 @@ public class LauncherRF extends javax.swing.JFrame {
         ventanaColores.setVisible(true);
     }//GEN-LAST:event_jmiColoresActionPerformed
 
-    private void jmiTrucosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jmiTrucosComponentShown
-        
-    }//GEN-LAST:event_jmiTrucosComponentShown
-
     private void jmiTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmiTrucosMouseEntered
         jmiTrucos.setToolTipText(String.format("%s",  juego.getSettings().isPossibleCheats() ? "Los trucos no se pueden desactivar una vez habilitados." : "Los trucos no se pueden activar en modo clásico."));
     }//GEN-LAST:event_jmiTrucosMouseEntered
@@ -437,22 +395,16 @@ public class LauncherRF extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LauncherRF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LauncherRF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LauncherRF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(LauncherRF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LauncherRF().setVisible(false);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new LauncherRF().setVisible(false);
         });
         
     }
@@ -481,7 +433,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiTrucosPuntos;
     private javax.swing.JMenuItem jmiTrucosUndo;
     private javax.swing.JMenu mnuArchivo;
-    private javax.swing.JMenu mnuExtras;
+    private javax.swing.JMenu mnuOpciones;
     private javax.swing.JMenu mnuTrucos;
     private javax.swing.JTextPane pneInfo;
     // End of variables declaration//GEN-END:variables
