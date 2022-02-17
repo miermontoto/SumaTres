@@ -33,7 +33,7 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     public void launch(Settings op) {
         juego = new SumaTres(op);
-        setBounds(0, 0, Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
+        setBounds(0, 0, Graphic.defineX(juego) + 15, (int) (Graphic.defineY(juego) + 39 + 20 * Graphic.SCALE));
         setVisible(true);
         
         /*
@@ -42,7 +42,10 @@ public class LauncherRF extends javax.swing.JFrame {
          * original, el modo clásico es imperturbable por estos cambios.
          */
         
-        jPanel1.add(juego); // TODO: arreglar esto!!!
+        juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
+        juego.setLocation(0,0);
+        juego.setName("Juego");
+        jTabbedPane1.add(juego);
         jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoClassic.setEnabled(op.isExperimental());
@@ -67,7 +70,6 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jmiModoGroup = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
         pneInfo = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
@@ -96,25 +98,6 @@ public class LauncherRF extends javax.swing.JFrame {
         setTitle("SumaTres");
         setIconImage(Graphic.ICON.getImage());
         setResizable(false);
-
-        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jPanel1KeyPressed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 240, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Juego", jPanel1);
 
         pneInfo.setEditable(false);
         pneInfo.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -262,11 +245,11 @@ public class LauncherRF extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
         );
 
         pack();
@@ -334,10 +317,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
         juego.toggleConsole();
     }//GEN-LAST:event_jmiExtrasConsoleActionPerformed
-
-    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
-        juego.rerouteKeyboard(evt);
-    }//GEN-LAST:event_jPanel1KeyPressed
 
     /**
      * Actualiza el panel de información cada vez que se muestra. Este listener
@@ -411,7 +390,6 @@ public class LauncherRF extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
