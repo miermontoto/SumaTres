@@ -1,8 +1,7 @@
-![Codacy grade](https://img.shields.io/codacy/grade/645541a0086c40c2af9bdcf53859de47) ![GitHub repo size](https://img.shields.io/github/repo-size/miermontoto/SumaTres) 
 # SumaTres
-Proyecto de grupo, IP - PL4 2020
+- Proyecto de grupo, IP - PL4 2020: la versión entregada fue la [versión 13](https://github.com/miermontoto/SumaTres/tree/f85b0cb72ed033d36211e62354214de6f3cf8d31), el 14/01/2021. **Nota: 10**
+- Proyecto individual, CPM - PL1 2022.
 
-La versión entregada fue la [versión 13](https://github.com/miermontoto/SumaTres/tree/f85b0cb72ed033d36211e62354214de6f3cf8d31), el 14/01/2021.
 
 SumaTres es un simple juego que trata de conseguir la mayor puntuación posible
 sumando piezas adyacentes del mismo valor, excepto las piezas 1 y 2 que solo

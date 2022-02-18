@@ -131,8 +131,8 @@ import javax.swing.JPanel;
  * @see <a href="https://www.tutorialspoint.com/java/io/writer_flush.htm">
  * 		Tutorial y documentación sobre el método flush() </a>
  * 
- * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/io/File.html">
- * 		Documentación de Oracle: File </a>
+ * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/io/FileWS.html">
+ 		Documentación de Oracle: FileWS </a>
  * 
  * @see <a href="https://en.wikipedia.org/wiki/Color_difference">
  * 		Wikipedia: Fórmula e información sobre distancia entre colores </a>
@@ -446,6 +446,10 @@ public final class SumaTres extends JPanel {
 	public void setTablero(Tablero nt) {
 		if(nt.getColumns() == t.getColumns() && nt.getRows() == t.getRows()) t = nt;
 	}
+        
+        public HashMap<Integer, Integer> getObtainedFromRandom() {
+            return obtainedFromRandom;
+        }
 	
 	/*
 	 *  No existe setTurnos() porque no es necesario, los turnos son un simple contador sin
@@ -793,6 +797,7 @@ public final class SumaTres extends JPanel {
 	public void finalDePartida() {
             long finalPuntos = (long) (getPuntos() * getMultiplier());
 
+<<<<<<< HEAD
             String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n",
                 finalPuntos, getHighest(), getTurnos());
             if (cheatsUsed()) salida += "Se han utilizado trucos.";
@@ -819,6 +824,31 @@ public final class SumaTres extends JPanel {
             if(op.isExitOnEndEnabled()) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
             Keyboard.disableHandling(); // desactiva la entrada por teclado.
             Mouse.disableHandling(); // desctiva la entrada por ratón.
+=======
+		String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n",
+			finalPuntos, getHighest(), getTurnos());
+		if (cheatsUsed()) salida += "Se han utilizado trucos.";
+		Dialog.show(salida);
+		out.printf("%n%n%s",salida);
+		
+		if(op.isHudEnabled()) {
+			out.print("Fichas obtenidas: ");
+			for(int i=0; i < possibleValuesNewSiguiente().length; i++) {
+				out.printf("[%d]: %d ",
+					possibleValuesNewSiguiente()[i], obtainedFromRandom.get(possibleValuesNewSiguiente()[i]));
+			}
+			out.println();
+			
+			String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+					VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
+					getTurnos());
+			handler.FileWS.write(output, ARCHIVO);
+			out.println("Puntuaciones guardadas.");
+			
+		}
+		System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
+>>>>>>> aff8c3e2cae0c82bfdab42a085c3e083586b4b56
 	}
 	
 	public void loop() {
