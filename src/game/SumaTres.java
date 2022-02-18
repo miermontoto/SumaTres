@@ -549,15 +549,15 @@ public final class SumaTres extends JPanel {
 	* Devuelve el tablero a la situación anterior.
 	*/
 	public void undo() {
-		if (getTurnos() > 1) { // Se comprueba que no se esté en el primer turno.
-			for (int i = 0; i < t.getColumns(); i++)
-				for (int j = 0; j < t.getRows(); j++) {
-					setTab(i, j, tableros.get(getTurnos() - 2).getPieza(i, j).getValor());
-				}
-			update();
-			removeTurno();
-			deactivateWarning();
-		}
+            if (getTurnos() > 1) { // Se comprueba que no se esté en el primer turno.
+                for (int i = 0; i < t.getColumns(); i++)
+                    for (int j = 0; j < t.getRows(); j++) {
+                        setTab(i, j, tableros.get(getTurnos() - 2).getPieza(i, j).getValor());
+                    }
+                update();
+                removeTurno();
+                deactivateWarning();
+            }
 	}	
 
 	/**
@@ -565,8 +565,8 @@ public final class SumaTres extends JPanel {
 	 * <p> Debe de utilizarse DESPUÉS de actualizar la situación del tablero.
 	 */
 	public void update() {
-		repaint();
-		if(op.isConsoleEnabled()) out.print(fullToString());
+            repaint();
+            if(op.isConsoleEnabled()) out.print(fullToString());
 	}
 	
 	/**
@@ -577,7 +577,7 @@ public final class SumaTres extends JPanel {
 	* @return Un entero aleatorio [0, val)
 	*/
 	public static int newRandom(int val) {
-		return RAND.nextInt(val);
+            return RAND.nextInt(val);
 	}
 
 	/**
@@ -587,23 +587,23 @@ public final class SumaTres extends JPanel {
 	 * @return
 	 */
 	public int[] possibleValuesNewSiguiente() {
-		if(getHighest() <= 12) {
-			// Si la ficha no supera 12, el método de obtener el valor de
-			// la siguiente ficha es el clásico.
-			return new int[] {1, 2, 3};
-		} else {
-			var i = 0;
-			while(getHighest() != 6*Math.pow(2, i)) {i++;}
-			
-			var vlsSig = new int[i+1];
-			for(int h=0; h<3; h++) vlsSig[h] = h+1; // Se introducen 1, 2 y 3 en el vector de posibles valores.+
+            if(getHighest() <= 12) {
+                // Si la ficha no supera 12, el método de obtener el valor de
+                // la siguiente ficha es el clásico.
+                    return new int[] {1, 2, 3};
+            } else {
+                var i = 0;
+                while(getHighest() != 6*Math.pow(2, i)) {i++;}
 
-			for(int j=0; j < vlsSig.length - 3; j++) {
-				vlsSig[3+j] = (int) (6 * Math.pow(2, j)); 
-			}
+                var vlsSig = new int[i+1];
+                for(int h=0; h<3; h++) vlsSig[h] = h+1; // Se introducen 1, 2 y 3 en el vector de posibles valores.+
 
-			return vlsSig;
-		}
+                for(int j=0; j < vlsSig.length - 3; j++) {
+                    vlsSig[3+j] = (int) (6 * Math.pow(2, j)); 
+                }
+
+                return vlsSig;
+            }
 	}
 
 	/**
@@ -791,31 +791,34 @@ public final class SumaTres extends JPanel {
 	 * el programa.
 	 */
 	public void finalDePartida() {
-		long finalPuntos = (long) (getPuntos() * getMultiplier());
+            long finalPuntos = (long) (getPuntos() * getMultiplier());
 
-		String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n",
-			finalPuntos, getHighest(), getTurnos());
-		if (cheatsUsed()) salida += "Se han utilizado trucos.";
-		Dialog.show(salida);
-		out.printf("%n%n%s",salida);
-		
-		if(op.isHudEnabled()) {
-			out.print("Fichas obtenidas: ");
-			for(int i=0; i < possibleValuesNewSiguiente().length; i++) {
-				out.printf("[%d]: %d ",
-					possibleValuesNewSiguiente()[i], obtainedFromRandom.get(possibleValuesNewSiguiente()[i]));
-			}
-			out.println();
-			
-			String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-					VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
-					getTurnos());
-			handler.File.write(output, ARCHIVO);
-			out.println("Puntuaciones guardadas.");
-			
-		}
-		System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
+            String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n",
+                finalPuntos, getHighest(), getTurnos());
+            if (cheatsUsed()) salida += "Se han utilizado trucos.";
+            Dialog.show(salida);
+            out.printf("%n%n%s",salida);
+
+            if(op.isConsoleEnabled()) {
+                out.print("Fichas obtenidas: ");
+                for(int i=0; i < possibleValuesNewSiguiente().length; i++) {
+                    out.printf("[%d]: %d ",
+                        possibleValuesNewSiguiente()[i], obtainedFromRandom.get(possibleValuesNewSiguiente()[i]));
+                }
+                out.println();
+
+                String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                    VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
+                    getTurnos());
+                handler.File.write(output, ARCHIVO);
+                out.println("Puntuaciones guardadas.");
+
+            }
+            
+            if(op.isExitOnEndEnabled()) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
+            Keyboard.disableHandling(); // desactiva la entrada por teclado.
+            Mouse.disableHandling(); // desctiva la entrada por ratón.
 	}
 	
 	public void loop() {
@@ -841,9 +844,9 @@ public final class SumaTres extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
-		requestFocusInWindow();
-		super.paintComponent(g);
-		Paint.paint(g, this);
+            requestFocusInWindow();
+            super.paintComponent(g);
+            Paint.paint(g, this);
 	}
 
 	// -------------------------------------------------------------------------------------------------------------------
@@ -855,11 +858,11 @@ public final class SumaTres extends JPanel {
 	 * de qué botón de ratón se haya pulsado.
 	 */
 	private class MouseHandler extends MouseAdapter {
-		
-		@Override
-		public void mouseClicked(MouseEvent event) {
-			rerouteMouse(event);
-		}
+
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                rerouteMouse(event);
+            }
 	}
 	
 	/**
@@ -877,11 +880,11 @@ public final class SumaTres extends JPanel {
 	 * y si el control estaba pulsado o no durante la pulsación.
 	 */
 	private class KeyHandler extends KeyAdapter {
-		
-		@Override
-		public void keyPressed(KeyEvent event) {
-			rerouteKeyboard(event);
-		}
+
+            @Override
+            public void keyPressed(KeyEvent event) {
+                rerouteKeyboard(event);
+            }
 	}	
 	
 	/**

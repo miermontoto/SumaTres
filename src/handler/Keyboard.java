@@ -8,6 +8,9 @@ public class Keyboard {
 	
 	public static final String VALID_CLASSIC_KEYS = "wasd";
 	public static final String VALID_EXPERIMENTAL_KEYS = "qweadzxc";
+        private static boolean handlingEnabled = true;
+        
+        public static void disableHandling() {handlingEnabled = false;}
 
 	/**
 	 * Constrctor generado para cumplir con SonarLint:S1118.
@@ -21,7 +24,8 @@ public class Keyboard {
 	
 	public static void keyboardHandler(SumaTres s, KeyEvent e) {
             if((s.getSettings().isDiagonalMovementEnabled() && (VALID_EXPERIMENTAL_KEYS.indexOf(e.getKeyChar())) >= 0) ||
-                (!s.getSettings().isDiagonalMovementEnabled() && (VALID_CLASSIC_KEYS.indexOf(e.getKeyChar()) >= 0))) s.jugada(e.getKeyChar());
+                (!s.getSettings().isDiagonalMovementEnabled() && (VALID_CLASSIC_KEYS.indexOf(e.getKeyChar()) >= 0))) 
+                    if(handlingEnabled) s.jugada(e.getKeyChar());
 
 	}
 }

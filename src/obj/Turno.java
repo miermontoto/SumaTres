@@ -120,28 +120,29 @@ public final class Turno {
 	 * @return Valor 'booleano' definiendo si es posible algún movimiento.
 	 */
 	public static boolean ableToMove(SumaTres s) {
-		boolean check = true;
-		Tablero t = s.getTablero();
-		if (t.isFull()) {
-			check = false;
-			String movesToCheck = s.getSettings().isDiagonalMovementEnabled() ? 
-					Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
-			int b = 0;
-			while(b < movesToCheck.length() && !check) {
-				Jugada x = new Jugada(movesToCheck.charAt(b));
-                                int i = x.getUp();
-                                while(i + x.getDown() < t.getColumns() && !check) {
-                                    int j = x.getLeft();
-                                    while(j + x.getRight() < t.getRows() && !check) {
-                                        check = sumaCond(i, j, x, t);
-                                        j++;
-                                    }
-                                    i++;
-                                }
-				b++;
-			}
-		}
-		return check;
+            boolean check = true;
+            Tablero t = s.getTablero();
+            if (t.isFull()) {
+                check = false;
+                String movesToCheck = s.getSettings().isDiagonalMovementEnabled() ? 
+                    Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
+                
+                int b = 0;
+                while(b < movesToCheck.length() && !check) {
+                    Jugada x = new Jugada(movesToCheck.charAt(b));
+                    int i = x.getUp();
+                    while(i + x.getDown() < t.getColumns() && !check) {
+                        int j = x.getLeft();
+                        while(j + x.getRight() < t.getRows() && !check) {
+                            check = sumaCond(i, j, x, t);
+                            j++;
+                        }
+                        i++;
+                    }
+                    b++;
+                }
+            }
+            return check;
 	}
 	
 	

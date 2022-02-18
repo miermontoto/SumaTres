@@ -43,12 +43,9 @@ public class LauncherRF extends javax.swing.JFrame {
         
         juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
         juego.setLocation(0,0);
-        juego.setName("Juego");
-        jTabbedPane1.add(juego);
-        //jTabbedPane1.setSelectedComponent(juego);
+        jTabbedPane1.addTab("Juego", juego);
         jTabbedPane1.setComponentAt(0, juego);
-        pneInfo.setName("Info");
-        jTabbedPane1.add(pneInfo);
+        jTabbedPane1.addTab("Info", pneInfo);
         
         jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiModoExperimental.setEnabled(op.isExperimental());
@@ -56,6 +53,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiModoClassic.setSelected(op.isExperimental());
         jmiModoExperimental.setSelected(op.isExperimental());
         jmiExtrasConsole.setSelected(!op.isExperimental());
+        jmiExitOnEnd.setSelected(op.isExitOnEndEnabled());
         
         // TODO: habilitar estas funciones
         jmiCargar.setEnabled(false);
@@ -84,6 +82,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiSalir = new javax.swing.JMenuItem();
         mnuOpciones = new javax.swing.JMenu();
         jmiExtrasConsole = new javax.swing.JCheckBoxMenuItem();
+        jmiExitOnEnd = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiColores = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -126,7 +125,7 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuArchivo.add(jSeparator1);
 
         jmiSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_DOWN_MASK));
-        jmiSalir.setText("Salir");
+        jmiSalir.setText("Terminar partida");
         jmiSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiSalirActionPerformed(evt);
@@ -146,6 +145,15 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         mnuOpciones.add(jmiExtrasConsole);
+
+        jmiExitOnEnd.setSelected(true);
+        jmiExitOnEnd.setText("Salir al terminar");
+        jmiExitOnEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiExitOnEndActionPerformed(evt);
+            }
+        });
+        mnuOpciones.add(jmiExitOnEnd);
         mnuOpciones.add(jSeparator3);
 
         jmiColores.setText("Editar colores");
@@ -300,7 +308,7 @@ public class LauncherRF extends javax.swing.JFrame {
             juego.getSettings().setExperimentalMode(false);
             jmiTrucos.setEnabled(false);
             setCheatsEnabled(false);
-        }
+        } else {jmiModoExperimental.setSelected(true);}
     }//GEN-LAST:event_jmiModoClassicActionPerformed
 
     private void setCheatsEnabled(final boolean status) {
@@ -315,7 +323,8 @@ public class LauncherRF extends javax.swing.JFrame {
         // pasó al modo clásico y con esta acción vuelve al modo experimental, por
         // lo que no es necesario volver a activar los trucos ni mostrar alertas.
         juego.getSettings().setExperimentalMode(true);
-        setCheatsEnabled(true); // se activan los trucos.
+        juego.repaint(); // Repinta el tablero al volver al modo experimental (flechas)
+        setCheatsEnabled(true); // Se activan los trucos.
     }//GEN-LAST:event_jmiModoExperimentalActionPerformed
 
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
@@ -364,6 +373,10 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucos.setSelected(juego.cheatsUsed());
     }//GEN-LAST:event_mnuTrucosMouseEntered
 
+    private void jmiExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExitOnEndActionPerformed
+        secundaria.getSettings().toggleExitOnEnd();
+    }//GEN-LAST:event_jmiExitOnEndActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -403,6 +416,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jmiCargar;
     private javax.swing.JMenuItem jmiColores;
+    private javax.swing.JCheckBoxMenuItem jmiExitOnEnd;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
     private javax.swing.JMenuItem jmiGuardar;
     private javax.swing.JMenu jmiModo;

@@ -161,11 +161,11 @@ public class Tablero {
             boolean completed = false;
             int nX = Input.input("Introduzca la coordenada x de la pieza que desea eliminar", 0, this.getColumns(), false);
             if(nX != -1) {
-                    int nY = Input.input("Introduzca la coordenada y de la pieza que desea eliminar", 0, this.getRows(), false);
-                    if (nY != -1 && this.getPieza(nX, nY).getValor() != 0) {
-                            this.setTab(nX, nY, 0);
-                            completed = true;
-                    }
+                int nY = Input.input("Introduzca la coordenada y de la pieza que desea eliminar", 0, this.getRows(), false);
+                if (nY != -1 && this.getPieza(nX, nY).getValor() != 0) {
+                    this.setTab(nX, nY, 0);
+                    completed = true;
+                }
             }
             return completed;
     }

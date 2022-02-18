@@ -15,6 +15,7 @@ public class Settings {
     private boolean hudEnabled;
     private boolean moreNextValuesEnabled;
     private boolean balancedStartEnabled;
+    private boolean exitOnEndEnabled;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
@@ -26,6 +27,7 @@ public class Settings {
         hudEnabled = true;
         moreNextValuesEnabled = m;
         balancedStartEnabled = m;
+        exitOnEndEnabled = true;
     }
     
     public Settings(String s) {
@@ -39,6 +41,7 @@ public class Settings {
         hudEnabled = Boolean.parseBoolean(data[6]);
         moreNextValuesEnabled = Boolean.parseBoolean(data[7]);
         balancedStartEnabled = Boolean.parseBoolean(data[8]);
+        exitOnEndEnabled = Boolean.parseBoolean(data[9]);
         
         if(!experimentalMode)
             if(diagonalMovementEnabled || possibleCheats || !hudEnabled ||
@@ -101,17 +104,23 @@ public class Settings {
         return balancedStartEnabled;
     }
     
+    public boolean isExitOnEndEnabled() {
+        return exitOnEndEnabled;
+    }
+    
     public void toggleHud() {hudEnabled = !hudEnabled;}
     public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
     public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
     public void toggleConsole() {consoleEnabled = !consoleEnabled;}
     public void toggleMoreNextValues() {moreNextValuesEnabled = !moreNextValuesEnabled;}
     public void toggleBalancedStart() {balancedStartEnabled = !balancedStartEnabled;}
+    public void toggleExitOnEnd() {exitOnEndEnabled = !exitOnEndEnabled;}
     
+    @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s", 
+        return String.format("%d %d %s %s %s %s %s %s %s %s", 
                 sizex, sizey, experimentalMode, consoleEnabled, 
                 diagonalMovementEnabled, possibleCheats, hudEnabled, 
-                moreNextValuesEnabled, balancedStartEnabled);
+                moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled);
     }
 }
