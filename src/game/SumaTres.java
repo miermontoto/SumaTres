@@ -131,8 +131,8 @@ import javax.swing.JPanel;
  * @see <a href="https://www.tutorialspoint.com/java/io/writer_flush.htm">
  * 		Tutorial y documentación sobre el método flush() </a>
  * 
- * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/io/File.html">
- * 		Documentación de Oracle: File </a>
+ * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/io/FileWS.html">
+ 		Documentación de Oracle: FileWS </a>
  * 
  * @see <a href="https://en.wikipedia.org/wiki/Color_difference">
  * 		Wikipedia: Fórmula e información sobre distancia entre colores </a>
@@ -815,7 +815,7 @@ public final class SumaTres extends JPanel {
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
 					VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
 					getTurnos());
-			handler.File.write(output, ARCHIVO);
+			handler.FileWS.write(output, ARCHIVO);
 			out.println("Puntuaciones guardadas.");
 			
 		}

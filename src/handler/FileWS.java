@@ -5,7 +5,7 @@ import java.io.FileWriter;
 
 import util.Dialog;
 
-public class File {
+public class FileWS {
 	
 	/**
 	 * Constrctor generado para cumplir con SonarLint:S1118.
@@ -13,7 +13,7 @@ public class File {
 	 * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
 	 * 		Regla SonarLint:S1118 </a>
 	 */
-	private File() {
+	private FileWS() {
 		throw new IllegalStateException("File handling class");
 	}
 	

@@ -169,15 +169,13 @@ public class Avanzadas extends javax.swing.JFrame {
     }//GEN-LAST:event_chkMovDiagonalActionPerformed
 
     private void btnClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClásicoActionPerformed
-        setModoClásico();
         ventanaSecundaria.setClassic();
-        ventanaSecundaria.setSettings(new Settings(ventanaSecundaria.getSettings().getX(), ventanaSecundaria.getSettings().getY(), false));
+        readValues();
     }//GEN-LAST:event_btnClásicoActionPerformed
 
     private void btnExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExperimentalActionPerformed
-        setModoExperimental();
         ventanaSecundaria.setExperimental();
-        ventanaSecundaria.setSettings(new Settings(ventanaSecundaria.getSettings().getX(), ventanaSecundaria.getSettings().getY(), true));
+        readValues();
     }//GEN-LAST:event_btnExperimentalActionPerformed
 
     private void chkSalidaConsolaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSalidaConsolaActionPerformed
@@ -199,35 +197,25 @@ public class Avanzadas extends javax.swing.JFrame {
     private void chkInicioEquilibradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkInicioEquilibradoActionPerformed
         ventanaSecundaria.getSettings().toggleBalancedStart();
     }//GEN-LAST:event_chkInicioEquilibradoActionPerformed
-
-    public void setModoClásico() {
-        btnClásico.setSelected(true);
-        chkMovDiagonal.setEnabled(false);
-        chkHUD.setEnabled(false);
-        chkPossibleCheats.setEnabled(false);
-        chkMovDiagonal.setSelected(false);
-        chkHUD.setSelected(true);
-        chkPossibleCheats.setSelected(false);
-        chkSalidaConsola.setSelected(true);
-        chkInicioEquilibrado.setSelected(false);
-        chkInicioEquilibrado.setEnabled(false);
-        chkMoreNextValues.setEnabled(false);
-        chkMoreNextValues.setSelected(false);
-    }
-    
-    public void setModoExperimental() {
-        btnExperimental.setSelected(true);
-        chkMovDiagonal.setEnabled(true);
-        chkHUD.setEnabled(true);
-        chkPossibleCheats.setEnabled(true);
-        chkHUD.setSelected(true);
-        chkPossibleCheats.setSelected(true);
-        chkSalidaConsola.setSelected(false);
-        chkMovDiagonal.setSelected(true);
-        chkInicioEquilibrado.setSelected(true);
-        chkInicioEquilibrado.setEnabled(true);
-        chkMoreNextValues.setEnabled(true);
-        chkMoreNextValues.setSelected(true);
+ 
+    public void readValues() {
+        Settings op = ventanaSecundaria.getSettings();
+        
+        btnExperimental.setSelected(op.isExperimental());
+        btnClásico.setSelected(!op.isExperimental());
+        
+        chkMovDiagonal.setEnabled(op.isExperimental());
+        chkHUD.setEnabled(op.isExperimental());
+        chkPossibleCheats.setEnabled(op.isExperimental());
+        chkMoreNextValues.setEnabled(op.isExperimental());
+        chkInicioEquilibrado.setEnabled(op.isExperimental());
+        
+        chkMovDiagonal.setSelected(op.isDiagonalMovementEnabled());
+        chkHUD.setSelected(op.isHudEnabled());
+        chkPossibleCheats.setSelected(op.isPossibleCheats());
+        chkInicioEquilibrado.setSelected(op.isBalancedStartEnabled());
+        chkMoreNextValues.setSelected(op.isMoreNextValuesEnabled());
+        chkSalidaConsola.setSelected(op.isConsoleEnabled());
     }
     
     

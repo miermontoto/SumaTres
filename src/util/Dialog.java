@@ -29,7 +29,7 @@ public final class Dialog {
 	 * @return Booleano de la respuesta, true si sí, false si no.
 	 */
 	public static boolean confirm(String s) {
-		return JOptionPane.showConfirmDialog(null, s, title, JOptionPane.YES_NO_OPTION) == 0;
+		return JOptionPane.showConfirmDialog(null, s, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 	}
 	
 	/**

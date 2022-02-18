@@ -1,6 +1,13 @@
 package gui;
 import game.LauncherRF;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import obj.Settings;
+import util.Dialog;
+import handler.FileWS;
 
 /**
  *
@@ -11,6 +18,9 @@ public class PrePartida extends javax.swing.JFrame {
     private Settings opciones;
     private LauncherRF principal;
     private Avanzadas avanzadas;
+    
+    private static final int minSize = 2;
+    private static final int maxSize = 25;
 
     /**
      * Creates new form PrePartida
@@ -26,11 +36,7 @@ public class PrePartida extends javax.swing.JFrame {
         
         // las opciones por defecto son: tamaño 5x5, modo experimental.
         opciones = new Settings(5, 5, true);
-        avanzadas.setModoExperimental();
-        
-        // opciones a implementar
-        btnOpen.setVisible(false);
-        btnSave.setVisible(false);
+        avanzadas.readValues();
     }
 
     /**
@@ -243,23 +249,39 @@ public class PrePartida extends javax.swing.JFrame {
     }//GEN-LAST:event_btnJugarActionPerformed
 
     private void bttClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttClásicoActionPerformed
-        opciones = new Settings(Integer.parseInt(txtHorizontal.getText()), Integer.parseInt(txtVertical.getText()), false);
-        avanzadas.setModoClásico();
+        opciones = new Settings(opciones.getX(), opciones.getY(), false);
+        avanzadas.readValues();
     }//GEN-LAST:event_bttClásicoActionPerformed
 
     private void bttExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttExperimentalActionPerformed
-        opciones = new Settings(Integer.parseInt(txtHorizontal.getText()), Integer.parseInt(txtVertical.getText()), true);
-        avanzadas.setModoExperimental();
+        opciones = new Settings(opciones.getX(), opciones.getY(), true);
+        avanzadas.readValues();
     }//GEN-LAST:event_bttExperimentalActionPerformed
 
     private void txtVerticalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVerticalActionPerformed
-        sldVertical.setValue(Integer.parseInt(txtVertical.getText()));
-        opciones.setSizey(Integer.parseInt(txtVertical.getText()));
+        try {
+            int val = Integer.parseInt(txtVertical.getText());
+            if(val < minSize) val = minSize;
+            else if(val > maxSize) val = maxSize;
+            sldVertical.setValue(val);
+            opciones.setSizey(val);
+        } catch(NumberFormatException ex) {
+            Dialog.showError("Este campo solo admite valores naturales.");
+            txtVertical.setText(String.format("%d", opciones.getY()));
+        }
     }//GEN-LAST:event_txtVerticalActionPerformed
 
     private void txtHorizontalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHorizontalActionPerformed
-        sldHorizontal.setValue(Integer.parseInt(txtHorizontal.getText()));
-        opciones.setSizex(Integer.parseInt(txtHorizontal.getText()));
+        try {
+            int val = Integer.parseInt(txtHorizontal.getText());
+            if(val < minSize) val = minSize;
+            else if(val > maxSize) val = maxSize;
+            sldHorizontal.setValue(val);
+            opciones.setSizex(val);
+        } catch(NumberFormatException ex) {
+            Dialog.showError("Este campo solo admite valores naturales.");
+            txtHorizontal.setText(String.format("%d", opciones.getX()));
+        }
     }//GEN-LAST:event_txtHorizontalActionPerformed
 
     private void bttAvanzadasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttAvanzadasActionPerformed
@@ -267,17 +289,49 @@ public class PrePartida extends javax.swing.JFrame {
     }//GEN-LAST:event_bttAvanzadasActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-        flcOpen.setVisible(true);
+        JFileChooser jfcOpen = new JFileChooser();
+        jfcOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfcOpen.setDialogTitle("Cargar archivo de opciones");
+        jfcOpen.setMultiSelectionEnabled(false);
+        jfcOpen.setFileFilter(new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
+        int res = jfcOpen.showOpenDialog(null);
+        if(res == JFileChooser.APPROVE_OPTION) {
+            try {
+                opciones = new Settings(Files.readString(jfcOpen.getSelectedFile().toPath()));
+                sldHorizontal.setValue(opciones.getX());
+                sldVertical.setValue(opciones.getY());
+                bttExperimental.setSelected(opciones.isExperimental());
+                txtVertical.setText(String.format("%d", opciones.getY()));
+                txtHorizontal.setText(String.format("%d", opciones.getX()));
+                avanzadas.readValues(); 
+            } catch (IOException ex) {Dialog.showError(ex);}
+        }
     }//GEN-LAST:event_btnOpenActionPerformed
 
+    
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        flcSave.setVisible(true);
+        JFileChooser jfcSave = new JFileChooser();
+        jfcSave.setDialogTitle("Guardar archivo de opciones");
+        jfcSave.setFileFilter(new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
+        int res = jfcSave.showSaveDialog(null);
+        if(res == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileWS.write(opciones.toString(), new File(jfcSave.getSelectedFile().getAbsolutePath()));
+            } catch (Exception ex) {Dialog.showError(ex);}
+        }
+        
     }//GEN-LAST:event_btnSaveActionPerformed
 
     public Settings getSettings() {return this.opciones;}
     public void setSettings(Settings op) {this.opciones = op;}
-    public void setExperimental() {this.bttExperimental.setSelected(true);}
-    public void setClassic() {this.bttClásico.setSelected(true);}
+    public void setExperimental() {
+        setSettings(new Settings(opciones.getX(), opciones.getY(), true));
+        this.bttExperimental.setSelected(true);
+    }
+    public void setClassic() {
+        setSettings(new Settings(opciones.getX(), opciones.getY(), false));
+        this.bttClásico.setSelected(true);
+    }
     
     /**
      * @param args the command line arguments

@@ -278,10 +278,11 @@ public class LauncherRF extends javax.swing.JFrame {
      * @param evt 
      */
     private void jmiTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosActionPerformed
-        if(Dialog.confirm("Activar los trucos marcará el resultado de la partida como inválido. ¿Desea continuar?")) {
+        if(Dialog.confirm("Activar los trucos cambiará el multiplicador de puntos a 0.\n¿Desea continuar?")) {
             juego.enableCheats();
             jmiTrucos.setEnabled(false);
             setCheatsEnabled(true);
+            actualizarPneInfo();
         } else {jmiTrucos.setSelected(false);}
     }//GEN-LAST:event_jmiTrucosActionPerformed
 
@@ -295,20 +296,23 @@ public class LauncherRF extends javax.swing.JFrame {
 
     private void jmiModoClassicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoClassicActionPerformed
         boolean check = true;
-        if(!juego.cheatsUsed()) check = Dialog.confirm("Esta acción activa los trucos. ¿Desea continuar?");
+        if(juego.getMultiplier() != 0.0) check = Dialog.confirm("Esta acción cambia el mutiplicador de puntos a cero.\n¿Desea continuar?");
         if(check) {
-            juego.enableCheats();
+            juego.setMultiplier(0.0);
             juego.getSettings().setExperimentalMode(false);
             jmiTrucos.setEnabled(false);
             setCheatsEnabled(false);
+            juego.repaint();
+            actualizarPneInfo();
         }
     }//GEN-LAST:event_jmiModoClassicActionPerformed
 
     private void setCheatsEnabled(final boolean status) {
-        jmiTrucosAñadir.setEnabled(status);
-        jmiTrucosEliminar.setEnabled(status);
-        jmiTrucosPuntos.setEnabled(status);
-        jmiTrucosUndo.setEnabled(status);
+        boolean opdef = juego.cheatsUsed() && juego.getSettings().isPossibleCheats() && status;
+        jmiTrucosAñadir.setEnabled(opdef);
+        jmiTrucosEliminar.setEnabled(opdef);
+        jmiTrucosPuntos.setEnabled(opdef);
+        jmiTrucosUndo.setEnabled(opdef);
     }
     
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
@@ -317,12 +321,59 @@ public class LauncherRF extends javax.swing.JFrame {
         // lo que no es necesario volver a activar los trucos ni mostrar alertas.
         juego.getSettings().setExperimentalMode(true);
         setCheatsEnabled(true); // se activan los trucos.
+        jmiTrucos.setEnabled(true);
+        juego.repaint();
+        actualizarPneInfo();
     }//GEN-LAST:event_jmiModoExperimentalActionPerformed
 
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
+        actualizarPneInfo();
         juego.toggleConsole();
     }//GEN-LAST:event_jmiExtrasConsoleActionPerformed
 
+    
+    private void actualizarPneInfo() {
+        if(juego != null) {
+            Settings op = juego.getSettings();
+            String s = String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
+                + "Turnos jugados: %d%n"
+                + "Siguiente ficha: %d%n",
+                (int) (juego.getPuntos()*juego.getMultiplier()), 
+                juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente());
+
+            s += String.format("Posibles siguientes: ");
+            for(int i : juego.possibleValuesNewSiguiente()) 
+                s += String.format("%d ", i);
+
+            s += String.format("%nPiezas obtenidas: ");
+            for(Map.Entry<Integer, Integer> par : juego.getObtainedFromRandom().entrySet())
+                s += String.format("[%d]: %d, ", par.getKey(), par.getValue());
+
+            s += String.format("%n%n"
+                + "Modo: %s%n"
+                + "Trucos: %s%n"
+                + "Tamaño del tablero: %d x %d%n",
+                op.isExperimental() ? "experimental" : "clásico",
+                juego.cheatsUsed() ? "activados" : "desactivados",
+                juego.getTablero().getRows(), juego.getTablero().getColumns());
+
+            s += String.format("%nHUD: %s%n"
+                + "Movimiento diagonal: %s%n"
+                + "Salida por consola: %s%n"
+                + "Posibilidad de activar trucos: %s%n"
+                + "Inicio de partida equilibrado: %s%n"
+                + "Más fichas siguientes: %s%n",
+                activado(op.isHudEnabled()),
+                activado(op.isDiagonalMovementEnabled()),
+                activado(op.isConsoleEnabled()),
+                activado(op.isPossibleCheats()),
+                activado(op.isBalancedStartEnabled()),
+                activado(op.isMoreNextValuesEnabled())
+                );
+            pneInfo.setText(s);
+        }
+    }
+    
     /**
      * Actualiza el panel de información cada vez que se muestra. Este listener
      * evita tener que estar actualizando constantemente o tener un botón con el
@@ -330,45 +381,7 @@ public class LauncherRF extends javax.swing.JFrame {
      * @param evt 
      */
     private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
-        if(juego != null) {
-            Settings op = juego.getSettings();
-            String s = String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
-                    + "Turnos jugados: %d%n"
-                    + "Siguiente ficha: %d%n",
-                    (int) (juego.getPuntos()*juego.getMultiplier()), 
-                    juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente());
-            
-            s += String.format("Posibles siguientes: ");
-            for(int i : juego.possibleValuesNewSiguiente()) 
-                s += String.format("%d ", i);
-            
-            s += String.format("%nPiezas obtenidas: ");
-            for(Map.Entry<Integer, Integer> par : juego.getObtainedFromRandom().entrySet())
-                s += String.format("[%d]: %d, ", par.getKey(), par.getValue());
-            
-            s += String.format("%n%n"
-                    + "Modo: %s%n"
-                    + "Trucos: %s%n"
-                    + "Tamaño del tablero: %d x %d%n",
-                     op.isExperimental() ? "experimental" : "clásico",
-                    juego.cheatsUsed() ? "activados" : "desactivados",
-                    juego.getTablero().getRows(), juego.getTablero().getColumns());
-            
-            s += String.format("%nHUD: %s%n"
-                    + "Movimiento diagonal: %s%n"
-                    + "Salida por consola: %s%n"
-                    + "Posibilidad de activar trucos: %s%n"
-                    + "Inicio de partida equilibrado: %s%n"
-                    + "Más fichas siguientes: %s%n",
-                    activado(op.isHudEnabled()),
-                    activado(op.isDiagonalMovementEnabled()),
-                    activado(op.isConsoleEnabled()),
-                    activado(op.isPossibleCheats()),
-                    activado(op.isBalancedStartEnabled()),
-                    activado(op.isMoreNextValuesEnabled())
-                    );
-            pneInfo.setText(s);
-        }
+        actualizarPneInfo();
     }//GEN-LAST:event_pneInfoComponentShown
 
     private String activado(boolean b) {
