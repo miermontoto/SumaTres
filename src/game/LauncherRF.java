@@ -2,6 +2,7 @@ package game;
 
 import gui.PrePartida;
 import gui.EditarColores;
+import java.util.Map;
 import obj.Settings;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
 import util.Graphic; // Se utiliza para definir las dimensiones de la ventana.
@@ -330,24 +331,50 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
         if(juego != null) {
-            pneInfo.setText(String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
+            Settings op = juego.getSettings();
+            String s = String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
                     + "Turnos jugados: %d%n"
-                    + "Siguiente ficha: %d%n"
-                    + "Posibles siguientes: ",
-                    (int) (juego.getPuntos()*juego.getMultiplier()), juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente()));
-            for(int i : juego.possibleValuesNewSiguiente()) {
-                pneInfo.setText(String.format("%s%d ", pneInfo.getText(), i));
-            }
-            pneInfo.setText(String.format("%s%n%n"
+                    + "Siguiente ficha: %d%n",
+                    (int) (juego.getPuntos()*juego.getMultiplier()), 
+                    juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente());
+            
+            s += String.format("Posibles siguientes: ");
+            for(int i : juego.possibleValuesNewSiguiente()) 
+                s += String.format("%d ", i);
+            
+            s += String.format("%nPiezas obtenidas: ");
+            for(Map.Entry<Integer, Integer> par : juego.getObtainedFromRandom().entrySet())
+                s += String.format("[%d]: %d, ", par.getKey(), par.getValue());
+            
+            s += String.format("%n%n"
                     + "Modo: %s%n"
                     + "Trucos: %s%n"
                     + "Tamaño del tablero: %d x %d%n",
-                    pneInfo.getText(), juego.getSettings().isExperimental() ? "experimental" : "clásico",
+                     op.isExperimental() ? "experimental" : "clásico",
                     juego.cheatsUsed() ? "activados" : "desactivados",
-                    juego.getTablero().getRows(), juego.getTablero().getColumns()));
+                    juego.getTablero().getRows(), juego.getTablero().getColumns());
+            
+            s += String.format("%nHUD: %s%n"
+                    + "Movimiento diagonal: %s%n"
+                    + "Salida por consola: %s%n"
+                    + "Posibilidad de activar trucos: %s%n"
+                    + "Inicio de partida equilibrado: %s%n"
+                    + "Más fichas siguientes: %s%n",
+                    activado(op.isHudEnabled()),
+                    activado(op.isDiagonalMovementEnabled()),
+                    activado(op.isConsoleEnabled()),
+                    activado(op.isPossibleCheats()),
+                    activado(op.isBalancedStartEnabled()),
+                    activado(op.isMoreNextValuesEnabled())
+                    );
+            pneInfo.setText(s);
         }
     }//GEN-LAST:event_pneInfoComponentShown
 
+    private String activado(boolean b) {
+        return b ? "activado" : "desactivado";
+    }
+    
     private void jmiSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSalirActionPerformed
         juego.finalDePartida();
     }//GEN-LAST:event_jmiSalirActionPerformed

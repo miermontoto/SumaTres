@@ -446,6 +446,10 @@ public final class SumaTres extends JPanel {
 	public void setTablero(Tablero nt) {
 		if(nt.getColumns() == t.getColumns() && nt.getRows() == t.getRows()) t = nt;
 	}
+        
+        public HashMap<Integer, Integer> getObtainedFromRandom() {
+            return obtainedFromRandom;
+        }
 	
 	/*
 	 *  No existe setTurnos() porque no es necesario, los turnos son un simple contador sin
