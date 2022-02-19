@@ -11,7 +11,7 @@
             <Property name="text" type="java.lang.String" value="Archivo"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiGuardar">
+            <MenuItem class="javax.swing.JMenuItem" name="jmiSave">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+S"/>
@@ -19,7 +19,7 @@
                 <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiCargar">
+            <MenuItem class="javax.swing.JMenuItem" name="jmiLoad">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+A"/>
@@ -27,7 +27,7 @@
                 <Property name="text" type="java.lang.String" value="Cargar"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiResultados">
+            <MenuItem class="javax.swing.JMenuItem" name="jmiResults">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Resultados prev."/>
               </Properties>

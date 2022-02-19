@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 import obj.Settings;
 
@@ -38,12 +34,13 @@ public class Avanzadas extends javax.swing.JFrame {
         btnClásico = new javax.swing.JRadioButton();
         btnExperimental = new javax.swing.JRadioButton();
         jSeparator1 = new javax.swing.JSeparator();
-        chkMovDiagonal = new javax.swing.JCheckBox();
-        chkSalidaConsola = new javax.swing.JCheckBox();
+        chkDiagonalMovement = new javax.swing.JCheckBox();
+        chkConsoleOutput = new javax.swing.JCheckBox();
         chkHUD = new javax.swing.JCheckBox();
-        chkPossibleCheats = new javax.swing.JCheckBox();
+        chkCheatsAvailable = new javax.swing.JCheckBox();
         chkMoreNextValues = new javax.swing.JCheckBox();
-        chkInicioEquilibrado = new javax.swing.JCheckBox();
+        chkBalancedStart = new javax.swing.JCheckBox();
+        chkExitOnEnd = new javax.swing.JCheckBox();
 
         setTitle("SumaTres - Opciones avanzadas");
         setResizable(false);
@@ -64,19 +61,19 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
-        chkMovDiagonal.setText("Movimiento en diagonal");
-        chkMovDiagonal.setToolTipText("Si está activado, se podrán mover las piezas en diagonal además de en los cuatro sentidos clásicos.");
-        chkMovDiagonal.addActionListener(new java.awt.event.ActionListener() {
+        chkDiagonalMovement.setText("Movimiento en diagonal");
+        chkDiagonalMovement.setToolTipText("Si está activado, se podrán mover las piezas en diagonal además de en los cuatro sentidos clásicos.");
+        chkDiagonalMovement.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkMovDiagonalActionPerformed(evt);
+                chkDiagonalMovementActionPerformed(evt);
             }
         });
 
-        chkSalidaConsola.setText("Salida por consola");
-        chkSalidaConsola.setToolTipText("Decide si también se muestra el resultado del turno por consola. Se puede cambiar durante la partida.");
-        chkSalidaConsola.addActionListener(new java.awt.event.ActionListener() {
+        chkConsoleOutput.setText("Salida por consola");
+        chkConsoleOutput.setToolTipText("Decide si también se muestra el resultado del turno por consola. Se puede cambiar durante la partida.");
+        chkConsoleOutput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkSalidaConsolaActionPerformed(evt);
+                chkConsoleOutputActionPerformed(evt);
             }
         });
 
@@ -88,11 +85,11 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
-        chkPossibleCheats.setText("Posibilidad de activar trucos");
-        chkPossibleCheats.setToolTipText("Si está activado, se podrán activar los trucos durante la partida.");
-        chkPossibleCheats.addActionListener(new java.awt.event.ActionListener() {
+        chkCheatsAvailable.setText("Posibilidad de activar trucos");
+        chkCheatsAvailable.setToolTipText("Si está activado, se podrán activar los trucos durante la partida.");
+        chkCheatsAvailable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkPossibleCheatsActionPerformed(evt);
+                chkCheatsAvailableActionPerformed(evt);
             }
         });
 
@@ -104,11 +101,18 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
-        chkInicioEquilibrado.setText("Inicio de partida equilibrado");
-        chkInicioEquilibrado.setToolTipText("Si está activado, la cantidad de fichas al inicio de la partida dependerá del tamaño del tablero.");
-        chkInicioEquilibrado.addActionListener(new java.awt.event.ActionListener() {
+        chkBalancedStart.setText("Inicio de partida equilibrado");
+        chkBalancedStart.setToolTipText("Si está activado, la cantidad de fichas al inicio de la partida dependerá del tamaño del tablero.");
+        chkBalancedStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkInicioEquilibradoActionPerformed(evt);
+                chkBalancedStartActionPerformed(evt);
+            }
+        });
+
+        chkExitOnEnd.setText("Salir al terminar");
+        chkExitOnEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkExitOnEndActionPerformed(evt);
             }
         });
 
@@ -119,54 +123,57 @@ public class Avanzadas extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addComponent(btnClásico)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(btnExperimental)
-                .addGap(48, 48, 48))
+                .addGap(39, 39, 39))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSeparator1)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkInicioEquilibrado)
+                    .addComponent(chkExitOnEnd)
+                    .addComponent(chkBalancedStart)
                     .addComponent(chkMoreNextValues)
-                    .addComponent(chkPossibleCheats)
+                    .addComponent(chkCheatsAvailable)
                     .addComponent(chkHUD)
-                    .addComponent(chkMovDiagonal)
-                    .addComponent(chkSalidaConsola))
+                    .addComponent(chkDiagonalMovement)
+                    .addComponent(chkConsoleOutput))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnClásico)
-                    .addComponent(btnExperimental))
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnExperimental, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnClásico, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkMovDiagonal)
+                .addComponent(chkDiagonalMovement)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkSalidaConsola)
+                .addComponent(chkConsoleOutput)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkHUD)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkPossibleCheats)
+                .addComponent(chkCheatsAvailable)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkMoreNextValues)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkInicioEquilibrado)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addComponent(chkBalancedStart)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkExitOnEnd)
+                .addGap(15, 15, 15))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void chkMovDiagonalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMovDiagonalActionPerformed
+    private void chkDiagonalMovementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDiagonalMovementActionPerformed
         ventanaSecundaria.getSettings().toggleDiagonalMovement();
-    }//GEN-LAST:event_chkMovDiagonalActionPerformed
+    }//GEN-LAST:event_chkDiagonalMovementActionPerformed
 
     private void btnClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClásicoActionPerformed
         ventanaSecundaria.setClassic();
@@ -178,25 +185,29 @@ public class Avanzadas extends javax.swing.JFrame {
         readValues();
     }//GEN-LAST:event_btnExperimentalActionPerformed
 
-    private void chkSalidaConsolaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSalidaConsolaActionPerformed
+    private void chkConsoleOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkConsoleOutputActionPerformed
         ventanaSecundaria.getSettings().toggleConsole();
-    }//GEN-LAST:event_chkSalidaConsolaActionPerformed
+    }//GEN-LAST:event_chkConsoleOutputActionPerformed
 
     private void chkHUDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkHUDActionPerformed
         ventanaSecundaria.getSettings().toggleHud();
     }//GEN-LAST:event_chkHUDActionPerformed
 
-    private void chkPossibleCheatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPossibleCheatsActionPerformed
+    private void chkCheatsAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheatsAvailableActionPerformed
         ventanaSecundaria.getSettings().togglePossibleCheats();
-    }//GEN-LAST:event_chkPossibleCheatsActionPerformed
+    }//GEN-LAST:event_chkCheatsAvailableActionPerformed
 
     private void chkMoreNextValuesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMoreNextValuesActionPerformed
         ventanaSecundaria.getSettings().toggleMoreNextValues();
     }//GEN-LAST:event_chkMoreNextValuesActionPerformed
 
-    private void chkInicioEquilibradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkInicioEquilibradoActionPerformed
+    private void chkBalancedStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBalancedStartActionPerformed
         ventanaSecundaria.getSettings().toggleBalancedStart();
-    }//GEN-LAST:event_chkInicioEquilibradoActionPerformed
+    }//GEN-LAST:event_chkBalancedStartActionPerformed
+
+    private void chkExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkExitOnEndActionPerformed
+        ventanaSecundaria.getSettings().toggleExitOnEnd();
+    }//GEN-LAST:event_chkExitOnEndActionPerformed
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
@@ -204,18 +215,19 @@ public class Avanzadas extends javax.swing.JFrame {
         btnExperimental.setSelected(op.isExperimental());
         btnClásico.setSelected(!op.isExperimental());
         
-        chkMovDiagonal.setEnabled(op.isExperimental());
+        chkDiagonalMovement.setEnabled(op.isExperimental());
         chkHUD.setEnabled(op.isExperimental());
-        chkPossibleCheats.setEnabled(op.isExperimental());
+        chkCheatsAvailable.setEnabled(op.isExperimental());
         chkMoreNextValues.setEnabled(op.isExperimental());
-        chkInicioEquilibrado.setEnabled(op.isExperimental());
+        chkBalancedStart.setEnabled(op.isExperimental());
         
-        chkMovDiagonal.setSelected(op.isDiagonalMovementEnabled());
+        chkDiagonalMovement.setSelected(op.isDiagonalMovementEnabled());
         chkHUD.setSelected(op.isHudEnabled());
-        chkPossibleCheats.setSelected(op.isPossibleCheats());
-        chkInicioEquilibrado.setSelected(op.isBalancedStartEnabled());
+        chkCheatsAvailable.setSelected(op.isPossibleCheats());
+        chkBalancedStart.setSelected(op.isBalancedStartEnabled());
         chkMoreNextValues.setSelected(op.isMoreNextValuesEnabled());
-        chkSalidaConsola.setSelected(op.isConsoleEnabled());
+        chkConsoleOutput.setSelected(op.isConsoleEnabled());
+        chkExitOnEnd.setSelected(op.isExitOnEndEnabled());
     }
     
     
@@ -258,12 +270,13 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.ButtonGroup btgModos;
     private javax.swing.JRadioButton btnClásico;
     private javax.swing.JRadioButton btnExperimental;
+    private javax.swing.JCheckBox chkBalancedStart;
+    private javax.swing.JCheckBox chkCheatsAvailable;
+    private javax.swing.JCheckBox chkConsoleOutput;
+    private javax.swing.JCheckBox chkDiagonalMovement;
+    private javax.swing.JCheckBox chkExitOnEnd;
     private javax.swing.JCheckBox chkHUD;
-    private javax.swing.JCheckBox chkInicioEquilibrado;
     private javax.swing.JCheckBox chkMoreNextValues;
-    private javax.swing.JCheckBox chkMovDiagonal;
-    private javax.swing.JCheckBox chkPossibleCheats;
-    private javax.swing.JCheckBox chkSalidaConsola;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

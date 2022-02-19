@@ -35,13 +35,7 @@ public class LauncherRF extends javax.swing.JFrame {
         juego = new SumaTres(op);
         setBounds(0, 0, Graphic.defineX(juego) + 15, (int) (Graphic.defineY(juego) + 39 + 30 * Graphic.SCALE));
         setVisible(true);
-        
-        /*
-         * Se activan los trucos, cambios de modo, etc, en base a si el modo
-         * actual es experimental o no. Siguiendo las reglas del enunciado
-         * original, el modo clásico es imperturbable por estos cambios.
-         */
-        
+         
         juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
         juego.setLocation(0,0);
         jTabbedPane1.addTab("Juego", juego);
@@ -49,17 +43,18 @@ public class LauncherRF extends javax.swing.JFrame {
         jTabbedPane1.addTab("Info", pneInfo);
         
         jmiTrucos.setEnabled(op.isPossibleCheats());
-        jmiModoExperimental.setEnabled(op.isExperimental());
-        jmiModoClassic.setEnabled(op.isExperimental());
-        jmiModoClassic.setSelected(op.isExperimental());
-        jmiModoExperimental.setSelected(op.isExperimental());
-        jmiExtrasConsole.setSelected(!op.isExperimental());
+        jmiExtrasConsole.setSelected(op.isConsoleEnabled());
         jmiExitOnEnd.setSelected(op.isExitOnEndEnabled());
         
+        jmiModoClassic.setEnabled(op.isExperimental());
+        jmiModoClassic.setSelected(op.isExperimental());
+        jmiModoExperimental.setEnabled(op.isExperimental());
+        jmiModoExperimental.setSelected(op.isExperimental());
+              
         // TODO: habilitar estas funciones
-        jmiCargar.setEnabled(false);
-        jmiGuardar.setEnabled(false);
-        jmiResultados.setEnabled(false);
+        jmiLoad.setEnabled(false);
+        jmiSave.setEnabled(false);
+        jmiResults.setEnabled(false);
     }
 
     /**
@@ -76,9 +71,9 @@ public class LauncherRF extends javax.swing.JFrame {
         pneInfo = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
-        jmiGuardar = new javax.swing.JMenuItem();
-        jmiCargar = new javax.swing.JMenuItem();
-        jmiResultados = new javax.swing.JMenuItem();
+        jmiSave = new javax.swing.JMenuItem();
+        jmiLoad = new javax.swing.JMenuItem();
+        jmiResults = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiSalir = new javax.swing.JMenuItem();
         mnuOpciones = new javax.swing.JMenu();
@@ -113,16 +108,16 @@ public class LauncherRF extends javax.swing.JFrame {
 
         mnuArchivo.setText("Archivo");
 
-        jmiGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jmiGuardar.setText("Guardar");
-        mnuArchivo.add(jmiGuardar);
+        jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiSave.setText("Guardar");
+        mnuArchivo.add(jmiSave);
 
-        jmiCargar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jmiCargar.setText("Cargar");
-        mnuArchivo.add(jmiCargar);
+        jmiLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiLoad.setText("Cargar");
+        mnuArchivo.add(jmiLoad);
 
-        jmiResultados.setText("Resultados prev.");
-        mnuArchivo.add(jmiResultados);
+        jmiResults.setText("Resultados prev.");
+        mnuArchivo.add(jmiResults);
         mnuArchivo.add(jSeparator1);
 
         jmiSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_DOWN_MASK));
@@ -308,15 +303,11 @@ public class LauncherRF extends javax.swing.JFrame {
         if(check) {
             juego.setMultiplier(0.0);
             juego.getSettings().setExperimentalMode(false);
-            jmiTrucos.setEnabled(false);
+            jmiTrucos.setEnabled(false);            
             setCheatsEnabled(false);
-<<<<<<< HEAD
-        } else {jmiModoExperimental.setSelected(true);}
-=======
             juego.repaint();
             actualizarPneInfo();
-        }
->>>>>>> aff8c3e2cae0c82bfdab42a085c3e083586b4b56
+        } else {jmiModoExperimental.setSelected(true);}
     }//GEN-LAST:event_jmiModoClassicActionPerformed
 
     private void setCheatsEnabled(final boolean status) {
@@ -332,15 +323,12 @@ public class LauncherRF extends javax.swing.JFrame {
         // pasó al modo clásico y con esta acción vuelve al modo experimental, por
         // lo que no es necesario volver a activar los trucos ni mostrar alertas.
         juego.getSettings().setExperimentalMode(true);
-<<<<<<< HEAD
         juego.repaint(); // Repinta el tablero al volver al modo experimental (flechas)
         setCheatsEnabled(true); // Se activan los trucos.
-=======
         setCheatsEnabled(true); // se activan los trucos.
         jmiTrucos.setEnabled(true);
         juego.repaint();
         actualizarPneInfo();
->>>>>>> aff8c3e2cae0c82bfdab42a085c3e083586b4b56
     }//GEN-LAST:event_jmiModoExperimentalActionPerformed
 
     private void jmiExtrasConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExtrasConsoleActionPerformed
@@ -387,6 +375,8 @@ public class LauncherRF extends javax.swing.JFrame {
                 activado(op.isBalancedStartEnabled()),
                 activado(op.isMoreNextValuesEnabled())
                 );
+            
+            s += String.format("%n%n%s", juego.isFinished() ? "Partida terminada." : "");
             pneInfo.setText(s);
         }
     }
@@ -462,17 +452,17 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JMenuItem jmiCargar;
     private javax.swing.JMenuItem jmiColores;
     private javax.swing.JCheckBoxMenuItem jmiExitOnEnd;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
-    private javax.swing.JMenuItem jmiGuardar;
+    private javax.swing.JMenuItem jmiLoad;
     private javax.swing.JMenu jmiModo;
     private javax.swing.JRadioButtonMenuItem jmiModoClassic;
     private javax.swing.JRadioButtonMenuItem jmiModoExperimental;
     private javax.swing.ButtonGroup jmiModoGroup;
-    private javax.swing.JMenuItem jmiResultados;
+    private javax.swing.JMenuItem jmiResults;
     private javax.swing.JMenuItem jmiSalir;
+    private javax.swing.JMenuItem jmiSave;
     private javax.swing.JCheckBoxMenuItem jmiTrucos;
     private javax.swing.JMenuItem jmiTrucosAñadir;
     private javax.swing.JMenuItem jmiTrucosEliminar;
