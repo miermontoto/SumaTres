@@ -1,5 +1,7 @@
 package obj;
 
+import java.io.IOException;
+
 /**
  *
  * @author JuanMier
@@ -32,7 +34,7 @@ public class Settings {
         paintArrowsEnabled = true;
     }
     
-    public Settings(String s) {
+    public Settings(String s) throws IOException {
         String[] data = s.split(" ");
         sizex = Integer.parseInt(data[0]);
         sizey = Integer.parseInt(data[1]);
@@ -49,8 +51,7 @@ public class Settings {
         if(!experimentalMode)
             if(diagonalMovementEnabled || possibleCheats || !hudEnabled ||
                     moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled) {
-                System.err.println("Valores inválidos leídos desde archivo.");
-                System.exit(2);
+                throw new IOException("Leídos valores inválidos desde archivo de opciones.");
             }
         
     }

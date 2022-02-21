@@ -141,8 +141,6 @@ public class Tablero {
      */
     @Override
     public boolean equals(Object x) {
-        return (x.getClass().equals(this.getClass()) ? (x.toString() == null ? 
-            this.toString() == null : x.toString().equals(this.toString())) :
-            false);
+        return x.toString() == this.toString();
     }
 }

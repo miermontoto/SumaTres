@@ -534,7 +534,6 @@ public final class SumaTres extends JPanel {
         Turno.sumar(x, this);
 
 
-
         /*
          * Para evitar que el programa intente calcular infinitamente un sitio
          * vacío de manera aleatoria cuando el tablero está lleno, se comprueba antes
@@ -550,12 +549,10 @@ public final class SumaTres extends JPanel {
         if (!t.equals(temp)) addTurno(); // Si el tablero ha cambiado, se añade un turno.
         else deactivateWarning();
 
-        update(); // Se actualiza las salidas para mostrar los cambios en el tablero.
+        update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
         if (!Turno.ableToMove(this)) finalDePartida(); // Si no se puede mover, se termina la partida.
     }
-
-
-
+    
 
     /**
     * Devuelve el tablero a la situación anterior.
@@ -569,7 +566,6 @@ public final class SumaTres extends JPanel {
             update();
             removeTurno();
             deactivateWarning();
-            repaint();
         }
     }	
 
@@ -626,21 +622,22 @@ public final class SumaTres extends JPanel {
      * @see <a href="https://stackoverflow.com/questions/880581/how-to-convert-int-to-integer-in-java">
      *		Pasar de int[] a List </a>
      */
-    // public void newSiguienteExperimental() {
-    // 	if(getMode()) {
-    // 		int[] values = possibleValuesNewSiguiente();
-    // 		if(values.length == 3) setSiguiente(newRandom(3) + 1);
-    // 		else {
-    // 			int finalValue;
-    // 			List<Integer> probabilities = Arrays.stream(values).boxed().collect(Collectors.toList());
-    // 			int otherValues = values.length - 3;
-    // 			double max = values.length * 5 + 20 / 100.0;
-    // 			if(max < 0.55) max = 0.55;
-    // 		}
-    // 	}
-    // 	else setSiguiente(newRandom(3) + 1);
-    // 	saveSiguiente();
-    // }
+    public void newSiguienteExperimental() {
+   	if(op.isMoreNextValuesEnabled()) {
+            int[] values = possibleValuesNewSiguiente();
+            if(values.length == 3) setSiguiente(newRandom(3) + 1);
+            else {
+                int finalValue;
+                //List<Integer> probabilities = Arrays.stream(values).boxed().collect(Collectors.toList());
+                int otherValues = values.length - 3;
+                double max = values.length * 5 + 20 / 100.0;
+                if(max < 0.55) max = 0.55;
+            }
+     	}
+    	else setSiguiente(newRandom(3) + 1);
+    	obtainedFromRandom.put(getSiguiente(),
+            obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
+    }
 
     /**
      * 
@@ -658,15 +655,15 @@ public final class SumaTres extends JPanel {
      * del enunciado.
      * 
      */
-    //@Deprecated (since="v18", forRemoval=false)
+    @Deprecated (since="v20", forRemoval=false)
     public void newSiguiente() {
-            if(op.isMoreNextValuesEnabled()) 
-                setSiguiente(possibleValuesNewSiguiente()[newRandom(possibleValuesNewSiguiente().length)]);
-            else 
-                setSiguiente(newRandom(3) + 1);
+        if(op.isMoreNextValuesEnabled()) 
+            setSiguiente(possibleValuesNewSiguiente()[newRandom(possibleValuesNewSiguiente().length)]);
+        else 
+            setSiguiente(newRandom(3) + 1);
 
-            obtainedFromRandom.put(getSiguiente(),
-                            obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
+        obtainedFromRandom.put(getSiguiente(),
+            obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
     }
 
     /**
@@ -674,7 +671,7 @@ public final class SumaTres extends JPanel {
      * {@link #validLocation()}.
      */
     public void newFicha() {
-            setTab(getWarning()[0], getWarning()[1], getSiguiente());
+        setTab(getWarning()[0], getWarning()[1], getSiguiente());
     }
 
     /**
