@@ -20,8 +20,8 @@ import java.io.File;
 import java.security.SecureRandom;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import javax.swing.JPanel;
 
 
@@ -164,10 +164,10 @@ public final class SumaTres extends JPanel {
 	public static final long serialVersionUID = -1110032705510692144L;
 	public static final SecureRandom RAND = new SecureRandom();
 	public static final File ARCHIVO = new File("./assets/resultados.txt");
-	public static final String VERSION = "v19";
+        public static final String VERSION = "v21";
 	
-	private HashMap<Integer, Integer> obtainedFromRandom; // Vector que almacena las fichas obtenidas en el modo clásico.
-	private ArrayList<Tablero> tableros; // ArrayList que guarda todos los tableros de la partida.
+	private HashMap<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
+	private LinkedList<Tablero> tableros; // Cola que guarda todos los tableros de la partida.
 	private int[] warning; // Vector que define la posición de la nueva ficha.
 	private int turno; // Contador de turnos.
 	private int siguiente; // Valor de la siguiente ficha a colocar.
@@ -177,7 +177,7 @@ public final class SumaTres extends JPanel {
 	private boolean cheatsUsed; // Estado de activación de los trucos.
 	private Tablero t; // Tablero sobre el que se juega la partida.
         private final Settings op; // Opciones de la partida.
-        private boolean finished;
+        private boolean finished; // Booleano que determina si la partida se ha terminado ya o no.
 		
 	/**
 	* Constructor de la clase sobrecargado por tres enteros.
@@ -207,7 +207,7 @@ public final class SumaTres extends JPanel {
             difficultyMultiplier = 1.0;
             cheatsUsed = false;
             obtainedFromRandom = new HashMap<>();
-            tableros = new ArrayList<>();
+            tableros = new LinkedList<>();
             warning = new int[2];
             puntos = 0;
             highestValue = 3;
@@ -396,7 +396,6 @@ public final class SumaTres extends JPanel {
      */
     public void enableCheats() {
         cheatsUsed = true;
-        repaint();
         setMultiplier(0.0);
     }
 
@@ -517,9 +516,7 @@ public final class SumaTres extends JPanel {
      * @param c Caracter que determina el movimiento (w/s/a/d) y, en modo experimental, (q/w/e/d/c/x/z/a).
      */
     public void jugada(char c) {
-
-        tableros.add(t); // Se guarda una copia del tablero para poder hacer undo()
-
+        
         /*
          * Se genera una copia del tablero para comparar después de realizar la jugada.
          * Si al compararse el tablero nuevo con su posición anterior resulta que ambos
@@ -546,7 +543,10 @@ public final class SumaTres extends JPanel {
             newSiguiente(); // Se calcula el valor de ficha 'siguiente'.
         }
 
-        if (!t.equals(temp)) addTurno(); // Si el tablero ha cambiado, se añade un turno.
+        if (!t.equals(temp)) {
+            addTurno(); // Si el tablero ha cambiado, se añade un turno.
+            tableros.addLast(temp);
+        } 
         else deactivateWarning();
 
         update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
@@ -555,14 +555,11 @@ public final class SumaTres extends JPanel {
     
 
     /**
-    * Devuelve el tablero a la situación anterior.
-    */
+     * Devuelve el tablero a la situación anterior.
+     */
     public void undo() {
-        if (getTurnos() > 1) { // Se comprueba que no se esté en el primer turno.
-            for (int i = 0; i < t.getColumns(); i++)
-                for (int j = 0; j < t.getRows(); j++) {
-                    setTab(i, j, tableros.get(getTurnos() - 2).getPieza(i, j).getValor());
-                }
+        if (!tableros.isEmpty()) { // Se comprueba que haya más de un tablero.
+            setTablero(tableros.removeLast());
             update();
             removeTurno();
             deactivateWarning();
@@ -816,15 +813,14 @@ public final class SumaTres extends JPanel {
                     possibleValuesNewSiguiente()[i], obtainedFromRandom.get(possibleValuesNewSiguiente()[i]));
             }
             out.println();
-
-            String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
-                getTurnos());
-            FileWS.write(output, ARCHIVO);
-            out.println("Puntuaciones guardadas.");
-
         }
+        
+        String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
+        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+            VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
+            getTurnos());
+        FileWS.write(output, ARCHIVO);
+        if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
 
         if(op.isExitOnEndEnabled()) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
         Keyboard.disableHandling(); // desactiva la entrada por teclado.
@@ -833,17 +829,16 @@ public final class SumaTres extends JPanel {
     }
 
     public void loop() {
-            while(true) { // <- lo siento!
-                          jugada('w');
-            if(op.isDiagonalMovementEnabled()) jugada('q');
-                          jugada('a');
-            if(op.isDiagonalMovementEnabled()) jugada('z');
-            if(op.isDiagonalMovementEnabled()) jugada('x');
-            else 	      jugada('s');
-            if(op.isDiagonalMovementEnabled()) jugada('c');
-                          jugada('d');
-            if(op.isDiagonalMovementEnabled()) jugada('e');
-            }
+        while(!isFinished()) {
+                                                jugada('w');
+             if(op.isDiagonalMovementEnabled()) jugada('q');
+                                                jugada('a');
+             if(op.isDiagonalMovementEnabled()) jugada('z');
+                                                jugada('s');
+             if(op.isDiagonalMovementEnabled()) jugada('c');
+                                                jugada('d');
+             if(op.isDiagonalMovementEnabled()) jugada('e');
+        }
     }
     
         /**

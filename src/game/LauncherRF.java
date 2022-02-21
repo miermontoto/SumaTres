@@ -98,6 +98,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosEliminar = new javax.swing.JMenuItem();
         jmiTrucosPuntos = new javax.swing.JMenuItem();
         jmiTrucosUndo = new javax.swing.JMenuItem();
+        jmiTrucosLoop = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres");
@@ -216,6 +217,11 @@ public class LauncherRF extends javax.swing.JFrame {
                 mnuTrucosMouseEntered(evt);
             }
         });
+        mnuTrucos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuTrucosActionPerformed(evt);
+            }
+        });
 
         jmiTrucos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucos.setText("Trucos");
@@ -268,6 +274,16 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         mnuTrucos.add(jmiTrucosUndo);
+
+        jmiTrucosLoop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PAGE_DOWN, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiTrucosLoop.setText("Loop");
+        jmiTrucosLoop.setEnabled(false);
+        jmiTrucosLoop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosLoopActionPerformed(evt);
+            }
+        });
+        mnuTrucos.add(jmiTrucosLoop);
 
         jMenuBar1.add(mnuTrucos);
 
@@ -340,6 +356,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosEliminar.setEnabled(opdef);
         jmiTrucosPuntos.setEnabled(opdef);
         jmiTrucosUndo.setEnabled(opdef);
+        jmiTrucosLoop.setEnabled(opdef);
     }
     
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
@@ -447,6 +464,14 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.repaint();
     }//GEN-LAST:event_jmiHudActionPerformed
 
+    private void jmiTrucosLoopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopActionPerformed
+        juego.loop();
+    }//GEN-LAST:event_jmiTrucosLoopActionPerformed
+
+    private void mnuTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTrucosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mnuTrucosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -500,6 +525,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jmiTrucos;
     private javax.swing.JMenuItem jmiTrucosAñadir;
     private javax.swing.JMenuItem jmiTrucosEliminar;
+    private javax.swing.JMenuItem jmiTrucosLoop;
     private javax.swing.JMenuItem jmiTrucosPuntos;
     private javax.swing.JMenuItem jmiTrucosUndo;
     private javax.swing.JMenu mnuArchivo;

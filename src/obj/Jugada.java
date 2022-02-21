@@ -1,5 +1,7 @@
 package obj;
 
+import util.Dialog;
+
 /**
  * <h2>Clase que define las jugadas del juego en el tablero.</h2>
  * 
@@ -47,7 +49,7 @@ public class Jugada {
             case 'e': this.up    = 1; this.right = 1; break; // EXPERIMENTAL: DER-ARR
             case 'x': this.down  = 1;                 break; // EXPERIMENTAL: ABAJO
             default:
-                System.out.println("ERROR: Caracter de jugada inválido.");
+                Dialog.showError("ERROR: Caracter de jugada inválido.");
                 System.exit(1);
                 break;
         }
