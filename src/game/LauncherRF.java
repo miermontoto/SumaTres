@@ -264,11 +264,11 @@ public class LauncherRF extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmiTrucosAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosAñadirActionPerformed
-        juego.getTablero().colocarPieza();
+        juego.colocarPieza();
     }//GEN-LAST:event_jmiTrucosAñadirActionPerformed
 
     private void jmiTrucosEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosEliminarActionPerformed
-        juego.getTablero().quitarPieza();
+        juego.quitarPieza();
     }//GEN-LAST:event_jmiTrucosEliminarActionPerformed
 
     /**

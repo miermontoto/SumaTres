@@ -12,7 +12,7 @@ public class Avanzadas extends javax.swing.JFrame {
     /**
      * Creates new form Avanzadas
      */
-    public Avanzadas() {
+    private Avanzadas() {
         initComponents();
     }
     

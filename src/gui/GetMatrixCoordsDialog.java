@@ -1,35 +1,38 @@
 package gui;
 
+import obj.Tablero;
+import util.Dialog;
+
 /**
  *
  * @author JuanMier
  */
-public class CoordenadasMatriz extends javax.swing.JDialog {
+public class GetMatrixCoordsDialog extends javax.swing.JDialog {
     
     private boolean pressedOk;
-
+    private int upperLimitX;
+    private int upperLimitY;
+    
     /**
      * Creates new form CoordenadasMatriz
      */
-    public CoordenadasMatriz(java.awt.Frame parent, boolean modal) {
+    private GetMatrixCoordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
     
-    public CoordenadasMatriz() {
+    public GetMatrixCoordsDialog(String s, int ulx, int uly) {
         this(null, true);
+        lblTexto.setText(s);
+        upperLimitX = ulx;
+        upperLimitY = uly;
     }
     
-    public CoordenadasMatriz(String s) {
-        this(null, true);
-        this.setText(s);
-    }
     
-    
-    public boolean showDialog(int limitx, int limity) {
+    public boolean showDialog() {
         pressedOk = false;
         this.setVisible(true);
-        return pressedOk;
+        return pressedOk && validateFields();
     }
 
     /**
@@ -45,19 +48,32 @@ public class CoordenadasMatriz extends javax.swing.JDialog {
         txtX = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtY = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnAceptar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         lblTexto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("SumaTres - Input coordenadas");
+        setAlwaysOnTop(true);
+        setResizable(false);
 
         jLabel1.setText("Coordenada X:");
 
         jLabel2.setText("Coordenada Y:");
 
-        jButton1.setText("Aceptar");
+        btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -70,14 +86,14 @@ public class CoordenadasMatriz extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtX, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtY, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnAceptar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
+                        .addComponent(btnCancelar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTexto)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -96,18 +112,34 @@ public class CoordenadasMatriz extends javax.swing.JDialog {
                     .addComponent(txtY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnAceptar)
+                    .addComponent(btnCancelar))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        if(validateFields()) pressedOk = true; setVisible(false);
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
     
-    public int getX() {return Integer.parseInt(txtX.getText());}
-    public int getY() {return Integer.parseInt(txtY.getText());}
-    public void setText(String s) {lblTexto.setText(s);}
+    public int getCoordsX() {return Integer.parseInt(txtX.getText());}
+    public int getCoordsY() {return Integer.parseInt(txtY.getText());}
+    
+    private boolean validateFields() {
+        boolean check = true;
+        try {
+            if(getCoordsX() < 0 || getCoordsX() >= upperLimitX) throw new ArrayIndexOutOfBoundsException();
+            if(getCoordsY() < 0 || getCoordsY() >= upperLimitY) throw new ArrayIndexOutOfBoundsException();
+        } catch (Exception ex) {Dialog.showError("Introduzca valores válidos o pulse cancelar."); check = false;}
+        return check;
+    }
     
     /**
      * @param args the command line arguments
@@ -126,34 +158,35 @@ public class CoordenadasMatriz extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CoordenadasMatriz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetMatrixCoordsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CoordenadasMatriz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetMatrixCoordsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CoordenadasMatriz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetMatrixCoordsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CoordenadasMatriz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetMatrixCoordsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                CoordenadasMatriz dialog = new CoordenadasMatriz(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            GetMatrixCoordsDialog dialog = new GetMatrixCoordsDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblTexto;

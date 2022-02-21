@@ -1,7 +1,7 @@
 package obj;
 
+import gui.GetMatrixCoordsDialog;
 import util.Dialog;
-import util.Input;
 
 /**
  * Clase que genera objetos tipo 'Tablero'. Contiene tres atributos: una matriz
@@ -111,64 +111,6 @@ public class Tablero {
         return full;
     }
 
-    /**
-     * Método que coloca una pieza en el tablero de manera artificial, obteniendo las coordenadas y el
-     * valor de la nueva pieza y comprobando que todo es correcto. <p>
-     * Para obtener las coordenadas, se utiliza el método {@link #inputCoord(String, int)}. <p>
-     * Para obtener el nuevo valor, se utiliza una versión ligeramente modificada de este último método,
-     * comprobando el valor con {@link #validValue(int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que informa de si se colocó la pieza o no.
-     */
-    public boolean colocarPieza() {
-        boolean completed = false;
-        int nX = Input.input("Introduzca la coordenada x de la pieza que desea colocar", 0, this.getColumns(), false);
-        if(nX != -1) {
-            int nY = Input.input("Introduzca la coordenada y de la pieza que desea colocar", 0, this.getRows(), false);
-            if (nY != 1) {
-                int nV;
-                try {
-                    String respuesta = Dialog.input("Introduzca un valor para la pieza");
-                    if (respuesta == null || respuesta.length() == 0) nV = -1;
-                    else nV = Integer.parseInt(respuesta);
-
-                    while (nV < 1 && !Pieza.validValue(nV) || nV == -1) {
-                        Dialog.showError();
-                        respuesta = Dialog.input("Introduzca un valor para la pieza");
-                        if (respuesta == null || respuesta.length() == 0) nV = -1;
-                        else nV = Integer.parseInt(respuesta);
-                    }
-                } catch (NumberFormatException ex) {
-                    Dialog.showError(ex);
-                    nV = -1;
-                }
-                if(nV != -1) {
-                    this.setTab(nX, nY, nV);
-                    completed = true;
-                }
-            }
-        }
-        return completed;
-    }
-
-    /**
-     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
-     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que determina si se ha eliminado o no una pieza.
-     */
-    public boolean quitarPieza() {
-            boolean completed = false;
-            int nX = Input.input("Introduzca la coordenada x de la pieza que desea eliminar", 0, this.getColumns(), false);
-            if(nX != -1) {
-                int nY = Input.input("Introduzca la coordenada y de la pieza que desea eliminar", 0, this.getRows(), false);
-                if (nY != -1 && this.getPieza(nX, nY).getValor() != 0) {
-                    this.setTab(nX, nY, 0);
-                    completed = true;
-                }
-            }
-            return completed;
-    }
 
 
     /**
@@ -176,18 +118,18 @@ public class Tablero {
      */
     @Override
     public String toString() {
-            String s = "";
-            for(int i=0; i < this.getColumns(); i++) for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
-            return s;
+        String s = "";
+        for(int i=0; i < this.getColumns(); i++) for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
+        return s;
     }
 
     public String formattedToString() {
-            String s = "";
-            for(int i=0; i < this.getColumns(); i++) {
-                    for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
-                    s += String.format("%n");
-            }
-            return s;
+        String s = "";
+        for(int i=0; i < this.getColumns(); i++) {
+            for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
+            s += String.format("%n");
+        }
+        return s;
     }
 
     /**

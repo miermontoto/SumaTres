@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import obj.Settings;
 import util.Dialog;
 import handler.FileWS;
+import util.Graphic;
 
 /**
  *
@@ -19,8 +20,8 @@ public class PrePartida extends javax.swing.JFrame {
     private LauncherRF principal;
     private Avanzadas avanzadas;
     
-    private static final int minSize = 2;
-    private static final int maxSize = 25;
+    private static final int MIN_SIZE = 2;
+    private static final int[] MAX_SIZE = Graphic.maxValidSize();
 
     /**
      * Creates new form PrePartida
@@ -233,12 +234,12 @@ public class PrePartida extends javax.swing.JFrame {
 
     private void sldHorizontalChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldHorizontalChanged
         txtHorizontal.setText(String.format("%s", sldHorizontal.getValue()));
-        opciones.setSizex(sldHorizontal.getValue());
+        opciones.setSizey(sldHorizontal.getValue());
     }//GEN-LAST:event_sldHorizontalChanged
 
     private void sldVerticalStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldVerticalStateChanged
         txtVertical.setText(String.format("%s", sldVertical.getValue()));
-        opciones.setSizey(sldVertical.getValue());
+        opciones.setSizex(sldVertical.getValue());
     }//GEN-LAST:event_sldVerticalStateChanged
 
     private void btnJugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJugarActionPerformed
@@ -261,26 +262,26 @@ public class PrePartida extends javax.swing.JFrame {
     private void txtVerticalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVerticalActionPerformed
         try {
             int val = Integer.parseInt(txtVertical.getText());
-            if(val < minSize) val = minSize;
-            else if(val > maxSize) val = maxSize;
+            if(val < MIN_SIZE) val = MIN_SIZE;
+            else if(val > MAX_SIZE[0]) val = MAX_SIZE[0];
             sldVertical.setValue(val);
-            opciones.setSizey(val);
+            opciones.setSizex(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
-            txtVertical.setText(String.format("%d", opciones.getY()));
+            txtVertical.setText(String.format("%d", opciones.getX()));
         }
     }//GEN-LAST:event_txtVerticalActionPerformed
 
     private void txtHorizontalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHorizontalActionPerformed
         try {
             int val = Integer.parseInt(txtHorizontal.getText());
-            if(val < minSize) val = minSize;
-            else if(val > maxSize) val = maxSize;
+            if(val < MIN_SIZE) val = MIN_SIZE;
+            else if(val > MAX_SIZE[1]) val = MAX_SIZE[1];
             sldHorizontal.setValue(val);
-            opciones.setSizex(val);
+            opciones.setSizey(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
-            txtHorizontal.setText(String.format("%d", opciones.getX()));
+            txtHorizontal.setText(String.format("%d", opciones.getY()));
         }
     }//GEN-LAST:event_txtHorizontalActionPerformed
 
@@ -349,22 +350,13 @@ public class PrePartida extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PrePartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PrePartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PrePartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(PrePartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PrePartida().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new PrePartida().setVisible(true);
         });
     }
 

@@ -1,5 +1,6 @@
 package game;
 
+import gui.GetMatrixCoordsDialog;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
@@ -857,6 +858,66 @@ public final class SumaTres extends JPanel {
         requestFocusInWindow();
         super.paintComponent(g);
         Paint.paint(g, this);
+    }
+
+    /**
+     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
+     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
+     * El método debería ser accesible solamente cuando los trucos estén activados.
+     * @return Valor booleano que determina si se ha eliminado o no una pieza.
+     */
+    public boolean quitarPieza() {
+        GetMatrixCoordsDialog gcd1 = new GetMatrixCoordsDialog("Introduzca las coordenadas de la pieza que desea eliminar", op.getX(), op.getY());
+        if (gcd1.showDialog()) {
+            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
+            repaint();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Método que coloca una pieza en el tablero de manera artificial, obteniendo las coordenadas y el
+     * valor de la nueva pieza y comprobando que todo es correcto. <p>
+     * Para obtener las coordenadas, se utiliza el método {@link #inputCoord(String, int)}. <p>
+     * Para obtener el nuevo valor, se utiliza una versión ligeramente modificada de este último método,
+     * comprobando el valor con {@link #validValue(int)}. <p>
+     * El método debería ser accesible solamente cuando los trucos estén activados.
+     * @return Valor booleano que informa de si se colocó la pieza o no.
+     */
+    public boolean colocarPieza() {
+        boolean completed = false;
+        GetMatrixCoordsDialog gcd = new GetMatrixCoordsDialog("Introducza las coordenadas de la pieza que desea colocar.", op.getX(), op.getY());
+        if (!gcd.showDialog()) {
+            return false;
+        }
+        int nV;
+        try {
+            String respuesta = Dialog.input("Introduzca un valor para la pieza");
+            if (respuesta == null || respuesta.length() == 0) {
+                nV = -1;
+            } else {
+                nV = Integer.parseInt(respuesta);
+            }
+            while (nV < 1 && !Pieza.validValue(nV) || nV == -1) {
+                Dialog.showError();
+                respuesta = Dialog.input("Introduzca un valor para la pieza");
+                if (respuesta == null || respuesta.length() == 0) {
+                    nV = -1;
+                } else {
+                    nV = Integer.parseInt(respuesta);
+                }
+            }
+        } catch (NumberFormatException ex) {
+            Dialog.showError(ex);
+            nV = -1;
+        }
+        if (nV != -1) {
+            setTab(gcd.getCoordsX(), gcd.getCoordsY(), nV);
+            completed = true;
+            repaint();
+        }
+        return completed;
     }
 
     // -------------------------------------------------------------------------------------------------------------------
