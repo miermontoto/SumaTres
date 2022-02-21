@@ -79,8 +79,6 @@ public final class Graphic {
             return s.getTablero().getColumns() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 3 * Paint.MAIN_SPACER;
     }
 
-
-
     /**
      * Método que comprueba si el tablero entra en pantalla con la resolución
      * actual.

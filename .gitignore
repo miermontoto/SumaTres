@@ -1,5 +1,3 @@
-src/util/Input.java
-src/game/Launcher.*
 manifest.mf
 build*
 resultados.txt
