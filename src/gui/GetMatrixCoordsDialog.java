@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import obj.Tablero;
 import util.Dialog;
 
@@ -10,8 +11,8 @@ import util.Dialog;
 public class GetMatrixCoordsDialog extends javax.swing.JDialog {
     
     private boolean pressedOk;
-    private int upperLimitX;
-    private int upperLimitY;
+    private Tablero tab;
+    private boolean mode; // true para insertar, false para eliminar.
     
     /**
      * Creates new form CoordenadasMatriz
@@ -21,11 +22,11 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
         initComponents();
     }
     
-    public GetMatrixCoordsDialog(String s, int ulx, int uly) {
+    public GetMatrixCoordsDialog(String s, Tablero t, boolean m) {
         this(null, true);
         lblTexto.setText(s);
-        upperLimitX = ulx;
-        upperLimitY = uly;
+        tab = t;
+        mode = m;
     }
     
     
@@ -51,6 +52,7 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
         btnAceptar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         lblTexto = new javax.swing.JLabel();
+        lblInfo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SumaTres - Input coordenadas");
@@ -59,7 +61,19 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Coordenada X:");
 
+        txtX.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtXKeyTyped(evt);
+            }
+        });
+
         jLabel2.setText("Coordenada Y:");
+
+        txtY.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtYKeyTyped(evt);
+            }
+        });
 
         btnAceptar.setText("Aceptar");
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
@@ -86,7 +100,7 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtX, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtY, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -98,19 +112,25 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
                         .addComponent(lblTexto)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(166, 166, 166)
+                .addComponent(lblInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblTexto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(txtY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
+                .addComponent(lblInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAceptar)
                     .addComponent(btnCancelar))
@@ -128,6 +148,22 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void txtXKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtXKeyTyped
+        updateInfoField();
+    }//GEN-LAST:event_txtXKeyTyped
+
+    private void txtYKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtYKeyTyped
+        updateInfoField();
+    }//GEN-LAST:event_txtYKeyTyped
+
+    private void updateInfoField() {
+        try {
+            if(tab.getTab(getCoordsX(), getCoordsY()) != 0) {
+                lblInfo.setForeground(mode ? Color.RED : Color.GREEN);
+                lblInfo.setText(String.format("Valor de la pieza seleccionada: %d", tab.getTab(getCoordsX(), getCoordsY())));
+            } 
+        } catch (Exception ex) {/* no es necesario hacer nada, no supone un error de ningún tipo */}
+    }
     
     public int getCoordsX() {return Integer.parseInt(txtX.getText());}
     public int getCoordsY() {return Integer.parseInt(txtY.getText());}
@@ -135,9 +171,9 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
     private boolean validateFields() {
         boolean check = true;
         try {
-            if(getCoordsX() < 0 || getCoordsX() >= upperLimitX) throw new ArrayIndexOutOfBoundsException();
-            if(getCoordsY() < 0 || getCoordsY() >= upperLimitY) throw new ArrayIndexOutOfBoundsException();
-        } catch (Exception ex) {Dialog.showError("Introduzca valores válidos o pulse cancelar."); check = false;}
+            if(getCoordsX() < 0 || getCoordsX() >= tab.getColumns()) throw new ArrayIndexOutOfBoundsException();
+            if(getCoordsY() < 0 || getCoordsY() >= tab.getRows()) throw new ArrayIndexOutOfBoundsException();
+        } catch (Exception ex) {Dialog.showError("Valor inválido introducido."); check = false;}
         return check;
     }
     
@@ -189,6 +225,7 @@ public class GetMatrixCoordsDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel lblInfo;
     private javax.swing.JLabel lblTexto;
     private javax.swing.JTextField txtX;
     private javax.swing.JTextField txtY;

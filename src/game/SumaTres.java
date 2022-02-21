@@ -569,6 +569,7 @@ public final class SumaTres extends JPanel {
             update();
             removeTurno();
             deactivateWarning();
+            repaint();
         }
     }	
 
@@ -734,6 +735,7 @@ public final class SumaTres extends JPanel {
      * <p>
      * La información extra sobre la situación actual de la partida se devuelve
      * mediante el método {@link #extraInfo()}.
+     * @return Cadena con el tablero actual.
      */
     @Override
     public String toString() {
@@ -807,9 +809,10 @@ public final class SumaTres extends JPanel {
             finalPuntos, getHighest(), getTurnos());
         if (cheatsUsed()) salida += "Se han utilizado trucos.";
         Dialog.show(salida);
-        out.printf("%n%n%s",salida);
+        
 
         if(op.isConsoleEnabled()) {
+            out.printf("%n%n%s%n",salida);
             out.print("Fichas obtenidas: ");
             for(int i=0; i < possibleValuesNewSiguiente().length; i++) {
                 out.printf("[%d]: %d ",
@@ -845,38 +848,8 @@ public final class SumaTres extends JPanel {
             if(op.isDiagonalMovementEnabled()) jugada('e');
             }
     }
-
-    // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Método que redirige los gráficos a {@link #paint(Graphics)}. <p>
-     * También pide el focus de la ventana al comenzar a pintar, para evitar que se pierdan
-     * pulsaciones de teclado al comenzar la partida.
-     */
-    @Override
-    public void paintComponent(Graphics g) {
-        requestFocusInWindow();
-        super.paintComponent(g);
-        Paint.paint(g, this);
-    }
-
-    /**
-     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
-     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que determina si se ha eliminado o no una pieza.
-     */
-    public boolean quitarPieza() {
-        GetMatrixCoordsDialog gcd1 = new GetMatrixCoordsDialog("Introduzca las coordenadas de la pieza que desea eliminar", op.getX(), op.getY());
-        if (gcd1.showDialog()) {
-            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
-            repaint();
-            return true;
-        }
-        return false;
-    }
-
-    /**
+    
+        /**
      * Método que coloca una pieza en el tablero de manera artificial, obteniendo las coordenadas y el
      * valor de la nueva pieza y comprobando que todo es correcto. <p>
      * Para obtener las coordenadas, se utiliza el método {@link #inputCoord(String, int)}. <p>
@@ -887,7 +860,7 @@ public final class SumaTres extends JPanel {
      */
     public boolean colocarPieza() {
         boolean completed = false;
-        GetMatrixCoordsDialog gcd = new GetMatrixCoordsDialog("Introducza las coordenadas de la pieza que desea colocar.", op.getX(), op.getY());
+        GetMatrixCoordsDialog gcd = new GetMatrixCoordsDialog("Introducza las coordenadas de la pieza que desea colocar.", getTablero(), true);
         if (!gcd.showDialog()) {
             return false;
         }
@@ -918,6 +891,36 @@ public final class SumaTres extends JPanel {
             repaint();
         }
         return completed;
+    }
+    
+        /**
+     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
+     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
+     * El método debería ser accesible solamente cuando los trucos estén activados.
+     * @return Valor booleano que determina si se ha eliminado o no una pieza.
+     */
+    public boolean quitarPieza() {
+        GetMatrixCoordsDialog gcd1 = new GetMatrixCoordsDialog("Introduzca las coordenadas de la pieza que desea eliminar", getTablero(), false);
+        if (gcd1.showDialog()) {
+            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
+            repaint();
+            return true;
+        }
+        return false;
+    }
+
+    // ----------------------------------------------------------------------------------------------------
+
+    /**
+     * Método que redirige los gráficos a {@link #paint(Graphics)}. <p>
+     * También pide el focus de la ventana al comenzar a pintar, para evitar que se pierdan
+     * pulsaciones de teclado al comenzar la partida.
+     */
+    @Override
+    public void paintComponent(Graphics g) {
+        requestFocusInWindow();
+        super.paintComponent(g);
+        Paint.paint(g, this);
     }
 
     // -------------------------------------------------------------------------------------------------------------------

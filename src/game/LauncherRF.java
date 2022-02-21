@@ -45,6 +45,10 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiExtrasConsole.setSelected(op.isConsoleEnabled());
         jmiExitOnEnd.setSelected(op.isExitOnEndEnabled());
+        jmiHud.setSelected(op.isHudEnabled());
+        jmiFlechas.setSelected(op.isPaintArrowsEnabled());
+        jmiHud.setEnabled(op.isExperimental());
+        jmiFlechas.setEnabled(op.isExperimental());
         
         jmiModoClassic.setEnabled(op.isExperimental());
         jmiModoClassic.setSelected(op.isExperimental());
@@ -79,6 +83,8 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuOpciones = new javax.swing.JMenu();
         jmiExtrasConsole = new javax.swing.JCheckBoxMenuItem();
         jmiExitOnEnd = new javax.swing.JCheckBoxMenuItem();
+        jmiFlechas = new javax.swing.JCheckBoxMenuItem();
+        jmiHud = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiColores = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -150,6 +156,24 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         mnuOpciones.add(jmiExitOnEnd);
+
+        jmiFlechas.setSelected(true);
+        jmiFlechas.setText("Pintar flechas");
+        jmiFlechas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiFlechasActionPerformed(evt);
+            }
+        });
+        mnuOpciones.add(jmiFlechas);
+
+        jmiHud.setSelected(true);
+        jmiHud.setText("Pintar HUD");
+        jmiHud.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiHudActionPerformed(evt);
+            }
+        });
+        mnuOpciones.add(jmiHud);
         mnuOpciones.add(jSeparator3);
 
         jmiColores.setText("Editar colores");
@@ -323,9 +347,7 @@ public class LauncherRF extends javax.swing.JFrame {
         // pasó al modo clásico y con esta acción vuelve al modo experimental, por
         // lo que no es necesario volver a activar los trucos ni mostrar alertas.
         juego.getSettings().setExperimentalMode(true);
-        juego.repaint(); // Repinta el tablero al volver al modo experimental (flechas)
         setCheatsEnabled(true); // Se activan los trucos.
-        setCheatsEnabled(true); // se activan los trucos.
         jmiTrucos.setEnabled(true);
         juego.repaint();
         actualizarPneInfo();
@@ -412,8 +434,18 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuTrucosMouseEntered
 
     private void jmiExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExitOnEndActionPerformed
-        secundaria.getSettings().toggleExitOnEnd();
+        juego.getSettings().toggleExitOnEnd();
     }//GEN-LAST:event_jmiExitOnEndActionPerformed
+
+    private void jmiFlechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiFlechasActionPerformed
+        juego.getSettings().togglePaintArrows();
+        juego.repaint();
+    }//GEN-LAST:event_jmiFlechasActionPerformed
+
+    private void jmiHudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHudActionPerformed
+        juego.getSettings().toggleHud();
+        juego.repaint();
+    }//GEN-LAST:event_jmiHudActionPerformed
 
     /**
      * @param args the command line arguments
@@ -455,6 +487,8 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiColores;
     private javax.swing.JCheckBoxMenuItem jmiExitOnEnd;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
+    private javax.swing.JCheckBoxMenuItem jmiFlechas;
+    private javax.swing.JCheckBoxMenuItem jmiHud;
     private javax.swing.JMenuItem jmiLoad;
     private javax.swing.JMenu jmiModo;
     private javax.swing.JRadioButtonMenuItem jmiModoClassic;

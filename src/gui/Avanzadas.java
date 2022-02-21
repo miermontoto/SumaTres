@@ -41,6 +41,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkMoreNextValues = new javax.swing.JCheckBox();
         chkBalancedStart = new javax.swing.JCheckBox();
         chkExitOnEnd = new javax.swing.JCheckBox();
+        chkPaintArrows = new javax.swing.JCheckBox();
 
         setTitle("SumaTres - Opciones avanzadas");
         setResizable(false);
@@ -110,9 +111,18 @@ public class Avanzadas extends javax.swing.JFrame {
         });
 
         chkExitOnEnd.setText("Salir al terminar");
+        chkExitOnEnd.setToolTipText("Si está activado, el programa se cierra cuando la partida se termina.");
         chkExitOnEnd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkExitOnEndActionPerformed(evt);
+            }
+        });
+
+        chkPaintArrows.setText("Pintar flechas");
+        chkPaintArrows.setToolTipText("Si está activado, se pintan las flechas que indican el movimiento de las fichas.");
+        chkPaintArrows.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkPaintArrowsActionPerformed(evt);
             }
         });
 
@@ -121,18 +131,16 @@ public class Avanzadas extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
+                .addGap(37, 37, 37)
                 .addComponent(btnClásico)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addComponent(btnExperimental)
-                .addGap(39, 39, 39))
+                .addGap(33, 33, 33))
+            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSeparator1)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(44, 44, 44)
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkPaintArrows)
                     .addComponent(chkExitOnEnd)
                     .addComponent(chkBalancedStart)
                     .addComponent(chkMoreNextValues)
@@ -145,7 +153,7 @@ public class Avanzadas extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnExperimental, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnClásico, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -165,7 +173,9 @@ public class Avanzadas extends javax.swing.JFrame {
                 .addComponent(chkBalancedStart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkExitOnEnd)
-                .addGap(15, 15, 15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkPaintArrows)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
@@ -208,6 +218,10 @@ public class Avanzadas extends javax.swing.JFrame {
     private void chkExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkExitOnEndActionPerformed
         ventanaSecundaria.getSettings().toggleExitOnEnd();
     }//GEN-LAST:event_chkExitOnEndActionPerformed
+
+    private void chkPaintArrowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPaintArrowsActionPerformed
+        ventanaSecundaria.getSettings().togglePaintArrows();
+    }//GEN-LAST:event_chkPaintArrowsActionPerformed
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
@@ -220,6 +234,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkCheatsAvailable.setEnabled(op.isExperimental());
         chkMoreNextValues.setEnabled(op.isExperimental());
         chkBalancedStart.setEnabled(op.isExperimental());
+        chkPaintArrows.setEnabled(op.isExperimental());
         
         chkDiagonalMovement.setSelected(op.isDiagonalMovementEnabled());
         chkHUD.setSelected(op.isHudEnabled());
@@ -228,6 +243,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkMoreNextValues.setSelected(op.isMoreNextValuesEnabled());
         chkConsoleOutput.setSelected(op.isConsoleEnabled());
         chkExitOnEnd.setSelected(op.isExitOnEndEnabled());
+        chkPaintArrows.setSelected(op.isPaintArrowsEnabled());
     }
     
     
@@ -277,6 +293,7 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkExitOnEnd;
     private javax.swing.JCheckBox chkHUD;
     private javax.swing.JCheckBox chkMoreNextValues;
+    private javax.swing.JCheckBox chkPaintArrows;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }
