@@ -8,15 +8,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import obj.Settings;
 import util.Dialog;
 import handler.FileWS;
+import javax.swing.SwingUtilities;
 import util.Graphic;
 
-/**
- *
- * @author JuanMier
- */
+
 public class PrePartida extends javax.swing.JFrame {
     
-    private Settings opciones;
+    private Settings op;
     private LauncherRF principal;
     private Avanzadas avanzadas;
     
@@ -36,7 +34,7 @@ public class PrePartida extends javax.swing.JFrame {
         avanzadas = new Avanzadas(this);
         
         // las opciones por defecto son: tamaño 5x5, modo experimental.
-        opciones = new Settings(5, 5, true);
+        op = new Settings(5, 5, true);
         avanzadas.readValues();
     }
 
@@ -63,11 +61,12 @@ public class PrePartida extends javax.swing.JFrame {
         bttAvanzadas = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnOpen = new javax.swing.JButton();
+        btnDarkMode = new javax.swing.JToggleButton();
 
         flcOpen.setDialogTitle("SumaTres - Cargar archivo de opciones");
 
         flcSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
-        flcSave.setCurrentDirectory(new java.io.File("/home/JuanMier/."));
+        flcSave.setCurrentDirectory(new java.io.File("/home/under/."));
         flcSave.setDialogTitle("SumaTres - Guardar opciones a archivo");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -165,6 +164,13 @@ public class PrePartida extends javax.swing.JFrame {
             }
         });
 
+        btnDarkMode.setText("🌙");
+        btnDarkMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDarkModeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,11 +185,14 @@ public class PrePartida extends javax.swing.JFrame {
                             .addComponent(chkCustomSizes)
                             .addComponent(bttClásico)
                             .addComponent(bttExperimental)
-                            .addComponent(btnJugar)))
+                            .addComponent(btnJugar))
+                        .addGap(3, 3, 3))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(41, 41, 41)
                         .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDarkMode)
+                        .addGap(18, 18, 18)
                         .addComponent(btnSave)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnOpen)
@@ -199,12 +208,13 @@ public class PrePartida extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bttAvanzadas)
                     .addComponent(btnSave)
-                    .addComponent(btnOpen))
+                    .addComponent(btnOpen)
+                    .addComponent(btnDarkMode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -234,28 +244,28 @@ public class PrePartida extends javax.swing.JFrame {
 
     private void sldHorizontalChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldHorizontalChanged
         txtHorizontal.setText(String.format("%s", sldHorizontal.getValue()));
-        opciones.setSizey(sldHorizontal.getValue());
+        op.setSizey(sldHorizontal.getValue());
     }//GEN-LAST:event_sldHorizontalChanged
 
     private void sldVerticalStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldVerticalStateChanged
         txtVertical.setText(String.format("%s", sldVertical.getValue()));
-        opciones.setSizex(sldVertical.getValue());
+        op.setSizex(sldVertical.getValue());
     }//GEN-LAST:event_sldVerticalStateChanged
 
     private void btnJugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJugarActionPerformed
         this.setVisible(false);
         if(principal == null) System.exit(255);
-        else principal.launch(opciones);
+        else principal.launch(op);
         avanzadas.setVisible(false);
     }//GEN-LAST:event_btnJugarActionPerformed
 
     private void bttClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttClásicoActionPerformed
-        opciones = new Settings(opciones.getX(), opciones.getY(), false);
+        op = new Settings(op.getX(), op.getY(), false);
         avanzadas.readValues();
     }//GEN-LAST:event_bttClásicoActionPerformed
 
     private void bttExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttExperimentalActionPerformed
-        opciones = new Settings(opciones.getX(), opciones.getY(), true);
+        op = new Settings(op.getX(), op.getY(), true);
         avanzadas.readValues();
     }//GEN-LAST:event_bttExperimentalActionPerformed
 
@@ -265,10 +275,10 @@ public class PrePartida extends javax.swing.JFrame {
             if(val < MIN_SIZE) val = MIN_SIZE;
             else if(val > MAX_SIZE[0]) val = MAX_SIZE[0];
             sldVertical.setValue(val);
-            opciones.setSizex(val);
+            op.setSizex(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
-            txtVertical.setText(String.format("%d", opciones.getX()));
+            txtVertical.setText(String.format("%d", op.getX()));
         }
     }//GEN-LAST:event_txtVerticalActionPerformed
 
@@ -278,10 +288,10 @@ public class PrePartida extends javax.swing.JFrame {
             if(val < MIN_SIZE) val = MIN_SIZE;
             else if(val > MAX_SIZE[1]) val = MAX_SIZE[1];
             sldHorizontal.setValue(val);
-            opciones.setSizey(val);
+            op.setSizey(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
-            txtHorizontal.setText(String.format("%d", opciones.getY()));
+            txtHorizontal.setText(String.format("%d", op.getY()));
         }
     }//GEN-LAST:event_txtHorizontalActionPerformed
 
@@ -298,12 +308,12 @@ public class PrePartida extends javax.swing.JFrame {
         int res = jfcOpen.showOpenDialog(null);
         if(res == JFileChooser.APPROVE_OPTION) {
             try {
-                opciones = new Settings(Files.readString(jfcOpen.getSelectedFile().toPath()));
-                sldHorizontal.setValue(opciones.getX());
-                sldVertical.setValue(opciones.getY());
-                bttExperimental.setSelected(opciones.isExperimental());
-                txtVertical.setText(String.format("%d", opciones.getY()));
-                txtHorizontal.setText(String.format("%d", opciones.getX()));
+                op = new Settings(Files.readString(jfcOpen.getSelectedFile().toPath()));
+                sldHorizontal.setValue(op.getX());
+                sldVertical.setValue(op.getY());
+                bttExperimental.setSelected(op.isExperimental());
+                txtVertical.setText(String.format("%d", op.getY()));
+                txtHorizontal.setText(String.format("%d", op.getX()));
                 avanzadas.readValues(); 
             } catch (IOException ex) {Dialog.showError(ex);}
         }
@@ -317,20 +327,27 @@ public class PrePartida extends javax.swing.JFrame {
         int res = jfcSave.showSaveDialog(null);
         if(res == JFileChooser.APPROVE_OPTION) {
             try {
-                FileWS.write(opciones.toString(), new File(jfcSave.getSelectedFile().getAbsolutePath()));
+                FileWS.write(op.toString(), new File(jfcSave.getSelectedFile().getAbsolutePath()));
             } catch (Exception ex) {Dialog.showError(ex);}
         }
         
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    public Settings getSettings() {return this.opciones;}
-    public void setSettings(Settings op) {this.opciones = op;}
+    private void btnDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarkModeActionPerformed
+        principal.toggleDarkMode(btnDarkMode.isSelected());
+        SwingUtilities.updateComponentTreeUI(this);
+        SwingUtilities.updateComponentTreeUI(avanzadas);
+        op.toggleDarkMode();
+    }//GEN-LAST:event_btnDarkModeActionPerformed
+
+    public Settings getSettings() {return this.op;}
+    public void setSettings(Settings op) {this.op = op;}
     public void setExperimental() {
-        setSettings(new Settings(opciones.getX(), opciones.getY(), true));
+        setSettings(new Settings(op.getX(), op.getY(), true));
         this.bttExperimental.setSelected(true);
     }
     public void setClassic() {
-        setSettings(new Settings(opciones.getX(), opciones.getY(), false));
+        setSettings(new Settings(op.getX(), op.getY(), false));
         this.bttClásico.setSelected(true);
     }
     
@@ -361,6 +378,7 @@ public class PrePartida extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton btnDarkMode;
     private javax.swing.JButton btnJugar;
     private javax.swing.JButton btnOpen;
     private javax.swing.JButton btnSave;

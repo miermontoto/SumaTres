@@ -19,6 +19,7 @@ public class Settings {
     private boolean balancedStartEnabled;
     private boolean exitOnEndEnabled;
     private boolean paintArrowsEnabled;
+    private boolean darkModeEnabled;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
@@ -32,6 +33,7 @@ public class Settings {
         balancedStartEnabled = m;
         exitOnEndEnabled = true;
         paintArrowsEnabled = true;
+        darkModeEnabled = false;
     }
     
     public Settings(String s) throws IOException {
@@ -47,12 +49,13 @@ public class Settings {
         balancedStartEnabled = Boolean.parseBoolean(data[8]);
         exitOnEndEnabled = Boolean.parseBoolean(data[9]);
         paintArrowsEnabled = Boolean.parseBoolean(data[10]);
+        darkModeEnabled = Boolean.parseBoolean(data[11]);
         
         if(!experimentalMode)
             if(diagonalMovementEnabled || possibleCheats || !hudEnabled ||
-                    moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled) {
+                    moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled) 
                 throw new IOException("Leídos valores inválidos desde archivo de opciones.");
-            }
+            
         
     }
 
@@ -116,6 +119,10 @@ public class Settings {
         return paintArrowsEnabled;
     }
     
+    public boolean isDarkModeEnabled() {
+        return darkModeEnabled;
+    }
+    
     public void toggleHud() {hudEnabled = !hudEnabled;}
     public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
     public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
@@ -124,13 +131,14 @@ public class Settings {
     public void toggleBalancedStart() {balancedStartEnabled = !balancedStartEnabled;}
     public void toggleExitOnEnd() {exitOnEndEnabled = !exitOnEndEnabled;}
     public void togglePaintArrows() {paintArrowsEnabled = !paintArrowsEnabled;}
+    public void toggleDarkMode() {darkModeEnabled = !darkModeEnabled;}
     
     @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s %s %s", 
+        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s", 
                 sizex, sizey, experimentalMode, consoleEnabled, 
                 diagonalMovementEnabled, possibleCheats, hudEnabled, 
                 moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled,
-                paintArrowsEnabled);
+                paintArrowsEnabled, darkModeEnabled);
     }
 }

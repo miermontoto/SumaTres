@@ -1,11 +1,15 @@
 package game;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import gui.PrePartida;
 import gui.EditarColores;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import obj.Settings;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
 import util.Graphic; // Se utiliza para definir las dimensiones de la ventana.
+import util.Paint;
 
 public class LauncherRF extends javax.swing.JFrame {
     
@@ -13,10 +17,12 @@ public class LauncherRF extends javax.swing.JFrame {
     private final EditarColores ventanaColores;
     private SumaTres juego;
     
+    
     /**
      * Creates new form LauncherRF
      */
     public LauncherRF() {
+        FlatLightLaf.setup();
         initComponents();
         secundaria = new PrePartida(this);
         secundaria.setVisible(true);
@@ -38,6 +44,7 @@ public class LauncherRF extends javax.swing.JFrame {
          
         juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
         juego.setLocation(0,0);
+        juego.setBackground(op.isDarkModeEnabled() ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
         jTabbedPane1.addTab("Juego", juego);
         jTabbedPane1.setComponentAt(0, juego);
         jTabbedPane1.addTab("Info", pneInfo);
@@ -49,6 +56,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiFlechas.setSelected(op.isPaintArrowsEnabled());
         jmiHud.setEnabled(op.isExperimental());
         jmiFlechas.setEnabled(op.isExperimental());
+        jmiDarkMode.setSelected(op.isDarkModeEnabled());
         
         jmiModoClassic.setEnabled(op.isExperimental());
         jmiModoClassic.setSelected(op.isExperimental());
@@ -85,6 +93,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiExitOnEnd = new javax.swing.JCheckBoxMenuItem();
         jmiFlechas = new javax.swing.JCheckBoxMenuItem();
         jmiHud = new javax.swing.JCheckBoxMenuItem();
+        jmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiColores = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -127,7 +136,7 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuArchivo.add(jmiResults);
         mnuArchivo.add(jSeparator1);
 
-        jmiSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_DOWN_MASK));
+        jmiSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiSalir.setText("Terminar partida");
         jmiSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -175,6 +184,15 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         mnuOpciones.add(jmiHud);
+
+        jmiDarkMode.setSelected(true);
+        jmiDarkMode.setText("Modo oscuro");
+        jmiDarkMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiDarkModeActionPerformed(evt);
+            }
+        });
+        mnuOpciones.add(jmiDarkMode);
         mnuOpciones.add(jSeparator3);
 
         jmiColores.setText("Editar colores");
@@ -375,6 +393,11 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.toggleConsole();
     }//GEN-LAST:event_jmiExtrasConsoleActionPerformed
 
+    public void toggleDarkMode(boolean b) {
+        if(b) FlatDarkLaf.setup();
+        else FlatLightLaf.setup();
+        SwingUtilities.updateComponentTreeUI(this);
+    }
     
     private void actualizarPneInfo() {
         if(juego != null) {
@@ -472,6 +495,13 @@ public class LauncherRF extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_mnuTrucosActionPerformed
 
+    private void jmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDarkModeActionPerformed
+        juego.getSettings().toggleDarkMode();
+        juego.setBackground(juego.getSettings().isDarkModeEnabled() ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
+        toggleDarkMode(juego.getSettings().isDarkModeEnabled());
+        juego.repaint();
+    }//GEN-LAST:event_jmiDarkModeActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -510,6 +540,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jmiColores;
+    private javax.swing.JCheckBoxMenuItem jmiDarkMode;
     private javax.swing.JCheckBoxMenuItem jmiExitOnEnd;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
     private javax.swing.JCheckBoxMenuItem jmiFlechas;

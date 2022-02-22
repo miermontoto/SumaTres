@@ -1,3 +1,4 @@
+*.sto
 manifest.mf
 build*
 resultados.txt

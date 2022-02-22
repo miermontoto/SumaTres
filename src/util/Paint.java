@@ -21,6 +21,10 @@ public final class Paint {
     public static final int MAIN_SPACER    = (int) (50 * Graphic.SCALE); // Espacio entre el tablero y el borde de la pantalla.
 
     public static final int STROKE_SIZE    = 3; // Tamaño de la "brocha". (i)
+    
+    public static final Color LIGHT_BACKGROUND = new Color(214, 217, 223);
+    public static final Color DARK_BACKGROUND = new Color(60, 63, 65);
+    public static final Color BOARD_COLOR = new Color(242, 242, 242);
 
     private static Graphics2D g;
     private static SumaTres s;
@@ -107,12 +111,9 @@ public final class Paint {
      * no hasta estar en la posición más extrema en la dirección indicada. <p> Necesita información
      * sobre la partida para dibujar correctamente, por lo que se le debe pasar el objeto de tipo
      * SumaTres correspondiente.
-     *
-     * @param g Entorno gráfico
-     * @param s Objeto SumaTres que contiene la partida en sí
      */
     private static void pintarFlechas() {
-        g.setColor(Color.blue);
+        g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : Color.blue);
         setFontSize(18);
         g.drawString("\u2191", Graphic.defineX(s) / 2, MAIN_SPACER * 14 / 24);
         g.drawString("\u2190 ", MAIN_SPACER * 9 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
@@ -136,7 +137,7 @@ public final class Paint {
      * @param s Objeto SumaTres que contiene la partida en sí
      */
     private static void pintarTablero() {
-        g.setColor(Color.white);
+        g.setColor(BOARD_COLOR);
         g.fillRoundRect(MAIN_SPACER, MAIN_SPACER,
             s.getTablero().getRows() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
             s.getTablero().getColumns() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
@@ -147,12 +148,9 @@ public final class Paint {
      * Método que imprime información sobre la partida como los turnos, los puntos o la
      * siguiente pieza en pantalla. Requiere un objeto de tipo SumaTres para calcular
      * posiciones correctamente y obtener información sobre la partida.
-     * 
-     * @param g Entorno gráfico
-     * @param s Objeto SumaTres que contiene la partida en sí
      */
     private static void pintarInfo() {
-        g.setColor(Color.black);
+        g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : new Color(48, 50, 52));
         setFontSize(15);
 
         // Siguiente:
@@ -174,7 +172,7 @@ public final class Paint {
         g.fillRoundRect(MAIN_SPACER * 2, Graphic.defineY(s) - MAIN_SPACER,
             SQUARE_SIZE, SQUARE_SIZE,
             ROUND_DIAMETER, ROUND_DIAMETER);
-        g.setColor(Color.white);
+        g.setColor(BOARD_COLOR);
         int desiredFontSize = s.getSiguiente() >= 350000 ? 10 : 19 - (String.valueOf(s.getSiguiente()).length() - 1);
         setFontSize(desiredFontSize); // Se desplaza a la derecha cuando la pieza pasa a tener más de un dígito.
         g.drawString(String.format("%d", s.getSiguiente()), MAIN_SPACER * 112 / 48,
