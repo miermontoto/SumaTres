@@ -52,7 +52,7 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="166" max="-2" attributes="0"/>
-              <Component id="lblInfo" min="-2" pref="57" max="-2" attributes="0"/>
+              <Component id="lblInfo" min="-2" pref="111" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -89,6 +89,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtX">
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtXActionPerformed"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtXKeyTyped"/>
       </Events>
     </Component>
@@ -99,6 +100,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtY">
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtYActionPerformed"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtYKeyTyped"/>
       </Events>
     </Component>
@@ -119,6 +121,9 @@
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblTexto">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblInfo">
     </Component>

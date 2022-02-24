@@ -5,6 +5,10 @@
 package gui;
 
 import game.LauncherRF;
+import java.awt.Color;
+import javax.swing.DefaultListModel;
+import javax.swing.JColorChooser;
+import obj.Pieza;
 
 /**
  *
@@ -13,17 +17,22 @@ import game.LauncherRF;
 public class EditarColores extends javax.swing.JFrame {
     
     private LauncherRF principal;
+    private DefaultListModel model;
 
     /**
      * Creates new form EditarColores
      */
     public EditarColores() {
         initComponents();
+        model = new DefaultListModel();
+        updateValues();
+        lstValores.setModel(model);
     }
     
     public EditarColores(LauncherRF p) {
         this();
         principal = p;
+        model.addAll(Pieza.COLORES.keySet());
     }
 
     /**
@@ -35,23 +44,93 @@ public class EditarColores extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstValores = new javax.swing.JList<>();
+        jLabel1 = new javax.swing.JLabel();
+        lblColor = new javax.swing.JLabel();
+        btnEditar = new javax.swing.JButton();
+
         setTitle("SumaTres - Editar colores");
         setAlwaysOnTop(true);
+        setResizable(false);
+        setType(java.awt.Window.Type.UTILITY);
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
+
+        lstValores.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(lstValores);
+
+        jLabel1.setText("Color actual:");
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnEditar)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(166, 166, 166)
+                        .addComponent(lblColor)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(119, 119, 119)
+                        .addComponent(lblColor))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(btnEditar)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        updateValues();
+    }//GEN-LAST:event_formFocusGained
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        if(!lstValores.isSelectionEmpty()) {
+            int selectedValue = Integer.parseInt(lstValores.getSelectedValue());
+            Color newColor = JColorChooser.showDialog(null, "Seleccione nuevo color", Pieza.COLORES.get(selectedValue));
+            Pieza.COLORES.put(selectedValue, newColor);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    
+    private void updateValues() {
+        model.removeAllElements();
+        model.addAll(Pieza.COLORES.keySet());
+    }
     /**
      * @param args the command line arguments
      */
@@ -88,5 +167,10 @@ public class EditarColores extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblColor;
+    private javax.swing.JList<String> lstValores;
     // End of variables declaration//GEN-END:variables
 }

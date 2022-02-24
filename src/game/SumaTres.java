@@ -1,6 +1,7 @@
 package game;
 
 import gui.GetMatrixCoordsDialog;
+import gui.MatrixSliderDialog;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
@@ -169,6 +170,7 @@ public final class SumaTres extends JPanel {
 	private HashMap<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
 	private LinkedList<Tablero> tableros; // Cola que guarda todos los tableros de la partida.
 	private int[] warning; // Vector que define la posición de la nueva ficha.
+        private int[] selected; // Vector que define la posición de la ficha señalada.
 	private int turno; // Contador de turnos.
 	private int siguiente; // Valor de la siguiente ficha a colocar.
 	private int highestValue; // Valor de la ficha más alta.
@@ -208,7 +210,8 @@ public final class SumaTres extends JPanel {
             cheatsUsed = false;
             obtainedFromRandom = new HashMap<>();
             tableros = new LinkedList<>();
-            warning = new int[2];
+            warning = new int[] {-1, 0};
+            selected = new int[] {-1, 0, 0};
             puntos = 0;
             highestValue = 3;
             turno = 1;
@@ -264,20 +267,20 @@ public final class SumaTres extends JPanel {
     public int[] getWarning() {return this.warning;}
 
     /**
-     * Establece las coordenadas de la nueva ficha.
-     * @param x Coordenada x de la ficha
-     * @param y Coordenada y de la ficha
-     */
-    public void setWarning(int x, int y) {this.warning[0] = x; this.warning[1] = y;}
-
-    /**
      * Establece directamente un vector como el vector que contiene la posición
      * de la pieza siguiente. NO se comprueba que la posición sea válida ni
      * correcta, ya que se presupone que la posición viene de <code>validLocation()</code>,
      * que solo puede generar posiciones válidas por definición.
      * @param x Vector a establecer.
      */
-    public void setWarning(int[] x) {if(x.length == 2) this.warning = x;}
+    public void setWarning(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
+            x[0] < op.getX() && x[1] < op.getY()) this.warning = x;}
+    
+    
+    public int[] getSelected() {return this.selected;}
+    
+    public void setSelected(int[] x) {if(x.length == 3 && x[0]>=0 && x[1]>=0 &&
+            x[0] < op.getX() && x[1] < op.getY() && (x[2] == 0 || x[2] == 1)) this.selected = x;}
 
     /**
      * Devuelve la ficha de mayor valor actual.
@@ -436,6 +439,8 @@ public final class SumaTres extends JPanel {
      * posición del vector a -1.
      */
     public void deactivateWarning() {this.warning[0] = -1;}
+    
+    public void deactivateSelected() {this.selected[0] = -1;}
 
     /**
      * Método que devuelve el tablero de la partida actual.
@@ -852,9 +857,9 @@ public final class SumaTres extends JPanel {
      */
     public boolean colocarPieza() {
         boolean completed = false;
-        GetMatrixCoordsDialog gcd = new GetMatrixCoordsDialog("Introducza las coordenadas de la pieza que desea colocar.", getTablero(), true);
+        MatrixSliderDialog gcd = new MatrixSliderDialog("Introducza las coordenadas de la pieza que desea colocar.", this, true);
         if (!gcd.showDialog()) {
-            return false;
+            deactivateSelected(); return false;
         }
         int nV;
         try {
@@ -864,9 +869,55 @@ public final class SumaTres extends JPanel {
             } else {
                 nV = Integer.parseInt(respuesta);
             }
-            while (nV < 1 && !Pieza.validValue(nV) || nV == -1) {
+            while (nV == 0 || !Pieza.validValue(nV) || nV != -1) {
                 Dialog.showError();
                 respuesta = Dialog.input("Introduzca un valor para la pieza");
+                if (respuesta == null || respuesta.length() == 0) nV = -1;
+                else nV = Integer.parseInt(respuesta);
+            }
+        } catch (NumberFormatException ex) {
+            Dialog.showError(ex);
+            nV = -1;
+        }
+        if (nV != -1) {
+            setTab(gcd.getCoordsX(), gcd.getCoordsY(), nV);
+            completed = true;
+            repaint();
+        }
+        deactivateSelected();
+        return completed;
+    }
+    
+        /**
+     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
+     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
+     * El método debería ser accesible solamente cuando los trucos estén activados.
+     * @return Valor booleano que determina si se ha eliminado o no una pieza.
+     */
+    public boolean quitarPieza() {
+        boolean check = false;
+        MatrixSliderDialog gcd1 = new MatrixSliderDialog("Introduzca las coordenadas de la pieza que desea eliminar", this, false);
+        if (gcd1.showDialog()) {
+            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
+            repaint();
+            check = true;
+        }
+        deactivateSelected();
+        return check;
+    }
+    
+    public void modificarSiguiente() {
+        int nV;
+        try {
+            String respuesta = Dialog.input("Introduzca el nuevo valor de la pieza siguiente:");
+            if (respuesta == null || respuesta.length() == 0) {
+                nV = -1;
+            } else {
+                nV = Integer.parseInt(respuesta);
+            }
+            while (nV != -1 || !Pieza.validValue(nV) || nV == 0) {
+                Dialog.showError();
+                respuesta = Dialog.input("Introduzca un valor válido para la pieza siguiente:");
                 if (respuesta == null || respuesta.length() == 0) {
                     nV = -1;
                 } else {
@@ -878,27 +929,9 @@ public final class SumaTres extends JPanel {
             nV = -1;
         }
         if (nV != -1) {
-            setTab(gcd.getCoordsX(), gcd.getCoordsY(), nV);
-            completed = true;
+            setSiguiente(nV);
             repaint();
         }
-        return completed;
-    }
-    
-        /**
-     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
-     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que determina si se ha eliminado o no una pieza.
-     */
-    public boolean quitarPieza() {
-        GetMatrixCoordsDialog gcd1 = new GetMatrixCoordsDialog("Introduzca las coordenadas de la pieza que desea eliminar", getTablero(), false);
-        if (gcd1.showDialog()) {
-            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
-            repaint();
-            return true;
-        }
-        return false;
     }
 
     // ----------------------------------------------------------------------------------------------------

@@ -12,6 +12,5 @@ workspace.code-workspace
 bin
 coverage
 Libro1.xlsx
-nbproject
 /dist/
-lib/
+

@@ -222,15 +222,6 @@ public final class Paint {
                         g.setStroke(new BasicStroke(STROKE_SIZE));
                     }
 
-                    // Si no se está en el primer turno, se imprime un rectángulo alrededor de la nueva ficha
-                    // para diferenciarla. (debería haber alguna manera mejor de señalarla?)
-                    if(s.getTurnos() > 1 && s.getWarning()[0] != -1) {
-                        g.setColor(Color.yellow);
-                        g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getWarning()[1],
-                            MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getWarning()[0], SQUARE_SIZE, SQUARE_SIZE,
-                            ROUND_DIAMETER, ROUND_DIAMETER);
-                    }
-
                     // Por último, se pinta el valor de la ficha.
                     // Si la luminosidad pasa de un cierto valor, el color de la fuente del valor
                     // de la ficha debería ser negro, de lo contrario es blanco. Si la ficha es la
@@ -247,6 +238,25 @@ public final class Paint {
                     // Dependiendo del tamaño de la pieza, se desplaza ligeramente a la izquierda para que siga centrada
                     // en concordancia con el resto de piezas.
             }
+        }
+        
+        // Si no se está en el primer turno, se imprime un rectángulo alrededor de la nueva ficha
+        // para diferenciarla. (debería haber alguna manera mejor de señalarla?)
+        if(s.getTurnos() > 1 && s.getWarning()[0] != -1) {
+            g.setColor(Color.yellow);
+            g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getWarning()[1],
+                MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getWarning()[0], SQUARE_SIZE, SQUARE_SIZE,
+                ROUND_DIAMETER, ROUND_DIAMETER);
+        }
+
+        if(s.getSelected()[0] != -1) {
+            g.setColor(s.getSelected()[2] == 0 ? Color.GREEN : Color.RED);
+            g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[1],
+                MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[0], SQUARE_SIZE, SQUARE_SIZE,
+                ROUND_DIAMETER, ROUND_DIAMETER);
+            g.drawString(s.getSelected()[2] == 0 ? "?" : "X",
+                        MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[1] + SQUARE_SIZE * 13 / 32,
+                        SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[0]);
         }
     }
 }

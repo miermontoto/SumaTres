@@ -105,6 +105,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jmiTrucosAñadir = new javax.swing.JMenuItem();
         jmiTrucosEliminar = new javax.swing.JMenuItem();
+        jmiTrucosModSiguiente = new javax.swing.JMenuItem();
         jmiTrucosPuntos = new javax.swing.JMenuItem();
         jmiTrucosUndo = new javax.swing.JMenuItem();
         jmiTrucosLoop = new javax.swing.JMenuItem();
@@ -274,6 +275,15 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuTrucos.add(jmiTrucosEliminar);
 
+        jmiTrucosModSiguiente.setText("Modificar siguiente");
+        jmiTrucosModSiguiente.setEnabled(false);
+        jmiTrucosModSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosModSiguienteActionPerformed(evt);
+            }
+        });
+        mnuTrucos.add(jmiTrucosModSiguiente);
+
         jmiTrucosPuntos.setText("Añadir puntos");
         jmiTrucosPuntos.setEnabled(false);
         jmiTrucosPuntos.addActionListener(new java.awt.event.ActionListener() {
@@ -375,6 +385,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosPuntos.setEnabled(opdef);
         jmiTrucosUndo.setEnabled(opdef);
         jmiTrucosLoop.setEnabled(opdef);
+        jmiTrucosModSiguiente.setEnabled(opdef);
     }
     
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
@@ -397,6 +408,7 @@ public class LauncherRF extends javax.swing.JFrame {
         if(b) FlatDarkLaf.setup();
         else FlatLightLaf.setup();
         SwingUtilities.updateComponentTreeUI(this);
+        SwingUtilities.updateComponentTreeUI(ventanaColores);
     }
     
     private void actualizarPneInfo() {
@@ -502,6 +514,11 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.repaint();
     }//GEN-LAST:event_jmiDarkModeActionPerformed
 
+    private void jmiTrucosModSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosModSiguienteActionPerformed
+        juego.modificarSiguiente();
+    }//GEN-LAST:event_jmiTrucosModSiguienteActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -557,6 +574,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiTrucosAñadir;
     private javax.swing.JMenuItem jmiTrucosEliminar;
     private javax.swing.JMenuItem jmiTrucosLoop;
+    private javax.swing.JMenuItem jmiTrucosModSiguiente;
     private javax.swing.JMenuItem jmiTrucosPuntos;
     private javax.swing.JMenuItem jmiTrucosUndo;
     private javax.swing.JMenu mnuArchivo;
