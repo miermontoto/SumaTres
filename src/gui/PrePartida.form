@@ -52,8 +52,8 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="chkCustomSizes" min="-2" max="-2" attributes="0"/>
-                          <Component id="bttClásico" min="-2" max="-2" attributes="0"/>
-                          <Component id="bttExperimental" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnClásico" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnExperimental" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="btnJugar" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -99,9 +99,9 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="btnJugar" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="bttClásico" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnClásico" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="bttExperimental" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnExperimental" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="chkCustomSizes" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
@@ -171,7 +171,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkCustomSizesToggled"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="bttExperimental">
+    <Component class="javax.swing.JRadioButton" name="btnExperimental">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="grpModo"/>
@@ -180,10 +180,10 @@
         <Property name="text" type="java.lang.String" value="Modo experimental"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bttExperimentalActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExperimentalActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="bttCl&#xe1;sico">
+    <Component class="javax.swing.JRadioButton" name="btnCl&#xe1;sico">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="grpModo"/>
@@ -191,7 +191,7 @@
         <Property name="text" type="java.lang.String" value="Modo cl&#xe1;sico"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bttCl&#xe1;sicoActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCl&#xe1;sicoActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnJugar">

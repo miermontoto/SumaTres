@@ -32,7 +32,6 @@ public class EditarColores extends javax.swing.JFrame {
     public EditarColores(LauncherRF p) {
         this();
         principal = p;
-        model.addAll(Pieza.COLORES.keySet());
     }
 
     /**
@@ -128,9 +127,11 @@ public class EditarColores extends javax.swing.JFrame {
 
     
     private void updateValues() {
-        model.removeAllElements();
-        model.addAll(Pieza.COLORES.keySet());
+        for(Integer i : Pieza.COLORES.keySet()) {
+            model.addElement(i);
+        }
     }
+    
     /**
      * @param args the command line arguments
      */

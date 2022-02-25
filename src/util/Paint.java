@@ -114,7 +114,7 @@ public final class Paint {
      */
     private static void pintarFlechas() {
         g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : Color.blue);
-        setFontSize(18);
+        setFontSize(20);
         g.drawString("\u2191", Graphic.defineX(s) / 2, MAIN_SPACER * 14 / 24);
         g.drawString("\u2190 ", MAIN_SPACER * 9 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
         g.drawString("\u2192", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
@@ -177,6 +177,23 @@ public final class Paint {
         setFontSize(desiredFontSize); // Se desplaza a la derecha cuando la pieza pasa a tener más de un dígito.
         g.drawString(String.format("%d", s.getSiguiente()), MAIN_SPACER * 112 / 48,
             Graphic.defineY(s) - MAIN_SPACER / 2);
+        
+        // Final de partida:
+        if(s.isFinished()) {
+            // dibujar marco transparente
+            
+            int wx = Graphic.defineX(s) * 13 / 48;
+            int wy = Graphic.defineY(s) * 23 / 48;
+            String s = "FINAL";
+            g.setFont(new Font("Helvetica", Font.BOLD, 70));
+            g.setColor(Color.black);
+            g.drawString(s, wx + 1, wy);
+            g.drawString(s, wx - 1, wy);
+            g.drawString(s, wx, wy + 1);
+            g.drawString(s, wx, wy - 1);
+            g.setColor(Color.red);
+            g.drawString(s, wx, wy);
+        }
     }
 
     /**
@@ -209,11 +226,8 @@ public final class Paint {
                         MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
                         ROUND_DIAMETER, ROUND_DIAMETER);
 
-                    // 'Y' es la luminosidad del color de la ficha.
-                    double Y = (0.2126*g.getColor().getRed() + 0.7152*g.getColor().getGreen() + 0.0722*g.getColor().getBlue());
-
                     // Si la pieza es demasiado clara, se le pinta un reborde para que se aprecie.
-                    if(Y>=211) {
+                    if(s.getTablero().getPieza(i, j).isBrillante()) {
                         g.setStroke(new BasicStroke(1));
                         g.setColor(Color.gray);
                         g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
@@ -224,8 +238,8 @@ public final class Paint {
 
                     // Por último, se pinta el valor de la ficha.
                     // Si la luminosidad pasa de un cierto valor, el color de la fuente del valor
-                    // de la ficha debería ser negro, de lo contrario es blanco. Si la ficha es la
-                    g.setColor(Y>=210 ? Color.black : Color.white);
+                    // de la ficha debería ser negro, de lo contrario es blanco.
+                    g.setColor(s.getTablero().getPieza(i, j).isBrillante() ? Color.black : Color.white);
 
                     // Se establece un tamaño de fuente en función de los dígitos de la ficha.
                     int desiredFontSize = 19 - (String.valueOf(s.getTab(i, j)).length() - 1);

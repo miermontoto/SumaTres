@@ -10,6 +10,7 @@ import java.util.Map; // Map.EntrySet
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
 import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Turno;
+import thread.LoopComms;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
 import util.Graphic; // Se utiliza para definir las dimensiones de la ventana.
 import util.Paint; // Se utiliza para obtener el color del fondo.
@@ -25,6 +26,8 @@ public class LauncherRF extends javax.swing.JFrame {
     private final PrePartida secundaria;
     private final EditarColores ventanaColores;
     private SumaTres juego;
+    private Thread loopThread;
+    private static LoopComms loopComms;
     
     
     /**
@@ -33,10 +36,10 @@ public class LauncherRF extends javax.swing.JFrame {
     public LauncherRF() {
         FlatLightLaf.setup(); // Se establece el modo claro por defecto.
         initComponents();
-        secundaria = new PrePartida(this);
-        secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
         ventanaColores = new EditarColores(this);
         ventanaColores.setVisible(false);
+        secundaria = new PrePartida(this);
+        secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
     }
     
     /**
@@ -54,9 +57,10 @@ public class LauncherRF extends javax.swing.JFrame {
     public void launch(Settings op) {
         juego = new SumaTres(op);
         
-        // Propiedades del
+        // Propiedades de la ventana.
         setBounds(0, 0, Graphic.defineX(juego) + 15, (int) (Graphic.defineY(juego) + 39 + 30 * Graphic.SCALE));
         setVisible(true);
+        loopComms = new LoopComms(this);
          
         // Propiedades del JPanel de la partida.
         juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
@@ -132,7 +136,9 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosForzarSiguiente = new javax.swing.JMenuItem();
         jmiTrucosPuntos = new javax.swing.JMenuItem();
         jmiTrucosUndo = new javax.swing.JMenuItem();
-        jmiTrucosLoop = new javax.swing.JMenuItem();
+        jmiTrucosLoop = new javax.swing.JMenu();
+        jmiTrucosLoopStart = new javax.swing.JMenuItem();
+        jmiTrucosLoopEnd = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres");
@@ -350,14 +356,29 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuTrucos.add(jmiTrucosUndo);
 
-        jmiTrucosLoop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PAGE_DOWN, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucosLoop.setText("Loop");
         jmiTrucosLoop.setEnabled(false);
-        jmiTrucosLoop.addActionListener(new java.awt.event.ActionListener() {
+
+        jmiTrucosLoopStart.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PAGE_DOWN, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiTrucosLoopStart.setText("Iniciar");
+        jmiTrucosLoopStart.setEnabled(false);
+        jmiTrucosLoopStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiTrucosLoopActionPerformed(evt);
+                jmiTrucosLoopStartActionPerformed(evt);
             }
         });
+        jmiTrucosLoop.add(jmiTrucosLoopStart);
+
+        jmiTrucosLoopEnd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PAGE_UP, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiTrucosLoopEnd.setText("Parar");
+        jmiTrucosLoopEnd.setEnabled(false);
+        jmiTrucosLoopEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosLoopEndActionPerformed(evt);
+            }
+        });
+        jmiTrucosLoop.add(jmiTrucosLoopEnd);
+
         mnuTrucos.add(jmiTrucosLoop);
 
         jMenuBar1.add(mnuTrucos);
@@ -437,9 +458,22 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosEliminar.setEnabled(opdef);
         jmiTrucosPuntos.setEnabled(opdef);
         jmiTrucosUndo.setEnabled(opdef);
-        jmiTrucosLoop.setEnabled(opdef);
+        jmiTrucosLoopStart.setEnabled(opdef);
         jmiTrucosModSiguiente.setEnabled(opdef);
         jmiTrucosForzarSiguiente.setEnabled(opdef);
+        jmiTrucosLoop.setEnabled(opdef);
+    }
+    
+    public void loopStarting() {
+        jmiTrucosLoopStart.setEnabled(false);
+        jmiTrucosLoopEnd.setEnabled(true);
+        jmiTrucosLoopStart.setSelected(true);
+    }
+    
+    public void loopEnding() {
+        jmiTrucosLoopStart.setEnabled(true);
+        jmiTrucosLoopEnd.setEnabled(false);
+        jmiTrucosLoopStart.setSelected(false);
     }
     
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
@@ -470,9 +504,11 @@ public class LauncherRF extends javax.swing.JFrame {
             Settings op = juego.getSettings();
             String s = String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
                 + "Turnos jugados: %d%n"
-                + "Siguiente ficha: %d%n",
+                + "Siguiente ficha: %d%n"
+                + "Pieza más alta: %d%n",
                 (int) (juego.getPuntos()*juego.getMultiplier()), 
-                juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente());
+                juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente(),
+                juego.getHighest());
 
             s += String.format("Posibles piezas siguientes actualmente: ");
             for(int i : juego.possibleValuesNewSiguiente()) 
@@ -547,9 +583,10 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.repaint();
     }//GEN-LAST:event_jmiHudActionPerformed
 
-    private void jmiTrucosLoopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopActionPerformed
-        juego.loop();
-    }//GEN-LAST:event_jmiTrucosLoopActionPerformed
+    private void jmiTrucosLoopStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopStartActionPerformed
+        loopThread = new Thread() {public void run(){LauncherRF.loopComms.Run();};};
+        loopThread.start();
+    }//GEN-LAST:event_jmiTrucosLoopStartActionPerformed
 
     private void mnuTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTrucosActionPerformed
         // TODO add your handling code here:
@@ -596,6 +633,15 @@ public class LauncherRF extends javax.swing.JFrame {
         } catch (IOException ex) {jmiResults.setEnabled(false); Dialog.showError("No se pudo abrir el archivo de resultados.");}
     }//GEN-LAST:event_jmiResultsActionPerformed
 
+    private void jmiTrucosLoopEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopEndActionPerformed
+        jmiTrucosLoopEnd.setSelected(true);
+        loopComms.setStop();
+    }//GEN-LAST:event_jmiTrucosLoopEndActionPerformed
+    
+    
+    public SumaTres getPartida() {
+        return this.juego;
+    }
     
     /**
      * @param args the command line arguments
@@ -653,7 +699,9 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiTrucosAñadir;
     private javax.swing.JMenuItem jmiTrucosEliminar;
     private javax.swing.JMenuItem jmiTrucosForzarSiguiente;
-    private javax.swing.JMenuItem jmiTrucosLoop;
+    private javax.swing.JMenu jmiTrucosLoop;
+    private javax.swing.JMenuItem jmiTrucosLoopEnd;
+    private javax.swing.JMenuItem jmiTrucosLoopStart;
     private javax.swing.JMenuItem jmiTrucosModSiguiente;
     private javax.swing.JMenuItem jmiTrucosPuntos;
     private javax.swing.JMenuItem jmiTrucosUndo;

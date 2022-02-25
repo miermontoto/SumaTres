@@ -1,9 +1,10 @@
 package obj;
 
 import java.awt.Color;
-import java.util.HashMap;
 
 import game.SumaTres;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Clase que genera objetos tipo 'Pieza' para que sean utilizados en un tablero.
@@ -25,6 +26,7 @@ import game.SumaTres;
 public class Pieza {
     private int valor;
     private Color color;
+    private boolean brillante;
     
     /**
     * HashMap que contiene un valor con un color para cada clave asignada a los
@@ -34,7 +36,8 @@ public class Pieza {
     * <p>
     * Se popula en el constructor mediante {@link #inicializarColores()}
     */
-    public final static HashMap<Integer, Color> COLORES = new HashMap<>();
+    public final static Map<Integer, Color> COLORES = new TreeMap<>();
+    public final static Map<Integer, Boolean> BRILLOS = new TreeMap<>();
 
     /**
      * Método que inicializa los colores para las fichas por defecto.
@@ -53,9 +56,12 @@ public class Pieza {
         COLORES.put(12, Color.green   );
         COLORES.put(24, Color.magenta );
         COLORES.put(48, Color.pink    );
+        
+        for(Integer i : COLORES.keySet()) BRILLOS.put(i, Boolean.FALSE);
     }
 
-    public static HashMap<Integer, Color> getColores() {return COLORES;}
+    public static Map<Integer, Color> getColores() {return COLORES;}
+    public static Map<Integer, Boolean> getBrillos() {return BRILLOS;}
 
     /**
      * Constructor que inicializa la pieza con valor 0. <p>
@@ -75,10 +81,9 @@ public class Pieza {
     }
 
     /**
-     * Establece el valor de la pieza y llama a {@link #updateColor()} para que
-     * actualice el color de la pieza en base a este nuevo color. El valor
-     * sobrecargado debe de ser válido para que la pieza se establezca
-     * correctamente.
+     * Establece el valor de la pieza y actualiza el color de la pieza y si es
+     * brillante o no. El valor introducido debe de ser válido para que la pieza 
+     * se establezca correctamente.
      * <p>
      * Para comprobar que el valor introducido sea válido, se comprueba que sea 1,
      * 2, 3, algún valor que se corresponda a la serie 6*2n o 0(se utiliza para
@@ -89,7 +94,35 @@ public class Pieza {
     public void setValor(int valor) {
         if (validValue(valor)) {
             this.valor = valor;
-            updateColor();
+            if (!COLORES.containsKey(valor)) {
+                Color c1 = Color.white; // Es necesario inicializar el color.
+                boolean check = true;
+                while(check) {
+                    check = false;
+                    c1 = new Color(SumaTres.newRandom(256), SumaTres.newRandom(256), SumaTres.newRandom(256));
+                    for(Color c2 : COLORES.values()) {
+                        double aR, aG, aB, rR, aC;
+                        rR = (c1.getRed() + c2.getRed()) / 2.0;
+                        aR = Math.pow(c1.getRed() - c2.getRed(), 2);
+                        aG = Math.pow(c1.getGreen() - c2.getGreen(), 2);
+                        aB = Math.pow(c1.getBlue() - c2.getBlue(), 2);
+
+                        // fórmula "redmean"
+                        aC = Math.sqrt((2 + rR / 256) * aR + 4 * aG + (2 + (255 - rR) / 256) * aB);
+                        
+                        if(aC < 200) check = true;
+                        //System.out.printf("%f%n", aC); // Imprime la distancia entre el color a comparar.
+                    }
+                }
+                COLORES.put(valor, c1);
+
+                // 'Y' es la luminosidad del color de la ficha.
+                double Y = (0.2126*c1.getRed() + 0.7152*c1.getGreen() + 0.0722*c1.getBlue());
+                BRILLOS.put(valor, Y>=211);
+
+            }
+            this.color = COLORES.get(valor);
+            this.brillante = BRILLOS.get(valor);
         }
     }
 
@@ -101,45 +134,9 @@ public class Pieza {
     public Color getColor() {
         return color;
     }
-
-    /**
-     * Método que actualiza el color de la pieza en base a su valor.
-     * <p>
-     * Se utiliza automáticamente en {@link #setValor(int)} para que cada vez que se
-     * cambie el valor de la pieza, también se cambie su color. De esta forma, no es
-     * necesario actualizar manualmente el color de la pieza.
-     * <p>
-     * Si no existe un color predeterminado para el valor de la pieza, se genera y
-     * se guarda un color en el HashMap para que todas las futuras piezas con el
-     * mismo valor tengan el mismo color.
-     * <p>
-     * Para más información sobre la distancia entre colores, leer la documentación
-     * de la clase principal.
-     */
-    public void updateColor() {
-        if (!COLORES.containsKey(this.getValor())) {
-            Color c1 = Color.white; // Es necesario inicializar el color.
-            boolean check = true;
-            while(check) {
-                check = false;
-                c1 = new Color(SumaTres.newRandom(256), SumaTres.newRandom(256), SumaTres.newRandom(256));
-                for(Color c2 : COLORES.values()) {
-                    double aR, aG, aB, rR, aC;
-                    rR = (c1.getRed() + c2.getRed()) / 2.0;
-                    aR = Math.pow(c1.getRed() - c2.getRed(), 2);
-                    aG = Math.pow(c1.getGreen() - c2.getGreen(), 2);
-                    aB = Math.pow(c1.getBlue() - c2.getBlue(), 2);
-
-                    aC = Math.sqrt((2 + rR / 256) * aR + 4 * aG + (2 + (255 - rR) / 256) * aB);
-                    // fórmula "redmean"
-                    if(aC < 200) check = true;
-                    //System.out.printf("%f%n", aC); // Imprime la distancia entre el color a comparar.
-                }
-            }
-            COLORES.put(getValor(), c1);
-
-        }
-        this.color = COLORES.get(getValor());
+    
+    public boolean isBrillante() {
+        return this.brillante;
     }
 
     /**

@@ -22,6 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.JPanel;
 
 
@@ -100,7 +102,7 @@ import javax.swing.JPanel;
  * Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode.
  * 
  * @author Juan Mier
- * @version v19
+ * @version v21
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  *      Documentación de Oracle: Number Format </a> <blockquote> A new line
  *      character appropriate to the platform running the application. You
@@ -166,7 +168,7 @@ public final class SumaTres extends JPanel {
     public static final File ARCHIVO = new File("./assets/resultados.txt");
     public static final String VERSION = "v21";
 
-    private HashMap<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
+    private Map<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
     private LinkedList<Tablero> tableros; // Cola que guarda todos los tableros de la partida.
     private int[] warning; // Vector que define la posición de la nueva ficha.
     private int[] selected; // Vector que define la posición de la ficha señalada.
@@ -206,7 +208,7 @@ public final class SumaTres extends JPanel {
 
         // Se inicializan variables.
         cheatsUsed = false;
-        obtainedFromRandom = new HashMap<>();
+        obtainedFromRandom = new TreeMap<>();
         tableros = new LinkedList<>();
         warning = new int[] {-1, 0};
         selected = new int[] {-1, 0, 0};
@@ -468,7 +470,7 @@ public final class SumaTres extends JPanel {
             if(nt.getColumns() == t.getColumns() && nt.getRows() == t.getRows()) t = nt;
     }
 
-    public HashMap<Integer, Integer> getObtainedFromRandom() {
+    public Map<Integer, Integer> getObtainedFromRandom() {
         return obtainedFromRandom;
     }
 
@@ -819,19 +821,7 @@ public final class SumaTres extends JPanel {
         Keyboard.disableHandling(); // desactiva la entrada por teclado.
         Mouse.disableHandling(); // desctiva la entrada por ratón.
         finished = true;
-    }
-
-    public void loop() {
-        while(!isFinished()) {
-                                                jugada('w');
-             if(op.isDiagonalMovementEnabled()) jugada('q');
-                                                jugada('a');
-             if(op.isDiagonalMovementEnabled()) jugada('z');
-                                                jugada('s');
-             if(op.isDiagonalMovementEnabled()) jugada('c');
-                                                jugada('d');
-             if(op.isDiagonalMovementEnabled()) jugada('e');
-        }
+        repaint();
     }
     
         /**
@@ -846,33 +836,18 @@ public final class SumaTres extends JPanel {
     public boolean colocarPieza() {
         boolean completed = false;
         MatrixSliderDialog gcd = new MatrixSliderDialog("Introducza las coordenadas de la pieza que desea colocar.", this, true);
-        if (!gcd.showDialog()) {
-            deactivateSelected(); return false;
-        }
-        int nV;
-        try {
-            String respuesta = Dialog.input("Introduzca un valor para la pieza");
-            if (respuesta == null || respuesta.length() == 0) {
-                nV = -1;
-            } else {
-                nV = Integer.parseInt(respuesta);
-            }
-            while (nV == 0 || !Pieza.validValue(nV) || nV != -1) {
-                Dialog.showError();
-                respuesta = Dialog.input("Introduzca un valor para la pieza");
-                if (respuesta == null || respuesta.length() == 0) nV = -1;
-                else nV = Integer.parseInt(respuesta);
-            }
-        } catch (NumberFormatException ex) {
-            Dialog.showError(ex);
-            nV = -1;
-        }
+        
+        if (!gcd.showDialog()) { // Si no se pulsa el botón "OK", salir normalmente.
+            deactivateSelected(); // Puede haberse salido del diálogo sin pulsar cancelar.
+            return false;
+        } 
+        
+        int nV = Dialog.valueDialog("Introduzca el valor de la nueva pieza:");
         if (nV != -1) {
             setTab(gcd.getCoordsX(), gcd.getCoordsY(), nV);
             completed = true;
-            repaint();
+            update();
         }
-        deactivateSelected();
         return completed;
     }
     
@@ -887,7 +862,7 @@ public final class SumaTres extends JPanel {
         MatrixSliderDialog gcd1 = new MatrixSliderDialog("Introduzca las coordenadas de la pieza que desea eliminar", this, false);
         if (gcd1.showDialog()) {
             setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
-            repaint();
+            update();
             check = true;
         }
         deactivateSelected();
@@ -895,30 +870,10 @@ public final class SumaTres extends JPanel {
     }
     
     public void modificarSiguiente() {
-        int nV;
-        try {
-            String respuesta = Dialog.input("Introduzca el nuevo valor de la pieza siguiente:");
-            if (respuesta == null || respuesta.length() == 0) {
-                nV = -1;
-            } else {
-                nV = Integer.parseInt(respuesta);
-            }
-            while (nV != -1 || !Pieza.validValue(nV) || nV == 0) {
-                Dialog.showError();
-                respuesta = Dialog.input("Introduzca un valor válido para la pieza siguiente:");
-                if (respuesta == null || respuesta.length() == 0) {
-                    nV = -1;
-                } else {
-                    nV = Integer.parseInt(respuesta);
-                }
-            }
-        } catch (NumberFormatException ex) {
-            Dialog.showError(ex);
-            nV = -1;
-        }
+        int nV = Dialog.valueDialog("Introduzca el nuevo valor de la pieza siguiente:");
         if (nV != -1) {
             setSiguiente(nV);
-            repaint();
+            update();
         }
     }
 

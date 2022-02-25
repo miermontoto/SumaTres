@@ -38,6 +38,11 @@ public class PrePartida extends javax.swing.JFrame {
         if(MAX_SIZE[1] < 15) sldHorizontal.setMaximum(MAX_SIZE[1]);
         if(MAX_SIZE[0] < 15) sldVertical.setMaximum(MAX_SIZE[0]);
         avanzadas.readValues();
+        File defaultSettings = new File("default.sto");
+        if(defaultSettings.exists()) {
+            openSettingsFile(defaultSettings);
+            System.out.println("Cargado archivo de opciones por defecto.");
+        }
     }
 
     /**
@@ -57,8 +62,8 @@ public class PrePartida extends javax.swing.JFrame {
         txtHorizontal = new javax.swing.JTextField();
         txtVertical = new javax.swing.JTextField();
         chkCustomSizes = new javax.swing.JCheckBox();
-        bttExperimental = new javax.swing.JRadioButton();
-        bttClásico = new javax.swing.JRadioButton();
+        btnExperimental = new javax.swing.JRadioButton();
+        btnClásico = new javax.swing.JRadioButton();
         btnJugar = new javax.swing.JButton();
         bttAvanzadas = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
@@ -121,20 +126,20 @@ public class PrePartida extends javax.swing.JFrame {
             }
         });
 
-        grpModo.add(bttExperimental);
-        bttExperimental.setSelected(true);
-        bttExperimental.setText("Modo experimental");
-        bttExperimental.addActionListener(new java.awt.event.ActionListener() {
+        grpModo.add(btnExperimental);
+        btnExperimental.setSelected(true);
+        btnExperimental.setText("Modo experimental");
+        btnExperimental.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bttExperimentalActionPerformed(evt);
+                btnExperimentalActionPerformed(evt);
             }
         });
 
-        grpModo.add(bttClásico);
-        bttClásico.setText("Modo clásico");
-        bttClásico.addActionListener(new java.awt.event.ActionListener() {
+        grpModo.add(btnClásico);
+        btnClásico.setText("Modo clásico");
+        btnClásico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bttClásicoActionPerformed(evt);
+                btnClásicoActionPerformed(evt);
             }
         });
 
@@ -186,8 +191,8 @@ public class PrePartida extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkCustomSizes)
-                            .addComponent(bttClásico)
-                            .addComponent(bttExperimental)
+                            .addComponent(btnClásico)
+                            .addComponent(btnExperimental)
                             .addComponent(btnJugar)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(57, 57, 57)
@@ -223,9 +228,9 @@ public class PrePartida extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnJugar)
                         .addGap(18, 18, 18)
-                        .addComponent(bttClásico)
+                        .addComponent(btnClásico)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bttExperimental)
+                        .addComponent(btnExperimental)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(chkCustomSizes)
                         .addGap(6, 6, 6))
@@ -262,15 +267,15 @@ public class PrePartida extends javax.swing.JFrame {
         avanzadas.setVisible(false);
     }//GEN-LAST:event_btnJugarActionPerformed
 
-    private void bttClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttClásicoActionPerformed
+    private void btnClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClásicoActionPerformed
         op = new Settings(op.getX(), op.getY(), false);
         avanzadas.readValues();
-    }//GEN-LAST:event_bttClásicoActionPerformed
+    }//GEN-LAST:event_btnClásicoActionPerformed
 
-    private void bttExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttExperimentalActionPerformed
+    private void btnExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExperimentalActionPerformed
         op = new Settings(op.getX(), op.getY(), true);
         avanzadas.readValues();
-    }//GEN-LAST:event_bttExperimentalActionPerformed
+    }//GEN-LAST:event_btnExperimentalActionPerformed
 
     private void txtVerticalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVerticalActionPerformed
         try {
@@ -306,18 +311,38 @@ public class PrePartida extends javax.swing.JFrame {
         jfcOpen.setFileFilter(new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
         int res = jfcOpen.showOpenDialog(null);
         if(res == JFileChooser.APPROVE_OPTION) {
-            try {
-                op = new Settings(Files.readString(jfcOpen.getSelectedFile().toPath()));
-                sldHorizontal.setValue(op.getX());
-                sldVertical.setValue(op.getY());
-                bttExperimental.setSelected(op.isExperimental());
-                txtVertical.setText(String.format("%d", op.getY()));
-                txtHorizontal.setText(String.format("%d", op.getX()));
-                avanzadas.readValues(); 
-            } catch (IOException ex) {Dialog.showError(ex);}
+            openSettingsFile(jfcOpen.getSelectedFile());
         }
     }//GEN-LAST:event_btnOpenActionPerformed
 
+    /**
+     * Carga las opciones desde un archivo de opciones.
+     * Para ello, utiliza el constructor de la clase opciones por defecto,
+     * que se encarga de asignar y comprobarlo todo. <p>
+     * Es importante que se actualicen la ventana de opciones avanzadas mediante
+     * <code> readValues() </code> y el estado del botón de modo oscuro, <code>
+     * btnDarkMode </code>, para mantenerlo sincronizado con el estado del modo
+     * oscuro.
+     * 
+     * @param f Objeto de tipo archivo que supuestamente contiene opciones. Debe
+     *          de estar construido mediante el método <code>toString()</code> de
+     *          la clase.
+     */
+    private void openSettingsFile(File f) {
+        try {
+            op = new Settings(Files.readString(f.toPath()));
+            sldHorizontal.setValue(op.getX());
+            sldVertical.setValue(op.getY());
+            btnExperimental.setSelected(op.isExperimental());
+            txtVertical.setText(String.format("%d", op.getY()));
+            txtHorizontal.setText(String.format("%d", op.getX()));
+            avanzadas.readValues();
+            btnDarkMode.setSelected(true);
+            checkDarkMode();
+        } catch (IOException ex) {Dialog.showError(ex);}
+    }
+    
+    
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         JFileChooser jfcSave = new JFileChooser();
@@ -329,25 +354,35 @@ public class PrePartida extends javax.swing.JFrame {
                 FileWS.write(op.toString(), new File(jfcSave.getSelectedFile().getAbsolutePath()));
             } catch (Exception ex) {Dialog.showError(ex);}
         }
-        
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarkModeActionPerformed
-        principal.toggleDarkMode(btnDarkMode.isSelected());
-        SwingUtilities.updateComponentTreeUI(this);
-        SwingUtilities.updateComponentTreeUI(avanzadas);
         op.toggleDarkMode();
+        checkDarkMode();
     }//GEN-LAST:event_btnDarkModeActionPerformed
 
+    /**
+     * Método que comprueba el estado del modo oscuro actual a través del botón
+     * de modo oscuro. En caso de estar activado, se accede al método <code>
+     * toggleDarkMode() </code> en la ventana principal y se actualizan las
+     * ventanas de este nivel. <p> <b> NO cambia el booleano <code>darkModeEnabled
+     * </code> en las opciones! </b>
+     */
+    private void checkDarkMode() {
+        principal.toggleDarkMode(op.isDarkModeEnabled());
+        SwingUtilities.updateComponentTreeUI(this);
+        SwingUtilities.updateComponentTreeUI(avanzadas);
+    }
+    
     public Settings getSettings() {return this.op;}
     public void setSettings(Settings op) {this.op = op;}
     public void setExperimental() {
         setSettings(new Settings(op.getX(), op.getY(), true));
-        this.bttExperimental.setSelected(true);
+        btnExperimental.setSelected(true);
     }
     public void setClassic() {
         setSettings(new Settings(op.getX(), op.getY(), false));
-        this.bttClásico.setSelected(true);
+        btnClásico.setSelected(true);
     }
     
     /**
@@ -377,13 +412,13 @@ public class PrePartida extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton btnClásico;
     private javax.swing.JToggleButton btnDarkMode;
+    private javax.swing.JRadioButton btnExperimental;
     private javax.swing.JButton btnJugar;
     private javax.swing.JButton btnOpen;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton bttAvanzadas;
-    private javax.swing.JRadioButton bttClásico;
-    private javax.swing.JRadioButton bttExperimental;
     private javax.swing.JCheckBox chkCustomSizes;
     private javax.swing.JFileChooser flcOpen;
     private javax.swing.JFileChooser flcSave;

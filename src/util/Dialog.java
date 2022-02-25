@@ -1,6 +1,7 @@
 package util;
 
 import javax.swing.JOptionPane;
+import obj.Pieza;
 
 /**
  * Clase que utiliza JOptionPane para interactuar con el usuario. <p>
@@ -97,5 +98,30 @@ public final class Dialog {
      */
     public static void showError() {
         showError("Valor inválido");
+    }
+    
+    public static int valueDialog(String s) {
+        int nV;
+        try {
+            String respuesta = Dialog.input(s);
+            if (respuesta == null || respuesta.length() == 0) {
+                nV = -1;
+            } else {
+                nV = Integer.parseInt(respuesta);
+            }
+            while (nV != -1 || !Pieza.validValue(nV) || nV == 0) {
+                Dialog.showError();
+                respuesta = Dialog.input(s);
+                if (respuesta == null || respuesta.length() == 0) {
+                    nV = -1;
+                } else {
+                    nV = Integer.parseInt(respuesta);
+                }
+            }
+        } catch (NumberFormatException ex) {
+            Dialog.showError(ex);
+            nV = -1;
+        }
+        return nV;
     }
 }
