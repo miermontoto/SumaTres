@@ -18,7 +18,6 @@ public class PrePartida extends javax.swing.JFrame {
     private LauncherRF principal;
     private Avanzadas avanzadas;
     
-    private static final int MIN_SIZE = 2;
     private static final int[] MAX_SIZE = Graphic.maxValidSize();
 
     /**
@@ -26,6 +25,7 @@ public class PrePartida extends javax.swing.JFrame {
      */
     private PrePartida() {
         initComponents();
+        btnJugar.requestFocus();
     }
     
     public PrePartida(LauncherRF p) {
@@ -35,6 +35,8 @@ public class PrePartida extends javax.swing.JFrame {
         
         // las opciones por defecto son: tamaño 5x5, modo experimental.
         op = new Settings(5, 5, true);
+        if(MAX_SIZE[1] < 15) sldHorizontal.setMaximum(MAX_SIZE[1]);
+        if(MAX_SIZE[0] < 15) sldVertical.setMaximum(MAX_SIZE[0]);
         avanzadas.readValues();
     }
 
@@ -75,7 +77,7 @@ public class PrePartida extends javax.swing.JFrame {
         setResizable(false);
 
         sldVertical.setMaximum(15);
-        sldVertical.setMinimum(3);
+        sldVertical.setMinimum(2);
         sldVertical.setOrientation(javax.swing.JSlider.VERTICAL);
         sldVertical.setValue(5);
         sldVertical.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -85,7 +87,7 @@ public class PrePartida extends javax.swing.JFrame {
         });
 
         sldHorizontal.setMaximum(15);
-        sldHorizontal.setMinimum(3);
+        sldHorizontal.setMinimum(2);
         sldHorizontal.setValue(5);
         sldHorizontal.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -273,23 +275,19 @@ public class PrePartida extends javax.swing.JFrame {
     private void txtVerticalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVerticalActionPerformed
         try {
             int val = Integer.parseInt(txtVertical.getText());
-            if(val < MIN_SIZE) val = MIN_SIZE;
-            else if(val > MAX_SIZE[0]) val = MAX_SIZE[0];
             sldVertical.setValue(val);
-            op.setSizex(val);
+            op.setSizex(sldVertical.getValue());
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
-            txtVertical.setText(String.format("%d", op.getX()));
+            txtVertical.setText(String.valueOf(op.getX()));
         }
     }//GEN-LAST:event_txtVerticalActionPerformed
 
     private void txtHorizontalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHorizontalActionPerformed
         try {
             int val = Integer.parseInt(txtHorizontal.getText());
-            if(val < MIN_SIZE) val = MIN_SIZE;
-            else if(val > MAX_SIZE[1]) val = MAX_SIZE[1];
             sldHorizontal.setValue(val);
-            op.setSizey(val);
+            op.setSizey(sldHorizontal.getValue());
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
             txtHorizontal.setText(String.format("%d", op.getY()));

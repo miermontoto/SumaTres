@@ -31,24 +31,40 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
               <Component id="btnClásico" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="56" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Component id="btnExperimental" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
           </Group>
           <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="chkPaintArrows" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkExitOnEnd" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkBalancedStart" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkMoreNextValues" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkCheatsAvailable" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkHUD" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkDiagonalMovement" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkConsoleOutput" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="chkExitOnEnd" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkPaintArrows" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkSaveResults" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="chkBalancedStart" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkMoreNextValues" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="chkHUD" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkConsoleOutput" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="chkCheatsAvailable" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkDiagonalMovement" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="28" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -56,28 +72,37 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnExperimental" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnClásico" alignment="1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnClásico" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnExperimental" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkDiagonalMovement" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkDiagonalMovement" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkConsoleOutput" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkConsoleOutput" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkHUD" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkCheatsAvailable" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkHUD" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkExitOnEnd" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkMoreNextValues" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkCheatsAvailable" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkPaintArrows" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkBalancedStart" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkMoreNextValues" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkBalancedStart" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkExitOnEnd" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkPaintArrows" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkSaveResults" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="14" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -178,6 +203,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkPaintArrowsActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkEnhancedDiffMult">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mult. de dificultad mejorado"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkEnhancedDiffMultActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkSaveResults">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Guardar resultados"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkSaveResultsActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

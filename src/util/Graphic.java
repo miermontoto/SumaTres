@@ -83,6 +83,8 @@ public final class Graphic {
      * Método que comprueba si el tablero entra en pantalla con la resolución
      * actual.
      * 
+     * @param x Cantidad de filas
+     * @param y Cantidad de columnas
      * @return Valor booleano que establece si la pantalla generada entra o no en la resolución actual.
      */
     public static boolean validSize(int x, int y) {

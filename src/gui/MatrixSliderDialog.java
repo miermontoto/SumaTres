@@ -80,6 +80,7 @@ public class MatrixSliderDialog extends javax.swing.JDialog {
 
         sldVertical.setOrientation(javax.swing.JSlider.VERTICAL);
         sldVertical.setValue(0);
+        sldVertical.setInverted(true);
         sldVertical.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sldVerticalStateChanged(evt);

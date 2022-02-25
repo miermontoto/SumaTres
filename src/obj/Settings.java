@@ -20,6 +20,8 @@ public class Settings {
     private boolean exitOnEndEnabled;
     private boolean paintArrowsEnabled;
     private boolean darkModeEnabled;
+    private boolean enhancedDiffMultEnabled;
+    private boolean saveResultsToFileEnabled;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
@@ -34,6 +36,8 @@ public class Settings {
         exitOnEndEnabled = true;
         paintArrowsEnabled = true;
         darkModeEnabled = false;
+        enhancedDiffMultEnabled = m;
+        saveResultsToFileEnabled = m;
     }
     
     public Settings(String s) throws IOException {
@@ -50,10 +54,13 @@ public class Settings {
         exitOnEndEnabled = Boolean.parseBoolean(data[9]);
         paintArrowsEnabled = Boolean.parseBoolean(data[10]);
         darkModeEnabled = Boolean.parseBoolean(data[11]);
+        enhancedDiffMultEnabled = Boolean.parseBoolean(data[12]);
+        saveResultsToFileEnabled = Boolean.parseBoolean(data[13]);
         
         if(!experimentalMode)
             if(diagonalMovementEnabled || possibleCheats || !hudEnabled ||
-                    moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled) 
+                    moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled ||
+                        enhancedDiffMultEnabled || saveResultsToFileEnabled) 
                 throw new IOException("Leídos valores inválidos desde archivo de opciones.");
             
         
@@ -79,12 +86,13 @@ public class Settings {
         this.sizey = sizey;
     }
 
-    public void setExperimentalMode(boolean experimentalMode) {
-        this.experimentalMode = experimentalMode;
-        this.consoleEnabled = experimentalMode;
-        this.diagonalMovementEnabled = experimentalMode;
-        this.possibleCheats = experimentalMode;
-        this.moreNextValuesEnabled = experimentalMode;
+    public void setExperimentalMode(boolean exp) {
+        this.experimentalMode = exp;
+        this.consoleEnabled = exp;
+        this.diagonalMovementEnabled = exp;
+        this.possibleCheats = exp;
+        this.moreNextValuesEnabled = exp;
+        this.enhancedDiffMultEnabled = exp;
     }
 
     public boolean isConsoleEnabled() {
@@ -123,6 +131,14 @@ public class Settings {
         return darkModeEnabled;
     }
     
+    public boolean isEnhancedDiffMultEnabled() {
+        return enhancedDiffMultEnabled;
+    }
+    
+    public boolean isSaveResultsToFileEnabled() {
+        return saveResultsToFileEnabled;
+    }
+    
     public void toggleHud() {hudEnabled = !hudEnabled;}
     public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
     public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
@@ -132,13 +148,16 @@ public class Settings {
     public void toggleExitOnEnd() {exitOnEndEnabled = !exitOnEndEnabled;}
     public void togglePaintArrows() {paintArrowsEnabled = !paintArrowsEnabled;}
     public void toggleDarkMode() {darkModeEnabled = !darkModeEnabled;}
+    public void toggleEnhancedDiffMult() {enhancedDiffMultEnabled = !enhancedDiffMultEnabled;}
+    public void toggleSaveResultsToFile() {saveResultsToFileEnabled = !saveResultsToFileEnabled;}
     
     @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s", 
+        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s", 
                 sizex, sizey, experimentalMode, consoleEnabled, 
                 diagonalMovementEnabled, possibleCheats, hudEnabled, 
                 moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled,
-                paintArrowsEnabled, darkModeEnabled);
+                paintArrowsEnabled, darkModeEnabled, enhancedDiffMultEnabled,
+                saveResultsToFileEnabled);
     }
 }

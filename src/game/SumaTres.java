@@ -1,6 +1,5 @@
 package game;
 
-import gui.GetMatrixCoordsDialog;
 import gui.MatrixSliderDialog;
 import obj.Jugada;
 import obj.Tablero;
@@ -69,7 +68,7 @@ import javax.swing.JPanel;
  * 
  * Si no se han activado los trucos y está activado el modo experimental, el
  * programa guarda información de la partida al terminar en 
- * "resultados.txt" en el directorio actual.
+ * "./assets/resultados.txt"
  * 
  * <p>
  * 
@@ -149,103 +148,104 @@ import javax.swing.JPanel;
  * 
  */
 public final class SumaTres extends JPanel {
-	
-	/**
-	 * Se incluye un serial generado aleatoriamente en vez de dejar que el
-	 * compilador genere uno por defecto porque así se indica en la documentación de
-	 * Oracle. Si no se declarara uno, podría generar excepciones como
-	 * 'InvalidClassExceptions'.
-	 * <p>
-	 * El serial ha sido generado automáticamente por Eclipse. El serial debe
-	 * de ser obligatoriamente final y de tipo 'long'.
-	 * 
-	 * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html">
-	 * 		Documentación de Oracle: Serializable </a>
-	 */
-	public static final long serialVersionUID = -1110032705510692144L;
-	public static final SecureRandom RAND = new SecureRandom();
-	public static final File ARCHIVO = new File("./assets/resultados.txt");
-        public static final String VERSION = "v21";
-	
-	private HashMap<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
-	private LinkedList<Tablero> tableros; // Cola que guarda todos los tableros de la partida.
-	private int[] warning; // Vector que define la posición de la nueva ficha.
-        private int[] selected; // Vector que define la posición de la ficha señalada.
-	private int turno; // Contador de turnos.
-	private int siguiente; // Valor de la siguiente ficha a colocar.
-	private int highestValue; // Valor de la ficha más alta.
-	private long puntos; // Contador de puntos.
-	private double difficultyMultiplier; // Multiplicador de puntuación final.
-	private boolean cheatsUsed; // Estado de activación de los trucos.
-	private Tablero t; // Tablero sobre el que se juega la partida.
-        private final Settings op; // Opciones de la partida.
-        private boolean finished; // Booleano que determina si la partida se ha terminado ya o no.
-		
-	/**
-	* Constructor de la clase sobrecargado por tres enteros.
-	* <p>
-	* Rellena la lista de colores por valor según los valores por defecto
-	* utilizando {@link #obj.Pieza.inicializarColores()}.
-	* <p>
-	* Se establece la primera ficha que se introducirá en el tablero después de la
-	* primera jugada mediante {@link #newSiguiente()}.
-	* <p>
-	* Se comienza a esperar por clicks del usuario mediante
-	* {@link #addMouseListener(java.awt.event.MouseListener)}.
-	* <p>
-	* Se utiliza un switch para activar los modos dependiendo del entero 'type'
-	* sobrecargado desde el main. En el main se encuentra un showInputMessage con
-	* botones que devuelve directamente el valor que se debe pasar a este constructor.
-	* <p>
-	* El main solo puede sobrecargar valores válidos. Aún así, se implementa un
-	* try/catch para evitar exepciones molestas en caso de que alguien manipule
-	* el código de manera incorrecta.
-	* 
-	* @param op: Objeto de tipo obj.Settings que defina la partida.
-	*/
-	public SumaTres(Settings op) {
 
-            // Se inicializan variables.
-            difficultyMultiplier = 1.0;
-            cheatsUsed = false;
-            obtainedFromRandom = new HashMap<>();
-            tableros = new LinkedList<>();
-            warning = new int[] {-1, 0};
-            selected = new int[] {-1, 0, 0};
-            puntos = 0;
-            highestValue = 3;
-            turno = 1;
-            finished = false;
-            this.op = op;
+    /**
+     * Se incluye un serial generado aleatoriamente en vez de dejar que el
+     * compilador genere uno por defecto porque así se indica en la documentación de
+     * Oracle. Si no se declarara uno, podría generar excepciones como
+     * 'InvalidClassExceptions'.
+     * <p>
+     * El serial ha sido generado automáticamente por Eclipse. El serial debe
+     * de ser obligatoriamente final y de tipo 'long'.
+     * 
+     * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html">
+     * 		Documentación de Oracle: Serializable </a>
+     */
+    public static final long serialVersionUID = -1110032705510692144L;
+    public static final SecureRandom RAND = new SecureRandom();
+    public static final File ARCHIVO = new File("./assets/resultados.txt");
+    public static final String VERSION = "v21";
 
-            try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
-                    err.printf("ERROR: %s."
-                                    + " Estableciendo tablero por defecto 5x5.", ex);
-                    t = new Tablero(5, 5);
-            }
+    private HashMap<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
+    private LinkedList<Tablero> tableros; // Cola que guarda todos los tableros de la partida.
+    private int[] warning; // Vector que define la posición de la nueva ficha.
+    private int[] selected; // Vector que define la posición de la ficha señalada.
+    private int turno; // Contador de turnos.
+    private int siguiente; // Valor de la siguiente ficha a colocar.
+    private int highestValue; // Valor de la ficha más alta.
+    private long puntos; // Contador de puntos.
+    private double difficultyMultiplier; // Multiplicador de puntuación final.
+    private boolean cheatsUsed; // Estado de activación de los trucos.
+    private Tablero t; // Tablero sobre el que se juega la partida.
+    private final Settings op; // Opciones de la partida.
+    private boolean finished; // Booleano que determina si la partida se ha terminado ya o no.
 
-            /*
-             * Debido a cómo funciona la clase 'Pieza', se debe de inicializar los colores ANTES de
-             * generar el set de fichas inicial. De lo contrario, la primera jugada contaría con piezas
-             * de colores aleatorios durante ese turno solamente.
-             */
-            Pieza.inicializarColores();
-            if (op.isBalancedStartEnabled()) 
-                    for(int i = 0; i < Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1); i++) 
-                            generarSetFichas();
-            else generarSetFichas();
-             /*
-              * Se hace Math.max porque en el tablero 3x3, el resultado del cálculo es 0.45,
-              * que convertido a entero es 0, lo que resulta en un tablero vacío al empezar
-              * la partida en modo experimental.
-              */
-             if(op.isConsoleEnabled()) out.println(fullToString());
+    /**
+    * Constructor de la clase sobrecargado por tres enteros.
+    * <p>
+    * Rellena la lista de colores por valor según los valores por defecto
+    * utilizando {@link #obj.Pieza.inicializarColores()}.
+    * <p>
+    * Se establece la primera ficha que se introducirá en el tablero después de la
+    * primera jugada mediante {@link #newSiguiente()}.
+    * <p>
+    * Se comienza a esperar por clicks del usuario mediante
+    * {@link #addMouseListener(java.awt.event.MouseListener)}.
+    * <p>
+    * Se utiliza un switch para activar los modos dependiendo del entero 'type'
+    * sobrecargado desde el main. En el main se encuentra un showInputMessage con
+    * botones que devuelve directamente el valor que se debe pasar a este constructor.
+    * <p>
+    * El main solo puede sobrecargar valores válidos. Aún así, se implementa un
+    * try/catch para evitar exepciones molestas en caso de que alguien manipule
+    * el código de manera incorrecta.
+    * 
+    * @param op: Objeto de tipo obj.Settings que defina la partida.
+    */
+    public SumaTres(Settings op) {
+
+        // Se inicializan variables.
+        cheatsUsed = false;
+        obtainedFromRandom = new HashMap<>();
+        tableros = new LinkedList<>();
+        warning = new int[] {-1, 0};
+        selected = new int[] {-1, 0, 0};
+        puntos = 0;
+        highestValue = 3;
+        turno = 1;
+        finished = false;
+        this.op = op;
+        difficultyMultiplier = op.isEnhancedDiffMultEnabled() ? calculateMultiplier() : 1.0;
+
+        try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
+            err.printf("ERROR: %s."
+                    + " Estableciendo tablero por defecto 5x5.", ex);
+            t = new Tablero(5, 5);
+        }
+
+        /*
+         * Debido a cómo funciona la clase 'Pieza', se debe de inicializar los colores ANTES de
+         * generar el set de fichas inicial. De lo contrario, la primera jugada contaría con piezas
+         * de colores aleatorios durante ese turno solamente.
+         */
+        Pieza.inicializarColores();
+        if (op.isBalancedStartEnabled()) 
+            for(int i = 0; i < Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1); i++) 
+                generarSetFichas();
+        else generarSetFichas();
+         /*
+          * Se hace Math.max porque en el tablero 3x3, el resultado del cálculo es 0.45,
+          * que convertido a entero es 0, lo que resulta en un tablero vacío al empezar
+          * la partida en modo experimental.
+          */
+         
+         if(op.isConsoleEnabled()) out.println(fullToString());
 
 
-            newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
+        newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
 
-            addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
-            addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
+        addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
+        addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
     }
 
     /**
@@ -254,9 +254,25 @@ public final class SumaTres extends JPanel {
      * ser útil en caso de implementar otros modos de juego o hacer debug.
      */
     public void generarSetFichas() {
-            newFicha(3);
-            newFicha(2);
-            newFicha(1);
+        for(int i = 1; i <= 3; i++) {
+            int[] loc = validLocation();
+            setTab(loc[0], loc[1], i);
+        }
+    }
+    
+    /**
+     * Método que calcula la dificultad en caso de estar activada la opción "enhancedDiffMult".
+     * Calcula una dificultad proporcional al tamaño del tablero. Para el tablero
+     * por defecto, 5x5, la dificultad será 1. Para tableros inferiores, el multiplicador
+     * podrá llegar hasta 2 en el mínimo tablero posible, es decir, 2x2. Para tableros
+     * mayores, devolverá el cálculo de una función logarítmica invertida o 0,
+     * dependiendo de cuál sea mayor.
+     * @return 
+     */
+    private double calculateMultiplier() {
+        int res = op.getX() * op.getY();
+        if(res < 25) return -0.08*res+3;
+        return Math.max(Math.log(15.6 - 0.05 * res) - 1.66, 0);
     }
 
     // --- sets y gets --- //
@@ -273,7 +289,7 @@ public final class SumaTres extends JPanel {
      * que solo puede generar posiciones válidas por definición.
      * @param x Vector a establecer.
      */
-    public void setWarning(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
+    private void setWarning(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
             x[0] < op.getX() && x[1] < op.getY()) this.warning = x;}
     
     
@@ -311,14 +327,6 @@ public final class SumaTres extends JPanel {
      * @param puntos que se quieren sumar.
      */
     public void addPuntos(int puntos) {if(puntos>=3) this.puntos += puntos;}
-
-    /**
-     * Establece la cantidad de puntos obtenida manualmente. <p>
-     * No debería poder usarse en condiciones normales, tan solo para pruebas.
-     * 
-     * @param nv Número de puntos a establecer.
-     */
-    //public void setPuntos(int nv) {this.puntos = nv;}
 
     /**
      * Devuelve el valor de la ficha que se encuentre en unas coordenadas.
@@ -400,13 +408,14 @@ public final class SumaTres extends JPanel {
     public void enableCheats() {
         cheatsUsed = true;
         setMultiplier(0.0);
+        op.toggleSaveResultsToFile(); // se desactiva guardar los resultados de una partida con trucos.
     }
 
     /**
      * Devuelve el estado de los trucos.
      * @return Valor booleano.
      */
-    public boolean cheatsUsed() {return this.cheatsUsed;}
+    public boolean areCheatsEnabled() {return this.cheatsUsed;}
 
     /**
      * Método que devuelve las opciones con las que se está jugando.
@@ -542,17 +551,12 @@ public final class SumaTres extends JPanel {
          * que el tablero no esté lleno mediante isFull(). Así, la siguiente ficha
          * a colocar no varía.
          */
-        if (!t.isFull()) {
-            setWarning(validLocation()); // IMPORTANTE! se debe calcular una posición válida DESPUÉS de mover y sumar
-            newFicha();     // Se coloca la ficha 'siguiente'.
-            newSiguiente(); // Se calcula el valor de ficha 'siguiente'.
-        }
+        if (!t.isFull()) colocarSiguiente();
 
         if (!t.equals(temp)) {
             addTurno(); // Si el tablero ha cambiado, se añade un turno.
             tableros.addLast(temp);
-        } 
-        else deactivateWarning();
+        } else deactivateWarning();
 
         update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
         if (!Turno.ableToMove(this)) finalDePartida(); // Si no se puede mover, se termina la partida.
@@ -578,6 +582,14 @@ public final class SumaTres extends JPanel {
     public void update() {
         repaint();
         if(op.isConsoleEnabled()) out.print(fullToString());
+    }
+    
+    public void colocarSiguiente() throws NullPointerException {
+        int[] loc = validLocation();
+        if(loc == null) throw new NullPointerException("No se ha encontrado lugar donde insertar pieza siguiente (NULL).");
+        setWarning(loc);
+        setTab(loc[0], loc[1], getSiguiente());
+        newSiguiente();
     }
 
     /**
@@ -624,7 +636,7 @@ public final class SumaTres extends JPanel {
      * @see <a href="https://stackoverflow.com/questions/880581/how-to-convert-int-to-integer-in-java">
      *		Pasar de int[] a List </a>
      */
-    public void newSiguienteExperimental() {
+    private void newSiguienteExperimental() {
    	if(op.isMoreNextValuesEnabled()) {
             int[] values = possibleValuesNewSiguiente();
             if(values.length == 3) setSiguiente(newRandom(3) + 1);
@@ -658,7 +670,7 @@ public final class SumaTres extends JPanel {
      * 
      */
     @Deprecated (since="v20", forRemoval=false)
-    public void newSiguiente() {
+    private void newSiguiente() {
         if(op.isMoreNextValuesEnabled()) 
             setSiguiente(possibleValuesNewSiguiente()[newRandom(possibleValuesNewSiguiente().length)]);
         else 
@@ -666,32 +678,6 @@ public final class SumaTres extends JPanel {
 
         obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
-    }
-
-    /**
-     * Coloca la ficha 'siguiente'. Para encontrar una poisición nueva, utiliza
-     * {@link #validLocation()}.
-     */
-    public void newFicha() {
-        setTab(getWarning()[0], getWarning()[1], getSiguiente());
-    }
-
-    /**
-     * Coloca una ficha en el tablero. Para encontrar una poisición nueva, utiliza
-     * {@link #validLocation()}.
-     * 
-     * @param nv El valor que tendrá la nueva ficha.
-     */
-    public void newFicha(int nv) {
-        int[] x = validLocation();
-        try {setTab(x[0], x[1], nv);} catch (NullPointerException npe) {
-            /*
-             *  Este trozo de código NUNCA debería ser visible por el usuario.
-             *  De ser ese el caso, hay algo mal planteado. Si se encuentra otra
-             *  excepción entonces hay un problema muy gordo.
-             */
-            err.println("Aplicación incorrecta: No hay posiciones válidas en las que colocar una ficha.");
-        }
     }
 
     /**
@@ -806,7 +792,7 @@ public final class SumaTres extends JPanel {
 
         String salida = String.format("Se ha terminado la partida.%nPuntuación final: %d%nFicha máxima: %d%nTurnos: %d%n",
             finalPuntos, getHighest(), getTurnos());
-        if (cheatsUsed()) salida += "Se han utilizado trucos.";
+        if (areCheatsEnabled()) salida += "Se han utilizado trucos.";
         Dialog.show(salida);
         
 
@@ -820,12 +806,14 @@ public final class SumaTres extends JPanel {
             out.println();
         }
         
-        String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
-        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-            VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
-            getTurnos());
-        FileWS.write(output, ARCHIVO);
-        if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
+        if(op.isSaveResultsToFileEnabled()) {
+            String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
+                getTurnos());
+            FileWS.write(output, ARCHIVO);
+            if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
+        }
 
         if(op.isExitOnEndEnabled()) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
         Keyboard.disableHandling(); // desactiva la entrada por teclado.

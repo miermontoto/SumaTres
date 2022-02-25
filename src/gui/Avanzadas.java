@@ -42,6 +42,8 @@ public class Avanzadas extends javax.swing.JFrame {
         chkBalancedStart = new javax.swing.JCheckBox();
         chkExitOnEnd = new javax.swing.JCheckBox();
         chkPaintArrows = new javax.swing.JCheckBox();
+        chkEnhancedDiffMult = new javax.swing.JCheckBox();
+        chkSaveResults = new javax.swing.JCheckBox();
 
         setTitle("SumaTres - Opciones avanzadas");
         setResizable(false);
@@ -126,6 +128,20 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
+        chkEnhancedDiffMult.setText("Mult. de dificultad mejorado");
+        chkEnhancedDiffMult.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkEnhancedDiffMultActionPerformed(evt);
+            }
+        });
+
+        chkSaveResults.setText("Guardar resultados");
+        chkSaveResults.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkSaveResultsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -133,48 +149,62 @@ public class Avanzadas extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addComponent(btnClásico)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExperimental)
-                .addGap(33, 33, 33))
+                .addGap(88, 88, 88))
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkPaintArrows)
-                    .addComponent(chkExitOnEnd)
-                    .addComponent(chkBalancedStart)
-                    .addComponent(chkMoreNextValues)
-                    .addComponent(chkCheatsAvailable)
-                    .addComponent(chkHUD)
-                    .addComponent(chkDiagonalMovement)
-                    .addComponent(chkConsoleOutput))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkExitOnEnd)
+                            .addComponent(chkPaintArrows)
+                            .addComponent(chkSaveResults))
+                        .addGap(81, 81, 81)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkBalancedStart)
+                            .addComponent(chkEnhancedDiffMult)
+                            .addComponent(chkMoreNextValues)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkHUD)
+                            .addComponent(chkConsoleOutput))
+                        .addGap(88, 88, 88)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkCheatsAvailable)
+                            .addComponent(chkDiagonalMovement))))
+                .addGap(0, 28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnExperimental, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnClásico, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClásico)
+                    .addComponent(btnExperimental))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkDiagonalMovement)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkDiagonalMovement)
+                    .addComponent(chkConsoleOutput))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkConsoleOutput)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkHUD)
+                    .addComponent(chkCheatsAvailable))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkHUD)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkExitOnEnd)
+                    .addComponent(chkMoreNextValues))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkCheatsAvailable)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkPaintArrows)
+                    .addComponent(chkBalancedStart))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkMoreNextValues)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkBalancedStart)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkExitOnEnd)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkPaintArrows)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkEnhancedDiffMult)
+                    .addComponent(chkSaveResults))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -222,6 +252,14 @@ public class Avanzadas extends javax.swing.JFrame {
     private void chkPaintArrowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPaintArrowsActionPerformed
         ventanaSecundaria.getSettings().togglePaintArrows();
     }//GEN-LAST:event_chkPaintArrowsActionPerformed
+
+    private void chkEnhancedDiffMultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEnhancedDiffMultActionPerformed
+        ventanaSecundaria.getSettings().toggleEnhancedDiffMult();
+    }//GEN-LAST:event_chkEnhancedDiffMultActionPerformed
+
+    private void chkSaveResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSaveResultsActionPerformed
+        ventanaSecundaria.getSettings().toggleSaveResultsToFile();
+    }//GEN-LAST:event_chkSaveResultsActionPerformed
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
@@ -235,6 +273,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkMoreNextValues.setEnabled(op.isExperimental());
         chkBalancedStart.setEnabled(op.isExperimental());
         chkPaintArrows.setEnabled(op.isExperimental());
+        chkEnhancedDiffMult.setEnabled(op.isExperimental());
         
         chkDiagonalMovement.setSelected(op.isDiagonalMovementEnabled());
         chkHUD.setSelected(op.isHudEnabled());
@@ -244,6 +283,8 @@ public class Avanzadas extends javax.swing.JFrame {
         chkConsoleOutput.setSelected(op.isConsoleEnabled());
         chkExitOnEnd.setSelected(op.isExitOnEndEnabled());
         chkPaintArrows.setSelected(op.isPaintArrowsEnabled());
+        chkEnhancedDiffMult.setSelected(op.isEnhancedDiffMultEnabled());
+        chkSaveResults.setSelected(op.isSaveResultsToFileEnabled());
     }
     
     
@@ -290,10 +331,12 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkCheatsAvailable;
     private javax.swing.JCheckBox chkConsoleOutput;
     private javax.swing.JCheckBox chkDiagonalMovement;
+    private javax.swing.JCheckBox chkEnhancedDiffMult;
     private javax.swing.JCheckBox chkExitOnEnd;
     private javax.swing.JCheckBox chkHUD;
     private javax.swing.JCheckBox chkMoreNextValues;
     private javax.swing.JCheckBox chkPaintArrows;
+    private javax.swing.JCheckBox chkSaveResults;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }
