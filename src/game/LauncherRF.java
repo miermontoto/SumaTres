@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatDarkLaf; // Modo claro que reemplaza a Nimbus.
 import com.formdev.flatlaf.FlatLightLaf; // Modo oscuro.
 import gui.PrePartida; // Ventana de opciones prepartida.
 import gui.EditarColores; // Ventana de edición de colores de piezas.
+import java.awt.Desktop;
+import java.io.IOException;
 import java.util.Map; // Map.EntrySet
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
 import obj.Settings; // Se utiliza para guardar y editar opciones.
@@ -87,7 +89,6 @@ public class LauncherRF extends javax.swing.JFrame {
         // TODO: habilitar estas funciones
         jmiLoad.setEnabled(false);
         jmiSave.setEnabled(false);
-        jmiResults.setEnabled(false);
     }
 
     /**
@@ -157,6 +158,11 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuArchivo.add(jmiLoad);
 
         jmiResults.setText("Resultados prev.");
+        jmiResults.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiResultsActionPerformed(evt);
+            }
+        });
         mnuArchivo.add(jmiResults);
         mnuArchivo.add(jSeparator1);
 
@@ -581,6 +587,14 @@ public class LauncherRF extends javax.swing.JFrame {
     private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
         actualizarPneInfo();
     }//GEN-LAST:event_pneInfoComponentShown
+
+    private void jmiResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResultsActionPerformed
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) 
+                Desktop.getDesktop().open(SumaTres.ARCHIVO);
+            else throw new IOException();
+        } catch (IOException ex) {jmiResults.setEnabled(false); Dialog.showError("No se pudo abrir el archivo de resultados.");}
+    }//GEN-LAST:event_jmiResultsActionPerformed
 
     
     /**
