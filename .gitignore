@@ -7,7 +7,6 @@ resultados.txt
 workspace.code-workspace
 .classpath
 .project
-*.jar
 *.class
 .metadata
 .classpath
