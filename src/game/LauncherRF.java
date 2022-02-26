@@ -559,6 +559,7 @@ public class LauncherRF extends javax.swing.JFrame {
 
     private void jmiColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiColoresActionPerformed
         ventanaColores.setVisible(true);
+        ventanaColores.updateValues();
     }//GEN-LAST:event_jmiColoresActionPerformed
 
     private void jmiTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmiTrucosMouseEntered

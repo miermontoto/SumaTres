@@ -34,7 +34,7 @@ abstract public class LoopTask implements SincroForeBack {
                 partida.jugada(c);
                 Update();
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch(InterruptedException ex) {}
                 //Progress(barProgress());
                 if(Stop()) {Finish(); return;}

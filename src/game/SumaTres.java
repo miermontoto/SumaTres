@@ -17,15 +17,14 @@ import static java.lang.System.err;
 import java.awt.event.*;
 import java.awt.Graphics;
 import java.io.File;
-import java.security.SecureRandom;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import javax.swing.JPanel;
-
+import org.uncommons.maths.random.MersenneTwisterRNG;
 
 /**
  * <h2> Clase principal del proyecto SumaTres </h2>
@@ -108,12 +107,6 @@ import javax.swing.JPanel;
  *      character appropriate to the platform running the application. You
  *      should always use %n, rather than \n. </blockquote>
  *      
- * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/security/SecureRandom.html">
- *      Documentación de Oracle: SecureRandom </a>
- *      
- * @see <a href="https://rules.sonarsource.com/java/RSPEC-2119"> Regla SonarLint:2119 </a> 
- *      <blockquote>SecureRandom is preferred to Random</blockquote>
- *      
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html">
  *      Documentación de Oracle: HashMap </a>
  *      
@@ -164,7 +157,7 @@ public final class SumaTres extends JPanel {
      * 		Documentación de Oracle: Serializable </a>
      */
     public static final long serialVersionUID = -1110032705510692144L;
-    public static final SecureRandom RAND = new SecureRandom();
+    public static final Random RAND = new MersenneTwisterRNG();
     public static final File ARCHIVO = new File("./assets/resultados.txt");
     public static final String VERSION = "v21";
 
@@ -595,8 +588,7 @@ public final class SumaTres extends JPanel {
     }
 
     /**
-    * Genera un número nuevo aleatorio. Como especificado en el JavaDoc de la
-    * clase, <code>rand</code> es un SecureRandom, no un Random normal.
+    * Genera un número nuevo aleatorio.
     * 
     * @param val un entero cualquiera.
     * @return Un entero aleatorio [0, val)

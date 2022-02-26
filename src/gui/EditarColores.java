@@ -126,7 +126,7 @@ public class EditarColores extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditarActionPerformed
 
     
-    private void updateValues() {
+    public void updateValues() {
         for(Integer i : Pieza.COLORES.keySet()) {
             model.addElement(i);
         }

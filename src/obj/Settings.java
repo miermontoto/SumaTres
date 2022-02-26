@@ -63,8 +63,6 @@ public class Settings {
                     moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled ||
                         enhancedDiffMultEnabled || saveResultsToFileEnabled) 
                 throw new IOException("Leídos valores inválidos desde archivo de opciones.");
-            
-        
     }
 
     public int getX() {

@@ -97,7 +97,8 @@ public class Pieza {
             if (!COLORES.containsKey(valor)) {
                 Color c1 = Color.white; // Es necesario inicializar el color.
                 boolean check = true;
-                while(check) {
+                int c = 0;
+                while(check && c < 10) { // solo se busca 10 veces un color nuevo.
                     check = false;
                     c1 = new Color(SumaTres.newRandom(256), SumaTres.newRandom(256), SumaTres.newRandom(256));
                     for(Color c2 : COLORES.values()) {
@@ -112,6 +113,7 @@ public class Pieza {
                         
                         if(aC < 200) check = true;
                         //System.out.printf("%f%n", aC); // Imprime la distancia entre el color a comparar.
+                        c++;
                     }
                 }
                 COLORES.put(valor, c1);
