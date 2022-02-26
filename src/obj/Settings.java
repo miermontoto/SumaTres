@@ -42,6 +42,7 @@ public class Settings {
     
     public Settings(String s) throws IOException {
         String[] data = s.split(" ");
+        if(data.length != 14) throw new IOException("Tamaño de información incorrecto.");
         sizex = Integer.parseInt(data[0]);
         sizey = Integer.parseInt(data[1]);
         experimentalMode = Boolean.parseBoolean(data[2]);
