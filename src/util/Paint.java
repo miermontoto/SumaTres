@@ -221,15 +221,16 @@ public final class Paint {
     private static void pintarFichas() {
         for (int i = 0; i < s.getTablero().getColumns(); i++)
             for (int j = 0; j < s.getTablero().getRows(); j++) { // Se recorre el tablero.
-                if (s.getTab(i, j) != 0) { // Al detectarse una pieza, se obtiene su color referente.
-                    g.setColor(s.getTablero().getPieza(i, j).getColor());
+                Pieza next = s.getTablero().getPieza(i, j);
+                if (!next.isEmpty()) { // Al detectarse una pieza, se obtiene su color referente.
+                    g.setColor(next.getColor());
                     // Se pinta la pieza en sí.
                     g.fillRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
                         MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
                         ROUND_DIAMETER, ROUND_DIAMETER);
 
                     // Si la pieza es demasiado clara, se le pinta un reborde para que se aprecie.
-                    if(s.getTablero().getPieza(i, j).isBrillante()) {
+                    if(next.isBrillante()) {
                         g.setStroke(new BasicStroke(1));
                         g.setColor(Color.gray);
                         g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
@@ -241,14 +242,14 @@ public final class Paint {
                     // Por último, se pinta el valor de la ficha.
                     // Si la luminosidad pasa de un cierto valor, el color de la fuente del valor
                     // de la ficha debería ser negro, de lo contrario es blanco.
-                    g.setColor(s.getTablero().getPieza(i, j).isBrillante() ? Color.black : Color.white);
+                    g.setColor(next.isBrillante() ? Color.black : Color.white);
 
                     // Se establece un tamaño de fuente en función de los dígitos de la ficha.
-                    int desiredFontSize = 19 - (String.valueOf(s.getTab(i, j)).length() - 1);
+                    int desiredFontSize = 19 - (String.valueOf(next.getValor()).length() - 1);
                     setFontSize(s.getTab(i, j) >= 350000 ? 10 : desiredFontSize);
-                    int sizer = s.getTab(i, j) >= 100000 ? (13 - (String.valueOf(s.getTab(i, j)).length()-1)) :
-                            (13 - (2*(String.valueOf(s.getTab(i, j)).length()-1)));
-                    g.drawString(String.format("%d", s.getTab(i, j)),
+                    int sizer = s.getTab(i, j) >= 100000 ? (13 - (String.valueOf(next.getValor()).length()-1)) :
+                            (13 - (2*(String.valueOf(next.getValor()).length()-1)));
+                    g.drawString(String.valueOf(next.getValor()),
                         MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j + SQUARE_SIZE * sizer / 32,
                         SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i);
                     // Dependiendo del tamaño de la pieza, se desplaza ligeramente a la izquierda para que siga centrada

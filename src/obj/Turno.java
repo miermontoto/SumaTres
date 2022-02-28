@@ -134,7 +134,7 @@ public final class Turno {
                 while(i + x.getDown() < t.getColumns() && !check) {
                     int j = x.getLeft();
                     while(j + x.getRight() < t.getRows() && !check) {
-                        check = sumaCond(i, j, x, t);
+                        check |= sumaCond(i, j, x, t);
                         j++;
                     }
                     i++;
@@ -160,8 +160,8 @@ public final class Turno {
      * @return  Un booleano, 'true' si se puede sumar, 'false' si no.
      */
     private static boolean sumaCond(int i, int j, Jugada x, Tablero t) {
-        return t.getPieza(i + x.moveVert(), j + x.moveHorz()).getValor() == t.getPieza(i, j).getValor() &&
-            t.getPieza(i, j).getValor() >= 3  ||
-            t.getPieza(i, j).getValor() + t.getPieza(i + x.moveVert(), j + x.moveHorz()).getValor() == 3;
+        return t.getTab(i + x.moveVert(), j + x.moveHorz()) == t.getTab(i, j) &&
+            t.getTab(i, j) >= 3  ||
+            t.getTab(i, j) + t.getTab(i + x.moveVert(), j + x.moveHorz()) == 3;
     }
 }

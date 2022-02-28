@@ -78,6 +78,10 @@ public class Pieza {
     public int getValor() {
         return valor;
     }
+    
+    public boolean isEmpty() {
+        return valor == 0;
+    }
 
     /**
      * Establece el valor de la pieza y actualiza el color de la pieza y si es
