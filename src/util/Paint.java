@@ -175,8 +175,10 @@ public final class Paint {
         g.setColor(BOARD_COLOR);
         int desiredFontSize = s.getSiguiente() >= 350000 ? 10 : 19 - (String.valueOf(s.getSiguiente()).length() - 1);
         setFontSize(desiredFontSize); // Se desplaza a la derecha cuando la pieza pasa a tener más de un dígito.
-        g.drawString(String.format("%d", s.getSiguiente()), MAIN_SPACER * 112 / 48,
-            Graphic.defineY(s) - MAIN_SPACER / 2);
+        int displacer = 2*(String.valueOf(s.getSiguiente()).length() - 1);
+        g.drawString(String.valueOf(s.getSiguiente()), 
+                MAIN_SPACER * (112 - displacer) / 48,
+                Graphic.defineY(s) - MAIN_SPACER / 2);
         
         // Final de partida:
         if(s.isFinished()) {

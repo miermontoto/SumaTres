@@ -7,6 +7,7 @@ import obj.Turno;
 import obj.Settings;
 import util.Dialog;
 import util.Paint;
+import util.Random;
 import obj.Pieza;
 import handler.Mouse;
 import handler.Keyboard;
@@ -21,10 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
 import javax.swing.JPanel;
-import org.uncommons.maths.random.MersenneTwisterRNG;
 
 /**
  * <h2> Clase principal del proyecto SumaTres </h2>
@@ -157,7 +156,6 @@ public final class SumaTres extends JPanel {
      * 		Documentación de Oracle: Serializable </a>
      */
     public static final long serialVersionUID = -1110032705510692144L;
-    public static final Random RAND = new MersenneTwisterRNG();
     public static final File ARCHIVO = new File("./assets/resultados.txt");
     public static final String VERSION = "v21";
 
@@ -321,7 +319,7 @@ public final class SumaTres extends JPanel {
      * 
      * @param puntos que se quieren sumar.
      */
-    public void addPuntos(int puntos) {if(puntos>=3) this.puntos += puntos;}
+    public void addPuntos(long puntos) {if(puntos>=3) this.puntos += puntos;}
 
     /**
      * Devuelve el valor de la ficha que se encuentre en unas coordenadas.
@@ -588,16 +586,6 @@ public final class SumaTres extends JPanel {
     }
 
     /**
-    * Genera un número nuevo aleatorio.
-    * 
-    * @param val un entero cualquiera.
-    * @return Un entero aleatorio [0, val)
-    */
-    public static int newRandom(int val) {
-        return RAND.nextInt(val);
-    }
-
-    /**
      * Método que devuelve todos los posibles valores que pueden establecerse
      * como "siguiente" en el modo experimiental.
      * 
@@ -633,7 +621,7 @@ public final class SumaTres extends JPanel {
     private void newSiguienteExperimental() {
    	if(op.isMoreNextValuesEnabled()) {
             int[] values = possibleValuesNewSiguiente();
-            if(values.length == 3) setSiguiente(newRandom(3) + 1);
+            if(values.length == 3) setSiguiente(Random.newRandom(3) + 1);
             else {
                 int finalValue;
                 //List<Integer> probabilities = Arrays.stream(values).boxed().collect(Collectors.toList());
@@ -642,7 +630,7 @@ public final class SumaTres extends JPanel {
                 if(max < 0.55) max = 0.55;
             }
      	}
-    	else setSiguiente(newRandom(3) + 1);
+    	else setSiguiente(Random.newRandom(3) + 1);
     	obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
     }
@@ -666,9 +654,9 @@ public final class SumaTres extends JPanel {
     @Deprecated (since="v20", forRemoval=false)
     private void newSiguiente() {
         if(op.isMoreNextValuesEnabled()) 
-            setSiguiente(possibleValuesNewSiguiente()[newRandom(possibleValuesNewSiguiente().length)]);
+            setSiguiente(possibleValuesNewSiguiente()[Random.newRandom(possibleValuesNewSiguiente().length)]);
         else 
-            setSiguiente(newRandom(3) + 1);
+            setSiguiente(Random.newRandom(3) + 1);
 
         obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
@@ -682,11 +670,11 @@ public final class SumaTres extends JPanel {
         if(t.isFull()) return null;
         else {
             int[] x = new int[2];
-            int nX = newRandom(t.getColumns());
-            int nY = newRandom(t.getRows());
+            int nX = Random.newRandom(t.getColumns());
+            int nY = Random.newRandom(t.getRows());
             while (getTab(nX, nY) != 0) { // Si ya hay una pieza en la casilla indicada, se vuelve a obtener otra.
-                nX = newRandom(t.getColumns());
-                nY = newRandom(t.getRows());
+                nX = Random.newRandom(t.getColumns());
+                nY = Random.newRandom(t.getRows());
             }
             x[0] = nX;
             x[1] = nY;

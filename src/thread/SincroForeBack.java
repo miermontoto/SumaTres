@@ -15,7 +15,6 @@ public interface SincroForeBack {
     // Información que la tarea manda a la interfaz.
     void Start();
     void Finish();
-    void Message(String s); // Indica que se muestre un mensaje.
     void Update(); // Indica que el tablero se debe actualizar.
     void Progress(int val); // Indica el progreso del loop.
     boolean Stop(); // Si retorna verdadero, el proceso debe terminar.

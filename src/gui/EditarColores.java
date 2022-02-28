@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
 import game.LauncherRF;
@@ -46,8 +42,8 @@ public class EditarColores extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         lstValores = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
-        lblColor = new javax.swing.JLabel();
         btnEditar = new javax.swing.JButton();
+        lblColor = new javax.swing.JLabel();
 
         setTitle("SumaTres - Editar colores");
         setAlwaysOnTop(true);
@@ -63,6 +59,11 @@ public class EditarColores extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        lstValores.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstValoresValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(lstValores);
 
@@ -82,29 +83,27 @@ public class EditarColores extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(35, 35, 35)
+                        .addComponent(btnEditar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnEditar)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(166, 166, 166)
-                        .addComponent(lblColor)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblColor)))))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(119, 119, 119)
-                        .addComponent(lblColor))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(16, 16, 16)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblColor))
                 .addGap(18, 18, 18)
                 .addComponent(btnEditar)
                 .addContainerGap(24, Short.MAX_VALUE))
@@ -120,10 +119,16 @@ public class EditarColores extends javax.swing.JFrame {
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         if(!lstValores.isSelectionEmpty()) {
             int selectedValue = Integer.parseInt(lstValores.getSelectedValue());
-            Color newColor = JColorChooser.showDialog(null, "Seleccione nuevo color", Pieza.COLORES.get(selectedValue));
-            Pieza.COLORES.put(selectedValue, newColor);
+            Color newColor = JColorChooser.showDialog(null, "Seleccione nuevo color", Pieza.getColores().get(selectedValue));
+            Pieza.getColores().put(selectedValue, newColor);
         }
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void lstValoresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstValoresValueChanged
+        Color current = Pieza.getColores().get(lstValores.getSelectedValue());
+        lblColor.setText(String.valueOf(current.getRGB()));
+        lblColor.setForeground(current);
+    }//GEN-LAST:event_lstValoresValueChanged
 
     
     public void updateValues() {
@@ -160,10 +165,8 @@ public class EditarColores extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditarColores().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new EditarColores().setVisible(true);
         });
     }
 

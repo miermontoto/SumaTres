@@ -1,10 +1,9 @@
 package obj;
 
 import java.awt.Color;
-
-import game.SumaTres;
 import java.util.Map;
 import java.util.TreeMap;
+import util.Random;
 
 /**
  * Clase que genera objetos tipo 'Pieza' para que sean utilizados en un tablero.
@@ -100,7 +99,7 @@ public class Pieza {
                 int c = 0;
                 while(check && c < 10) { // solo se busca 10 veces un color nuevo.
                     check = false;
-                    c1 = new Color(SumaTres.newRandom(256), SumaTres.newRandom(256), SumaTres.newRandom(256));
+                    c1 = new Color(Random.newRandom(256), Random.newRandom(256), Random.newRandom(256));
                     for(Color c2 : COLORES.values()) {
                         double aR, aG, aB, rR, aC;
                         rR = (c1.getRed() + c2.getRed()) / 2.0;
@@ -117,14 +116,17 @@ public class Pieza {
                     }
                 }
                 COLORES.put(valor, c1);
+                this.color = c1;
 
                 // 'Y' es la luminosidad del color de la ficha.
                 double Y = (0.2126*c1.getRed() + 0.7152*c1.getGreen() + 0.0722*c1.getBlue());
                 BRILLOS.put(valor, Y>=211);
+                this.brillante = Y >= 211;
 
+            } else {
+                this.color = COLORES.get(valor);
+                this.brillante = BRILLOS.get(valor);
             }
-            this.color = COLORES.get(valor);
-            this.brillante = BRILLOS.get(valor);
         }
     }
 
