@@ -236,9 +236,6 @@ public final class SumaTres extends JPanel {
 
 
         newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
-
-        addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
-        addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
     }
 
     /**
@@ -370,12 +367,6 @@ public final class SumaTres extends JPanel {
      * @return Entero con la cantidad de turnos.
      */
     public int getTurnos() {return this.turno;}
-
-    /**
-     * Devuelve el estado del modo. False para modo clásico.
-     * @return Valor booleano con el estado del modo experimental.
-     */
-    //public boolean getMode() {return op.isExperimental();}
 
     /**
      * Activa o desactiva el toString() por consola.
@@ -866,54 +857,8 @@ public final class SumaTres extends JPanel {
      */
     @Override
     public void paintComponent(Graphics g) {
-        requestFocusInWindow();
+        requestFocusInWindow(); // <- IMPORTANTE! necesita el focus para poder redirigir el teclado
         super.paintComponent(g);
-        Paint.paint(g, this);
+        new Paint(this, g).paint();
     }
-
-    // -------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Recive los clicks del ratón en la aplicación y redirige el evento a 
-     * {@link game.SumaTres.rerouteMouse(event)}. <p>
-     * Para mayor libertad a la hora de programar, se pasa el evento independientemente
-     * de qué botón de ratón se haya pulsado.
-     */
-    private class MouseHandler extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(MouseEvent event) {
-            rerouteMouse(event);
-        }
-    }
-
-    /**
-     * Redirige todos los eventos del ratón a
-     * {@link handler.Mouse.mouseHandler(SumaTres, MouseEvent)}.
-     * @param e Evento de ratón.
-     */
-    public void rerouteMouse(MouseEvent e) {Mouse.mouseHandler(this, e);}
-
-
-
-    /**
-     * Recive pulsaciones de teclado y los introduce en
-     * {@link #game.SumaTres.rerouteKeyboard(event)}, con información sobre la tecla pulsada
-     * y si el control estaba pulsado o no durante la pulsación.
-     */
-    private class KeyHandler extends KeyAdapter {
-
-        @Override
-        public void keyPressed(KeyEvent event) {
-            rerouteKeyboard(event);
-        }
-    }	
-
-    /**
-     * Toda la lógica del teclado debería ocurrir en la propia clase del teclado. <p>
-     * Necesita estar fuera de la clase KeyHandler para poder pasar la partida 'SumaTres'
-     * como this. Esa es la única función de este método.
-     * @param e
-     */
-    public void rerouteKeyboard(KeyEvent e) {Keyboard.keyboardHandler(this, e);}
 }

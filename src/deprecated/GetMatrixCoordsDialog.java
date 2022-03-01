@@ -1,4 +1,4 @@
-package gui;
+package deprecated;
 
 import game.SumaTres;
 import java.awt.Color;

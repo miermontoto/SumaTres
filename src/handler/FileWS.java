@@ -2,6 +2,7 @@ package handler;
 
 import static java.lang.System.out;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import util.Dialog;
 
@@ -20,11 +21,10 @@ public class FileWS {
     public static void write(String s, java.io.File file) {
             try {
                 if(file.createNewFile()) {out.println("Creado archivo.");}
-                final FileWriter writer = new FileWriter(file, true);
-                writer.write(s);
-                writer.close();
-            } catch (Exception e) {
-                Dialog.showError(e);
-            }
+                try (FileWriter writer = new FileWriter(file, true)) {
+                    writer.write(s);
+                    writer.close();
+                }
+            } catch (IOException e) {Dialog.showError(e);}
     }
 }

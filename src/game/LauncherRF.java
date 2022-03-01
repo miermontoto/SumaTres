@@ -4,7 +4,13 @@ import com.formdev.flatlaf.FlatDarkLaf; // Modo claro que reemplaza a Nimbus.
 import com.formdev.flatlaf.FlatLightLaf; // Modo oscuro.
 import gui.PrePartida; // Ventana de opciones prepartida.
 import gui.EditarColores; // Ventana de edición de colores de piezas.
+import handler.Keyboard;
+import handler.Mouse;
 import java.awt.Desktop;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Map; // Map.EntrySet
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
@@ -56,9 +62,32 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     public void launch(Settings op) {
         juego = new SumaTres(op);
+
+        
+        /*
+         * Handlers de teclado y ratón.
+         * Son más flexibles al estar en la ventana principal en vez del
+         * objeto de la partida y simplifican código.
+         */
+        juego.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent event) {
+                new Keyboard(juego, event).keyboardHandler();
+                ventanaColores.updateValues();
+            }
+        });
+        
+        juego.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                new Mouse(juego, event).mouseHandler();
+            }
+        });
+                
+                
         
         // Propiedades de la ventana.
-        setBounds(0, 0, Graphic.defineX(juego) + 15, (int) (Graphic.defineY(juego) + 39 + 30 * Graphic.SCALE));
+        setBounds(0, 0, Graphic.defineX(juego), Graphic.defineY(juego));
         setVisible(true);
         loopComms = new LoopComms(this);
          
@@ -78,11 +107,14 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucos.setEnabled(op.isPossibleCheats());
         jmiExtrasConsole.setSelected(op.isConsoleEnabled());
         jmiExitOnEnd.setSelected(op.isExitOnEndEnabled());
-        jmiHud.setSelected(op.isHudEnabled());
-        jmiFlechas.setSelected(op.isPaintArrowsEnabled());
-        jmiHud.setEnabled(op.isExperimental());
-        jmiFlechas.setEnabled(op.isExperimental());
+        jmiInterfazHud.setSelected(op.isHudEnabled());
+        jmiInterfazFlechas.setSelected(op.isPaintArrowsEnabled());
+        jmiInterfazHud.setEnabled(op.isExperimental());
+        jmiInterfazFlechas.setEnabled(op.isExperimental());
         jmiDarkMode.setSelected(op.isDarkModeEnabled());
+        jmiInterfaz.setEnabled(op.isExperimental());
+        jmiIntefazGrid.setSelected(op.isDrawGridEnabled());
+        jmiInterfazZonas.setSelected(op.isDrawZonesEnabled());
         
         // Se selecciona qué modo y si se puede cambiar entre modos o no.
         jmiModoClassic.setEnabled(op.isExperimental());
@@ -117,10 +149,14 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuOpciones = new javax.swing.JMenu();
         jmiExtrasConsole = new javax.swing.JCheckBoxMenuItem();
         jmiExitOnEnd = new javax.swing.JCheckBoxMenuItem();
-        jmiFlechas = new javax.swing.JCheckBoxMenuItem();
-        jmiHud = new javax.swing.JCheckBoxMenuItem();
         jmiDarkMode = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jmiSaveOnExit = new javax.swing.JCheckBoxMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        jmiInterfaz = new javax.swing.JMenu();
+        jmiInterfazFlechas = new javax.swing.JCheckBoxMenuItem();
+        jmiInterfazHud = new javax.swing.JCheckBoxMenuItem();
+        jmiInterfazZonas = new javax.swing.JCheckBoxMenuItem();
+        jmiIntefazGrid = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiColores = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -203,24 +239,6 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuOpciones.add(jmiExitOnEnd);
 
-        jmiFlechas.setSelected(true);
-        jmiFlechas.setText("Pintar flechas");
-        jmiFlechas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiFlechasActionPerformed(evt);
-            }
-        });
-        mnuOpciones.add(jmiFlechas);
-
-        jmiHud.setSelected(true);
-        jmiHud.setText("Pintar HUD");
-        jmiHud.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiHudActionPerformed(evt);
-            }
-        });
-        mnuOpciones.add(jmiHud);
-
         jmiDarkMode.setSelected(true);
         jmiDarkMode.setText("Modo oscuro");
         jmiDarkMode.addActionListener(new java.awt.event.ActionListener() {
@@ -230,14 +248,56 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuOpciones.add(jmiDarkMode);
 
-        jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("Guardar res. al terminar");
-        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jmiSaveOnExit.setSelected(true);
+        jmiSaveOnExit.setText("Guardar res. al terminar");
+        jmiSaveOnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMenuItem1ActionPerformed(evt);
+                jmiSaveOnExitActionPerformed(evt);
             }
         });
-        mnuOpciones.add(jCheckBoxMenuItem1);
+        mnuOpciones.add(jmiSaveOnExit);
+        mnuOpciones.add(jSeparator5);
+
+        jmiInterfaz.setText("Interfaz");
+        jmiInterfaz.setEnabled(false);
+
+        jmiInterfazFlechas.setSelected(true);
+        jmiInterfazFlechas.setText("Dibujar flechas");
+        jmiInterfazFlechas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiInterfazFlechasActionPerformed(evt);
+            }
+        });
+        jmiInterfaz.add(jmiInterfazFlechas);
+
+        jmiInterfazHud.setSelected(true);
+        jmiInterfazHud.setText("Dibujar HUD");
+        jmiInterfazHud.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiInterfazHudActionPerformed(evt);
+            }
+        });
+        jmiInterfaz.add(jmiInterfazHud);
+
+        jmiInterfazZonas.setSelected(true);
+        jmiInterfazZonas.setText("Dibujar zonas");
+        jmiInterfazZonas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiInterfazZonasActionPerformed(evt);
+            }
+        });
+        jmiInterfaz.add(jmiInterfazZonas);
+
+        jmiIntefazGrid.setSelected(true);
+        jmiIntefazGrid.setText("Dibujar grid");
+        jmiIntefazGrid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiIntefazGridActionPerformed(evt);
+            }
+        });
+        jmiInterfaz.add(jmiIntefazGrid);
+
+        mnuOpciones.add(jmiInterfaz);
         mnuOpciones.add(jSeparator3);
 
         jmiColores.setText("Editar colores");
@@ -278,11 +338,6 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuTrucos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 mnuTrucosMouseEntered(evt);
-            }
-        });
-        mnuTrucos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuTrucosActionPerformed(evt);
             }
         });
 
@@ -389,11 +444,11 @@ public class LauncherRF extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
         );
 
         pack();
@@ -406,30 +461,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private void jmiTrucosEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosEliminarActionPerformed
         juego.quitarPieza();
     }//GEN-LAST:event_jmiTrucosEliminarActionPerformed
-
-    /**
-     * Evento que activa el resto de opciones del menú "Trucos". Se supone que
-     * los trucos están desactivados antes de este evento y continuarán activados
-     * después, sin ninguna excepción. <p>
-     * 
-     * Antes de activar los trucos, muestra una alerta al usuario para que
-     * confirme la acción. <p>
-     * 
-     * Al habilitar los trucos, se habilitan todas los menús referentes a trucos
-     * y se deshabilita esta casilla, para evitar que se desactiven.
-     * @param evt 
-     */
-    private void jmiTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosActionPerformed
-        if(Dialog.confirm("Activar los trucos cambiará el multiplicador de puntos a 0.\n¿Desea continuar?")) {
-            juego.enableCheats(); // Activa los trucos dentro del objeto de la partida.
-            jmiTrucos.setEnabled(false); // Deshabilita la propia casilla.
-            setCheatsEnabled(true); // Habilita los menús de trucos.
-            jCheckBoxMenuItem1.setEnabled(false);
-            jCheckBoxMenuItem1.setSelected(false);
-            if(juego.getSettings().isSaveResultsToFileEnabled()) juego.getSettings().toggleSaveResultsToFile();
-            actualizarPneInfo(); // Actualiza el estado de los trucos en el panel de info.
-        } else {jmiTrucos.setSelected(false);}
-    }//GEN-LAST:event_jmiTrucosActionPerformed
 
     private void jmiTrucosUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosUndoActionPerformed
         juego.undo();
@@ -574,24 +605,22 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.getSettings().toggleExitOnEnd();
     }//GEN-LAST:event_jmiExitOnEndActionPerformed
 
-    private void jmiFlechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiFlechasActionPerformed
+    private void jmiInterfazFlechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazFlechasActionPerformed
         juego.getSettings().togglePaintArrows();
         juego.repaint();
-    }//GEN-LAST:event_jmiFlechasActionPerformed
+    }//GEN-LAST:event_jmiInterfazFlechasActionPerformed
 
-    private void jmiHudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHudActionPerformed
+    private void jmiInterfazHudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazHudActionPerformed
         juego.getSettings().toggleHud();
         juego.repaint();
-    }//GEN-LAST:event_jmiHudActionPerformed
+    }//GEN-LAST:event_jmiInterfazHudActionPerformed
 
     private void jmiTrucosLoopStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopStartActionPerformed
-        loopThread = new Thread() {public void run(){LauncherRF.loopComms.Run();};};
+        loopThread = new Thread() {@Override
+            public void run(){LauncherRF.loopComms.Run();};
+        };
         loopThread.start();
     }//GEN-LAST:event_jmiTrucosLoopStartActionPerformed
-
-    private void mnuTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTrucosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnuTrucosActionPerformed
 
     private void jmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDarkModeActionPerformed
         juego.getSettings().toggleDarkMode();
@@ -612,19 +641,9 @@ public class LauncherRF extends javax.swing.JFrame {
         } catch (NullPointerException ex) {Dialog.showError("No hay hueco para otra pieza.");}
     }//GEN-LAST:event_jmiTrucosForzarSiguienteActionPerformed
 
-    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+    private void jmiSaveOnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveOnExitActionPerformed
         juego.getSettings().toggleSaveResultsToFile();
-    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
-
-    /**
-     * Actualiza el panel de información cada vez que se muestra. Este listener
-     * evita tener que estar actualizando constantemente o tener un botón con el
-     * que tenga que interactuar el usuario.
-     * @param evt 
-     */
-    private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
-        actualizarPneInfo();
-    }//GEN-LAST:event_pneInfoComponentShown
+    }//GEN-LAST:event_jmiSaveOnExitActionPerformed
 
     private void jmiResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResultsActionPerformed
         try {
@@ -638,7 +657,33 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoopEnd.setSelected(true);
         loopComms.setStop();
     }//GEN-LAST:event_jmiTrucosLoopEndActionPerformed
-    
+
+    private void jmiTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosActionPerformed
+        if(Dialog.confirm("Activar los trucos cambiará el multiplicador de puntos a 0.\n¿Desea continuar?")) {
+            juego.enableCheats(); // Activa los trucos dentro del objeto de la partida.
+            jmiTrucos.setEnabled(false); // Deshabilita la propia casilla.
+            setCheatsEnabled(true); // Habilita los menús de trucos.
+            jmiSaveOnExit.setEnabled(false); // Deshabilita la posibilidad de activar el guardado de resultados.
+            jmiSaveOnExit.setSelected(false);
+            if(juego.getSettings().isSaveResultsToFileEnabled()) juego.getSettings().toggleSaveResultsToFile();
+            actualizarPneInfo(); // Actualiza el estado de los trucos en el panel de info.
+        } else {jmiTrucos.setSelected(false);}
+    }//GEN-LAST:event_jmiTrucosActionPerformed
+
+    private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
+        actualizarPneInfo();
+    }//GEN-LAST:event_pneInfoComponentShown
+
+    private void jmiIntefazGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiIntefazGridActionPerformed
+        juego.getSettings().toggleDrawGrid();
+        juego.repaint();
+    }//GEN-LAST:event_jmiIntefazGridActionPerformed
+
+    private void jmiInterfazZonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazZonasActionPerformed
+        juego.getSettings().toggleDrawZones();
+        juego.repaint();
+    }//GEN-LAST:event_jmiInterfazZonasActionPerformed
+
     
     public SumaTres getPartida() {
         return this.juego;
@@ -675,19 +720,22 @@ public class LauncherRF extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jmiColores;
     private javax.swing.JCheckBoxMenuItem jmiDarkMode;
     private javax.swing.JCheckBoxMenuItem jmiExitOnEnd;
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
-    private javax.swing.JCheckBoxMenuItem jmiFlechas;
-    private javax.swing.JCheckBoxMenuItem jmiHud;
+    private javax.swing.JCheckBoxMenuItem jmiIntefazGrid;
+    private javax.swing.JMenu jmiInterfaz;
+    private javax.swing.JCheckBoxMenuItem jmiInterfazFlechas;
+    private javax.swing.JCheckBoxMenuItem jmiInterfazHud;
+    private javax.swing.JCheckBoxMenuItem jmiInterfazZonas;
     private javax.swing.JMenuItem jmiLoad;
     private javax.swing.JMenu jmiModo;
     private javax.swing.JRadioButtonMenuItem jmiModoClassic;
@@ -696,6 +744,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiResults;
     private javax.swing.JMenuItem jmiSalir;
     private javax.swing.JMenuItem jmiSave;
+    private javax.swing.JCheckBoxMenuItem jmiSaveOnExit;
     private javax.swing.JCheckBoxMenuItem jmiTrucos;
     private javax.swing.JMenuItem jmiTrucosAñadir;
     private javax.swing.JMenuItem jmiTrucosEliminar;

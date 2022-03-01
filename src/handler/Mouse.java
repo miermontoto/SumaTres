@@ -10,56 +10,60 @@ public class Mouse {
     
     private static boolean handlingEnabled = true;
     
+    private final SumaTres s;
+    private final MouseEvent e;
+    
     public static void disableHandling() {handlingEnabled = false;}
 
-    /**
-     * Constrctor generado para cumplir con SonarLint:S1118.
-     * 
-     * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
-     * 		Regla SonarLint:S1118 </a>
-     */
-    private Mouse() {
-            throw new IllegalStateException("Event handling class");
+    public Mouse(SumaTres si, MouseEvent ei) {
+        s = si;
+        e = ei;
     }
-
+    
     /**
      * Método que diferencia entre eventos y los redirige.
-     * 
-     * @param s Partida en la que se está jugando.
-     * @param e Evento del ratón.
      */
-    public static void mouseHandler(SumaTres s, MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON1 && handlingEnabled) mouseClicked(s, e);
+    public void mouseHandler() {
+        //System.out.printf("%d %d (%d) %n", e.getX(), e.getY(), Paint.MAIN_SPACER);
+        if(e.getButton() == MouseEvent.BUTTON1 && handlingEnabled 
+                && inFrameClick() && !inBoardClick()) jugadaHandler();
     }
-
-    /**
-     * Método principal que permite el uso del ratón con la interfaz básica.
-     * 
-     * @param s Partida en la que se está jugando.
-     * @param e Evento del ratón.
-     */
-    private static void mouseClicked(SumaTres s, MouseEvent e) {
+    
+    private boolean inFrameClick() {
+        return e.getY() <= Graphic.lateralSize(s.getSettings().getX());
+    }
+    
+    private boolean inBoardClick() {
+        return e.getX() > Paint.MAIN_SPACER && e.getY() > Paint.MAIN_SPACER &&
+                e.getX() <= Graphic.lateralSize(s.getSettings().getY()) && 
+                e.getY() <= Graphic.lateralSize(s.getSettings().getX());
+    }
+    
+    private void jugadaHandler() {
         int x = e.getX();
         int y = e.getY();
 
-        int limitX = Graphic.defineX(s);
-        int limitY = Graphic.defineY(s);
+        int limitX = Graphic.lateralSize(s.getSettings().getX());
+        int limitY = Graphic.lateralSize(s.getSettings().getY());
+        boolean diagonal = s.getSettings().isDiagonalMovementEnabled();
 
-        if(x < Paint.MAIN_SPACER && y < Paint.MAIN_SPACER)
-            if(s.getSettings().isDiagonalMovementEnabled()) s.jugada('q');
-        else if(x < Paint.MAIN_SPACER && y > limitY - Paint.MAIN_SPACER)
-            if(s.getSettings().isDiagonalMovementEnabled()) s.jugada('z');
-        else if(x > limitX - Paint.MAIN_SPACER && y < Paint.MAIN_SPACER)
-            if(s.getSettings().isDiagonalMovementEnabled()) s.jugada('e');
-        else if(x > limitX - Paint.MAIN_SPACER && y > limitY - Paint.MAIN_SPACER)
-            if(s.getSettings().isDiagonalMovementEnabled()) s.jugada('c');
-        else {
-            if(x < Paint.MAIN_SPACER) s.jugada('a');
-            else if(y < Paint.MAIN_SPACER) s.jugada('w');
-            else if(y > limitY - Paint.MAIN_SPACER)
-                if(s.getSettings().isDiagonalMovementEnabled()) s.jugada('c');
-                else s.jugada('s');
-            else if(x > limitX - Paint.MAIN_SPACER) s.jugada('d');
-        } 
+        if(x <= Paint.MAIN_SPACER) { 
+            if(y <= Paint.MAIN_SPACER && diagonal) s.jugada('q');
+            else {
+                if(y <= limitY) s.jugada('a');
+                else if(diagonal && y <= limitY + Paint.MAIN_SPACER) s.jugada('z');
+            }
+        } else {
+            if(x >= limitX) {
+                if(y <= Paint.MAIN_SPACER && diagonal) s.jugada('e');
+                else {
+                    if(y <= limitY) s.jugada('d');
+                    else if(diagonal && y <= limitY + Paint.MAIN_SPACER) s.jugada('c');
+                }
+            } else {
+                if(y <= Paint.MAIN_SPACER) s.jugada('w');
+                else if(y <= limitY + Paint.MAIN_SPACER && limitY <= y) s.jugada('s');
+            }
+        }
     }
 }

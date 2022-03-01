@@ -44,6 +44,8 @@ public class Avanzadas extends javax.swing.JFrame {
         chkPaintArrows = new javax.swing.JCheckBox();
         chkEnhancedDiffMult = new javax.swing.JCheckBox();
         chkSaveResults = new javax.swing.JCheckBox();
+        chkDrawZones = new javax.swing.JCheckBox();
+        chkDrawGrid = new javax.swing.JCheckBox();
 
         setTitle("SumaTres - Opciones avanzadas");
         setResizable(false);
@@ -142,6 +144,20 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
+        chkDrawZones.setText("Pintar zonas");
+        chkDrawZones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkDrawZonesActionPerformed(evt);
+            }
+        });
+
+        chkDrawGrid.setText("Pintar grid");
+        chkDrawGrid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkDrawGridActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -160,12 +176,14 @@ public class Avanzadas extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkExitOnEnd)
                             .addComponent(chkPaintArrows)
-                            .addComponent(chkSaveResults))
-                        .addGap(81, 81, 81)
+                            .addComponent(chkDrawZones)
+                            .addComponent(chkDrawGrid))
+                        .addGap(101, 101, 101)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkBalancedStart)
                             .addComponent(chkEnhancedDiffMult)
-                            .addComponent(chkMoreNextValues)))
+                            .addComponent(chkMoreNextValues)
+                            .addComponent(chkSaveResults)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkHUD)
@@ -202,9 +220,13 @@ public class Avanzadas extends javax.swing.JFrame {
                     .addComponent(chkPaintArrows)
                     .addComponent(chkBalancedStart))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkEnhancedDiffMult)
-                    .addComponent(chkSaveResults))
+                    .addComponent(chkDrawZones))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkSaveResults)
+                    .addComponent(chkDrawGrid))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -260,6 +282,14 @@ public class Avanzadas extends javax.swing.JFrame {
     private void chkSaveResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSaveResultsActionPerformed
         ventanaSecundaria.getSettings().toggleSaveResultsToFile();
     }//GEN-LAST:event_chkSaveResultsActionPerformed
+
+    private void chkDrawZonesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawZonesActionPerformed
+        ventanaSecundaria.getSettings().toggleDrawZones();
+    }//GEN-LAST:event_chkDrawZonesActionPerformed
+
+    private void chkDrawGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawGridActionPerformed
+        ventanaSecundaria.getSettings().toggleDrawGrid();
+    }//GEN-LAST:event_chkDrawGridActionPerformed
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
@@ -274,6 +304,8 @@ public class Avanzadas extends javax.swing.JFrame {
         chkBalancedStart.setEnabled(op.isExperimental());
         chkPaintArrows.setEnabled(op.isExperimental());
         chkEnhancedDiffMult.setEnabled(op.isExperimental());
+        chkDrawGrid.setEnabled(op.isExperimental());
+        chkDrawZones.setEnabled(op.isExperimental());
         
         chkDiagonalMovement.setSelected(op.isDiagonalMovementEnabled());
         chkHUD.setSelected(op.isHudEnabled());
@@ -285,6 +317,8 @@ public class Avanzadas extends javax.swing.JFrame {
         chkPaintArrows.setSelected(op.isPaintArrowsEnabled());
         chkEnhancedDiffMult.setSelected(op.isEnhancedDiffMultEnabled());
         chkSaveResults.setSelected(op.isSaveResultsToFileEnabled());
+        chkDrawGrid.setSelected(op.isDrawGridEnabled());
+        chkDrawZones.setSelected(op.isDrawZonesEnabled());
     }
     
     
@@ -304,22 +338,16 @@ public class Avanzadas extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Avanzadas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Avanzadas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Avanzadas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Avanzadas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Avanzadas().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Avanzadas().setVisible(true);
         });
     }
 
@@ -331,6 +359,8 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkCheatsAvailable;
     private javax.swing.JCheckBox chkConsoleOutput;
     private javax.swing.JCheckBox chkDiagonalMovement;
+    private javax.swing.JCheckBox chkDrawGrid;
+    private javax.swing.JCheckBox chkDrawZones;
     private javax.swing.JCheckBox chkEnhancedDiffMult;
     private javax.swing.JCheckBox chkExitOnEnd;
     private javax.swing.JCheckBox chkHUD;

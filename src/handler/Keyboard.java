@@ -10,24 +10,24 @@ public class Keyboard {
 	public static final String VALID_EXPERIMENTAL_KEYS = "qweadzxc";
         private static boolean handlingEnabled = true;
         
+        private final SumaTres s;
+        private final KeyEvent e;
+        
         public static void disableHandling() {handlingEnabled = false;}
 
-	/**
-	 * Constrctor generado para cumplir con SonarLint:S1118.
-	 * 
-	 * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
-	 * 		Regla SonarLint:S1118 </a>
-	 */
-	private Keyboard() {
-            throw new IllegalStateException("Event handling class");
+	public Keyboard(SumaTres si, KeyEvent ei) {
+            s = si;
+            e = ei;
 	}
 	
-	public static void keyboardHandler(SumaTres s, KeyEvent e) {
-            if((s.getSettings().isDiagonalMovementEnabled() && (VALID_EXPERIMENTAL_KEYS.indexOf(e.getKeyChar())) >= 0) ||
-                (!s.getSettings().isDiagonalMovementEnabled() && (VALID_CLASSIC_KEYS.indexOf(e.getKeyChar()) >= 0))) 
-                    if(handlingEnabled) s.jugada(e.getKeyChar());
-
+	public void keyboardHandler() {
+            if(validKeystroke() && handlingEnabled) s.jugada(e.getKeyChar());
 	}
+        
+        private boolean validKeystroke() {
+            return (s.getSettings().isDiagonalMovementEnabled() && (VALID_EXPERIMENTAL_KEYS.indexOf(e.getKeyChar())) >= 0) ||
+                    (!s.getSettings().isDiagonalMovementEnabled() && (VALID_CLASSIC_KEYS.indexOf(e.getKeyChar()) >= 0));
+        }
 }
 
 
