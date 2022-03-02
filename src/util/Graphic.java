@@ -39,13 +39,14 @@ public final class Graphic {
     }
 
     /**
-     * Método que calcula el ancho total final de la pantalla. Se utiliza en el main para definir la
+     * Método que calcula el ancho o alto total final de la pantalla. Se utiliza en el main para definir la
      * aplicación y también en diversos métodos dentro de esta clase para calcular posiciones respecto
-     * a los bordes de la ventana. Depende de la matriz tablero inicializada.
+     * a los bordes de la ventana.
      * 
-     * @return Valor entero con el ancho de la ventana.
+     * @param x Cantidad de columnas o filas
+     * @return Valor entero con el ancho o alto de la ventana.
      */
-    public static int defineX(int x) {
+    public static int define(int x) {
             return x * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER;
     }
 
@@ -56,17 +57,7 @@ public final class Graphic {
      * @return Valor entero con el alto de la ventana.
      */
     public static int defineX(SumaTres s) {
-            return s.getTablero().getRows() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER;
-    }
-
-    /**
-    * Método que calcula el alto total final de la pantalla. 
-    *
-    * @param x Valor entero con la cantidad de filas.
-    * @return Valor entero con el alto de la ventana.
-    */
-    public static int defineY(int x) {
-            return x * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 3 * Paint.MAIN_SPACER;
+            return define(s.getSettings().getY());
     }
 
     /**
@@ -76,7 +67,17 @@ public final class Graphic {
     * @return Valor entero con el alto de la ventana.
     */
     public static int defineY(SumaTres s) {
-            return s.getTablero().getColumns() * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 3 * Paint.MAIN_SPACER;
+            return define(s.getSettings().getX()) + 2 * Paint.MAIN_SPACER + Paint.BOARD_SPACER;
+    }
+    
+    /**
+     * Devuelve el número entero del último pixel del tablero. No distingue
+     * entre filas o columnas (es intercambiable).
+     * @param d Número de filas o columnas.
+     * @return Número entero con la posición.
+     */    
+    public static int lateralSize(int d) {
+        return d * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + Paint.MAIN_SPACER;
     }
 
     /**

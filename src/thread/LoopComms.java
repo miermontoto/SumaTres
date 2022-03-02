@@ -40,7 +40,7 @@ public class LoopComms extends LoopTask {
 
     @Override
     public void Progress(int val) {
-
+        return; // TODO
     }
     
 }

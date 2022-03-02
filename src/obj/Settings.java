@@ -18,10 +18,12 @@ public class Settings {
     private boolean moreNextValuesEnabled;
     private boolean balancedStartEnabled;
     private boolean exitOnEndEnabled;
-    private boolean paintArrowsEnabled;
+    private boolean drawArrowsEnabled;
     private boolean darkModeEnabled;
     private boolean enhancedDiffMultEnabled;
     private boolean saveResultsToFileEnabled;
+    private boolean drawZonesEnabled;
+    private boolean drawGridEnabled;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
@@ -34,10 +36,12 @@ public class Settings {
         moreNextValuesEnabled = m;
         balancedStartEnabled = m;
         exitOnEndEnabled = true;
-        paintArrowsEnabled = true;
+        drawArrowsEnabled = true;
         darkModeEnabled = false;
         enhancedDiffMultEnabled = m;
         saveResultsToFileEnabled = m;
+        drawGridEnabled = false;
+        drawZonesEnabled = false;
     }
     
     public Settings(String s) throws IOException {
@@ -53,15 +57,17 @@ public class Settings {
         moreNextValuesEnabled = Boolean.parseBoolean(data[7]);
         balancedStartEnabled = Boolean.parseBoolean(data[8]);
         exitOnEndEnabled = Boolean.parseBoolean(data[9]);
-        paintArrowsEnabled = Boolean.parseBoolean(data[10]);
+        drawArrowsEnabled = Boolean.parseBoolean(data[10]);
         darkModeEnabled = Boolean.parseBoolean(data[11]);
         enhancedDiffMultEnabled = Boolean.parseBoolean(data[12]);
         saveResultsToFileEnabled = Boolean.parseBoolean(data[13]);
+        drawZonesEnabled = Boolean.parseBoolean(data[14]);
+        drawGridEnabled = Boolean.parseBoolean(data[14]);
         
-        if(!experimentalMode)
-            if(diagonalMovementEnabled || possibleCheats || !hudEnabled ||
-                    moreNextValuesEnabled || balancedStartEnabled || !paintArrowsEnabled ||
-                        enhancedDiffMultEnabled || saveResultsToFileEnabled) 
+        if(!experimentalMode && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||
+                    moreNextValuesEnabled || balancedStartEnabled || !drawArrowsEnabled ||
+                        enhancedDiffMultEnabled || saveResultsToFileEnabled || drawZonesEnabled ||
+                            drawGridEnabled)) 
                 throw new IOException("Leídos valores inválidos desde archivo de opciones.");
     }
 
@@ -123,7 +129,7 @@ public class Settings {
     }
     
     public boolean isPaintArrowsEnabled() {
-        return paintArrowsEnabled;
+        return drawArrowsEnabled;
     }
     
     public boolean isDarkModeEnabled() {
@@ -138,6 +144,14 @@ public class Settings {
         return saveResultsToFileEnabled;
     }
     
+    public boolean isDrawZonesEnabled() {
+        return drawZonesEnabled;
+    }
+    
+    public boolean isDrawGridEnabled() {
+        return drawGridEnabled;
+    }
+    
     public void toggleHud() {hudEnabled = !hudEnabled;}
     public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
     public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
@@ -145,18 +159,20 @@ public class Settings {
     public void toggleMoreNextValues() {moreNextValuesEnabled = !moreNextValuesEnabled;}
     public void toggleBalancedStart() {balancedStartEnabled = !balancedStartEnabled;}
     public void toggleExitOnEnd() {exitOnEndEnabled = !exitOnEndEnabled;}
-    public void togglePaintArrows() {paintArrowsEnabled = !paintArrowsEnabled;}
+    public void togglePaintArrows() {drawArrowsEnabled = !drawArrowsEnabled;}
     public void toggleDarkMode() {darkModeEnabled = !darkModeEnabled;}
     public void toggleEnhancedDiffMult() {enhancedDiffMultEnabled = !enhancedDiffMultEnabled;}
     public void toggleSaveResultsToFile() {saveResultsToFileEnabled = !saveResultsToFileEnabled;}
+    public void toggleDrawGrid() {drawGridEnabled = !drawGridEnabled;}
+    public void toggleDrawZones() {drawZonesEnabled = !drawZonesEnabled;}
     
     @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s", 
+        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
                 sizex, sizey, experimentalMode, consoleEnabled, 
                 diagonalMovementEnabled, possibleCheats, hudEnabled, 
                 moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled,
-                paintArrowsEnabled, darkModeEnabled, enhancedDiffMultEnabled,
-                saveResultsToFileEnabled);
+                drawArrowsEnabled, darkModeEnabled, enhancedDiffMultEnabled,
+                saveResultsToFileEnabled, drawZonesEnabled, drawGridEnabled);
     }
 }

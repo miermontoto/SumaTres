@@ -13,13 +13,13 @@ import util.Dialog; // Se utiliza para preguntarle al usuario otra información.
  */
 public class Launcher {
 	
-	private static final int min = 3; // Dimensión mínima del tablero.
-	private static final int max = 33; // Dimensión máxima del tablero.
+	private static final int MIN = 3; // Dimensión mínima del tablero.
+	private static final int MAX = 33; // Dimensión máxima del tablero.
 
 	public static void main(String[] args) {
 
-		int sizex = Input.input("Introduzca la cantidad de filas:", min, max, true);
-		int sizey = Input.input("Introduzca la cantidad de columnas:", min, max, true);
+		int sizex = Input.input("Introduzca la cantidad de filas:", MIN, MAX, true);
+		int sizey = Input.input("Introduzca la cantidad de columnas:", MIN, MAX, true);
 
 		/**
 		 * Utilizando {@link #Graphic.validSize()}, se comprueba que el tablero
@@ -31,8 +31,8 @@ public class Launcher {
 		 */
 		while (!Graphic.validSize(sizex, sizey)) {
 			Dialog.showError("Dimensiones inválidas de tablero.");
-			sizex = Input.input("Introduzca la cantidad de filas:", min, max, true);
-			sizey = Input.input("Introduzca la cantidad de columnas:", min, max, true);
+			sizex = Input.input("Introduzca la cantidad de filas:", MIN, MAX, true);
+			sizey = Input.input("Introduzca la cantidad de columnas:", MIN, MAX, true);
 		}
 
 		var modos = new String[] { "Clásico", "Experimental", "Cancelar" };

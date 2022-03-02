@@ -97,41 +97,45 @@ public class Pieza {
     public void setValor(int valor) {
         if (validValue(valor)) {
             this.valor = valor;
-            if (!COLORES.containsKey(valor)) {
-                Color c1 = Color.white; // Es necesario inicializar el color.
-                boolean check = true;
-                int c = 0;
-                while(check && c < 10) { // solo se busca 10 veces un color nuevo.
-                    check = false;
-                    c1 = new Color(Random.newRandom(256), Random.newRandom(256), Random.newRandom(256));
-                    for(Color c2 : COLORES.values()) {
-                        double aR, aG, aB, rR, aC;
-                        rR = (c1.getRed() + c2.getRed()) / 2.0;
-                        aR = Math.pow(c1.getRed() - c2.getRed(), 2);
-                        aG = Math.pow(c1.getGreen() - c2.getGreen(), 2);
-                        aB = Math.pow(c1.getBlue() - c2.getBlue(), 2);
+            if (!COLORES.containsKey(valor)) generateColorForValue(valor);
+            this.color = COLORES.get(valor);
+            this.brillante = BRILLOS.get(valor);
+        }
+    }
+    
+    public static void generateColorForValue(int value) {
+        Color c1 = Color.white; // Es necesario inicializar el color.
+        boolean check = true;
+        int c = 0;
+        while(check && c < 25) { // solo se busca 10 veces un color nuevo.
+            check = false;
+            c1 = new Color(Random.newRandom(256), Random.newRandom(256), Random.newRandom(256));
+            for(Color c2 : COLORES.values()) {
+                double aR, aG, aB, rR, aC;
+                rR = (c1.getRed() + c2.getRed()) / 2.0;
+                aR = Math.pow(c1.getRed() - c2.getRed(), 2);
+                aG = Math.pow(c1.getGreen() - c2.getGreen(), 2);
+                aB = Math.pow(c1.getBlue() - c2.getBlue(), 2);
 
-                        // fórmula "redmean"
-                        aC = Math.sqrt((2 + rR / 256) * aR + 4 * aG + (2 + (255 - rR) / 256) * aB);
-                        
-                        if(aC < 200) check = true;
-                        //System.out.printf("%f%n", aC); // Imprime la distancia entre el color a comparar.
-                        c++;
-                    }
-                }
-                COLORES.put(valor, c1);
-                this.color = c1;
+                // fórmula "redmean"
+                aC = Math.sqrt((2 + rR / 256) * aR + 4 * aG + (2 + (255 - rR) / 256) * aB);
 
-                // 'Y' es la luminosidad del color de la ficha.
-                double Y = (0.2126*c1.getRed() + 0.7152*c1.getGreen() + 0.0722*c1.getBlue());
-                BRILLOS.put(valor, Y>=211);
-                this.brillante = Y >= 211;
-
-            } else {
-                this.color = COLORES.get(valor);
-                this.brillante = BRILLOS.get(valor);
+                if(aC < 200) check = true;
+                //System.out.println(aC); // Imprime la distancia entre el color a comparar.
+                c++;
             }
         }
+        COLORES.put(value, c1);
+        updateBrightnessForValue(value);
+    }
+    
+    public static void updateBrightnessForValue(int value) {
+        Color c1 = COLORES.get(value);
+        
+        // 'Y' es la luminosidad del color de la ficha.
+        double Y = (0.2126*c1.getRed() + 0.7152*c1.getGreen() + 0.0722*c1.getBlue());
+        BRILLOS.put(value, Y>=211);
+        //System.out.println(Y); // Imprimir brillo de la pieza.
     }
 
     /**
@@ -146,6 +150,14 @@ public class Pieza {
     public boolean isBrillante() {
         return this.brillante;
     }
+    
+    public void setColor(Color val) {
+        color = val;
+    }
+    
+    public void setBrillo(boolean val) {
+        brillante = val;
+    }
 
     /**
      * Método que determina la validez de un valor dado. <p>
@@ -157,7 +169,7 @@ public class Pieza {
      */
     public static boolean validValue(int x) {
         boolean check = false;
-        if (x<=3 && x>=0)  check = true;
+        if (x<=3 && x>=-2) check = true;
         else {
             int i = 0;
             while (x > 6 * Math.pow(2, i)) i++;

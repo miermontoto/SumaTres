@@ -13,12 +13,12 @@ import util.Random;
  *
  * @author JuanMier
  */
-abstract public class LoopTask implements SincroForeBack {
+abstract class LoopTask implements SincroForeBack {
     protected LauncherRF ventana;
     protected SumaTres partida;
     protected String jugadas;
     
-    public LoopTask(LauncherRF l) {
+    protected LoopTask(LauncherRF l) {
         this.ventana = l;
         this.partida = l.getPartida();
         this.jugadas = partida.getSettings().isDiagonalMovementEnabled() ? 
@@ -34,9 +34,9 @@ abstract public class LoopTask implements SincroForeBack {
             partida.jugada(jugadas.toCharArray()[Random.newRandom(jugadas.length())]);
             Update();
             try {
-                Thread.sleep(50);
-            } catch(InterruptedException ex) {}
-            //Progress(barProgress());
+                Thread.sleep(0);
+            } catch(InterruptedException ex) {break;}
+            Progress(barProgress());
             if(Stop()) {Finish(); return;}
             
         }

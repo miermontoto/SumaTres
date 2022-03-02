@@ -43,13 +43,15 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="chkExitOnEnd" min="-2" max="-2" attributes="0"/>
                           <Component id="chkPaintArrows" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkSaveResults" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkDrawZones" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkDrawGrid" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="chkBalancedStart" min="-2" max="-2" attributes="0"/>
                           <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
                           <Component id="chkMoreNextValues" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkSaveResults" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -99,9 +101,14 @@
                   <Component id="chkBalancedStart" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkSaveResults" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkEnhancedDiffMult" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkDrawZones" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkSaveResults" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkDrawGrid" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="14" max="32767" attributes="0"/>
           </Group>
@@ -219,6 +226,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkSaveResultsActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkDrawZones">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Pintar zonas"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDrawZonesActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkDrawGrid">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Pintar grid"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDrawGridActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

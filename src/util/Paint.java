@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 
 import game.SumaTres;
 import obj.Pieza;
+import obj.Settings;
 
 
 public final class Paint {
@@ -16,7 +17,6 @@ public final class Paint {
     public static final int SPOT_SPACER    = (int) (3  * Graphic.SCALE); // Espacio entre piezas.
     public static final int BOARD_SPACER   = (int) (6  * Graphic.SCALE); // Espacio entre el borde del tablero y las piezas.
     public static final int ROUND_DIAMETER = (int) (10 * Graphic.SCALE); // Radio del diámetro del arco.
-    public static final int BUTTON_SIZE    = (int) (20 * Graphic.SCALE); // Tamaño de los botones.
     public static final int SQUARE_SIZE    = (int) (40 * Graphic.SCALE); // Tamaño de las piezas.
     public static final int MAIN_SPACER    = (int) (50 * Graphic.SCALE); // Espacio entre el tablero y el borde de la pantalla.
 
@@ -26,24 +26,13 @@ public final class Paint {
     public static final Color DARK_BACKGROUND = new Color(60, 63, 65);
     public static final Color BOARD_COLOR = new Color(242, 242, 242);
 
-    private static Graphics2D g;
-    private static SumaTres s;
-    /* Se utilizan estáticos para evitar la continua llamada de los objetos entre métodos.
-     * Siempre se utiliza el mismo motor gráfico y la misma partida a representar, por lo
-     * que no debería haber ningún problema. Por supuesto, este método de representación
-     * gráfica está creado muy específicamente para este juego y no puede ser utilizado ni
-     * ajustado a otro juego sin mucho esfuerzo y sufrimiento.
-     */
+    private final Graphics2D g;
+    private final SumaTres s;
 
 
-    /**
-     * Constrctor generado para cumplir con SonarLint:S1118.
-     * 
-     * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
-     * 		Regla SonarLint:S1118 </a>
-     */
-    private Paint() {
-            throw new IllegalStateException("Utility class");
+    public Paint(SumaTres si, Graphics gi) {
+        g = (Graphics2D) gi;
+        s = si;
     }
 
     /**
@@ -55,7 +44,7 @@ public final class Paint {
      * @param g2d  Entorno gráfico
      * @param size Tamaño de fuente a establecer
      */
-    private static void setFontSize(int size) {
+    private void setFontSize(int size) {
         g.setFont(new Font("Helvetica", Font.PLAIN, size));
     }
 
@@ -69,14 +58,8 @@ public final class Paint {
      * <li>Para pintar las fichas, se utiliza {@link #pintarFichas(Graphics)}. </li>
      * <li>Para pintar la información, se utiliza {@link #pintarInfo(Graphics)}. </li>
      * </ul>
-     * 
-     * @param si: Objeto de la partida que se quiere representar.
-     * @param gi: Objeto tipo 'Graphics' con el que se quiere representar.
      */
-    public static void paint(Graphics gi, SumaTres si) {
-
-        g = (Graphics2D) gi;
-        s = si;
+    public void paint() {
 
         var rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -90,14 +73,15 @@ public final class Paint {
          *  Algunas de estas mejoras no suponen una clara diferencia en la calidad visual del juego.
          */
 
-
         g.setRenderingHints(rh);
         g.setStroke(new BasicStroke(STROKE_SIZE));
 
-        if(s.getSettings().isPaintArrowsEnabled()) pintarFlechas();
         pintarTablero();
         pintarFichas();
+        if(s.getSettings().isPaintArrowsEnabled()) pintarFlechas();
         if(s.getSettings().isHudEnabled()) pintarInfo();
+        if(s.getSettings().isDrawZonesEnabled()) pintarZonas();
+        if(s.getSettings().isDrawGridEnabled()) pintarGrid();
     }
 
     /**
@@ -112,18 +96,30 @@ public final class Paint {
      * sobre la partida para dibujar correctamente, por lo que se le debe pasar el objeto de tipo
      * SumaTres correspondiente.
      */
-    private static void pintarFlechas() {
-        g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : Color.blue);
+    private void pintarFlechas() {
+        Settings op = s.getSettings();
+        
+        int topRow = MAIN_SPACER * 7 / 12;
+        int middleRow = (Graphic.lateralSize(op.getX()) - MAIN_SPACER) / 2 + MAIN_SPACER;
+        int bottomRow = Graphic.lateralSize(op.getX()) + topRow;
+        
+        int leftColumn = MAIN_SPACER * 9 / 24;
+        int middleColumn = Graphic.defineX(s) / 2;
+        int rightColumn = Graphic.defineX(s) - MAIN_SPACER * 2 / 3;
+        
+        g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : Color.blue);
         setFontSize(20);
-        g.drawString("\u2191", Graphic.defineX(s) / 2, MAIN_SPACER * 14 / 24);
-        g.drawString("\u2190 ", MAIN_SPACER * 9 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
-        g.drawString("\u2192", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, (Graphic.defineY(s) - MAIN_SPACER) / 2);
-        g.drawString("\u2193", Graphic.defineX(s) / 2, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
-        if(s.getSettings().isDiagonalMovementEnabled()) {
-            g.drawString("\u2B76", MAIN_SPACER * 9 / 24, MAIN_SPACER * 14 / 24);
-            g.drawString("\u2B77", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, MAIN_SPACER * 14 / 24);
-            g.drawString("\u2B79", MAIN_SPACER * 9 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
-            g.drawString("\u2B78", Graphic.defineX(s) - MAIN_SPACER * 16 / 24, Graphic.defineY(s) - MAIN_SPACER * 35 / 24);
+        
+        g.drawString("\u2190", leftColumn, middleRow);   // flecha izquierda
+        g.drawString("\u2191", middleColumn, topRow);    // flecha arriba
+        g.drawString("\u2192", rightColumn, middleRow);  // flecha derecha
+        g.drawString("\u2193", middleColumn, bottomRow); // flecha abajo
+        
+        if(op.isDiagonalMovementEnabled()) {
+            g.drawString("\u2B76", leftColumn, topRow);     // arriba izquierda
+            g.drawString("\u2B77", rightColumn, topRow);    // arriba derecha
+            g.drawString("\u2B78", rightColumn, bottomRow); // abajo derecha
+            g.drawString("\u2B79", leftColumn, bottomRow);  // abajo izquierda
         }
     }
 
@@ -136,7 +132,7 @@ public final class Paint {
      * @param g Entorno gráfico
      * @param s Objeto SumaTres que contiene la partida en sí
      */
-    private static void pintarTablero() {
+    private void pintarTablero() {
         g.setColor(BOARD_COLOR);
         g.fillRoundRect(MAIN_SPACER, MAIN_SPACER,
             s.getTablero().getRows() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
@@ -149,14 +145,14 @@ public final class Paint {
      * siguiente pieza en pantalla. Requiere un objeto de tipo SumaTres para calcular
      * posiciones correctamente y obtener información sobre la partida.
      */
-    private static void pintarInfo() {
+    private void pintarInfo() {
         g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : new Color(48, 50, 52));
         setFontSize(15);
 
         // Siguiente:
-        g.drawString("Siguiente:", MAIN_SPACER * 2 - 75, Graphic.defineY(s) - MAIN_SPACER / 2);
+        g.drawString("Siguiente:", MAIN_SPACER * 2 - 75, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
         // Turnos:
-        g.drawString(String.format("[%d]", s.getTurnos()), Graphic.defineX(s) / 2, Graphic.defineY(s) - MAIN_SPACER / 2);
+        g.drawString(String.format("[%d]", s.getTurnos()), Graphic.defineX(s) / 2, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
         // Puntos:
         /*
          *  Primero se calcula si es necesario decrecer el tamaño de la fuente dependiendo
@@ -165,11 +161,11 @@ public final class Paint {
          */
         setFontSize(s.getPuntos() >= 10000000 ? 12 : 15);
         g.drawString(String.format("Puntos: %d", s.getPuntos()), Graphic.defineX(s) - 2 * MAIN_SPACER,
-            Graphic.defineY(s) - MAIN_SPACER / 2);
+            Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
 
         // Pieza siguiente:
         g.setColor(Pieza.getColores().get(s.getSiguiente()));
-        g.fillRoundRect(MAIN_SPACER * 2, Graphic.defineY(s) - MAIN_SPACER,
+        g.fillRoundRect(MAIN_SPACER * 2, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER,
             SQUARE_SIZE, SQUARE_SIZE,
             ROUND_DIAMETER, ROUND_DIAMETER);
         g.setColor(BOARD_COLOR);
@@ -178,7 +174,7 @@ public final class Paint {
         int displacer = 2*(String.valueOf(s.getSiguiente()).length() - 1);
         g.drawString(String.valueOf(s.getSiguiente()), 
                 MAIN_SPACER * (112 - displacer) / 48,
-                Graphic.defineY(s) - MAIN_SPACER / 2);
+                Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
         
         // Final de partida:
         if(s.isFinished()) {
@@ -196,6 +192,23 @@ public final class Paint {
             g.setColor(Color.red);
             g.drawString(s, wx, wy);
         }
+    }
+    
+    private void pintarZonas() {
+        g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : Color.DARK_GRAY);
+        g.drawLine(MAIN_SPACER, 0, MAIN_SPACER, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER);
+        g.drawLine(Graphic.lateralSize(s.getSettings().getY()), 0, Graphic.lateralSize(s.getSettings().getY()), Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER);
+        g.drawLine(0, MAIN_SPACER, Graphic.defineX(s), MAIN_SPACER);
+        g.drawLine(0, Graphic.lateralSize(s.getSettings().getX()), Graphic.defineX(s), Graphic.lateralSize(s.getSettings().getX()));
+        g.drawLine(0, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER, Graphic.defineX(s), Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER);
+    }
+    
+    private void pintarGrid() {
+        g.setStroke(new BasicStroke(1));
+        g.setColor(new Color(0f, 0f, 0f, .25f));
+        for(int i = 0; i <= s.getSettings().getX(); i++) g.drawLine(MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, Graphic.lateralSize(s.getSettings().getY()), MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2);
+        for(int i = 0; i <= s.getSettings().getY(); i++) g.drawLine(MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, Graphic.lateralSize(s.getSettings().getX()));
+        g.setStroke(new BasicStroke(STROKE_SIZE));
     }
 
     /**
@@ -218,13 +231,13 @@ public final class Paint {
      * @param g Entorno gráfico
      * @param s Objeto SumaTres que contiene la partida en sí
      */
-    private static void pintarFichas() {
+    private void pintarFichas() {
         for (int i = 0; i < s.getTablero().getColumns(); i++)
             for (int j = 0; j < s.getTablero().getRows(); j++) { // Se recorre el tablero.
                 Pieza next = s.getTablero().getPieza(i, j);
-                if (!next.isEmpty()) { // Al detectarse una pieza, se obtiene su color referente.
-                    g.setColor(next.getColor());
+                if (!next.isEmpty()) { // Al detectarse una pieza, se obtiene su color referente.        
                     // Se pinta la pieza en sí.
+                    g.setColor(next.getColor());
                     g.fillRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,
                         MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * i, SQUARE_SIZE, SQUARE_SIZE,
                         ROUND_DIAMETER, ROUND_DIAMETER);
@@ -267,11 +280,11 @@ public final class Paint {
         }
 
         if(s.getSelected()[0] != -1) {
-            g.setColor(s.getSelected()[2] == 0 ? Color.GREEN : Color.RED);
+            g.setColor(Color.BLACK);
             g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[1],
                 MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[0], SQUARE_SIZE, SQUARE_SIZE,
                 ROUND_DIAMETER, ROUND_DIAMETER);
-            g.drawString(s.getSelected()[2] == 0 ? "?" : "X",
+            g.drawString("?" ,
                         MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[1] + SQUARE_SIZE * 13 / 32,
                         SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[0]);
         }

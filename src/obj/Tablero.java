@@ -1,6 +1,6 @@
 package obj;
 
-import gui.GetMatrixCoordsDialog;
+import java.util.Arrays;
 import util.Dialog;
 
 /**
@@ -111,8 +111,6 @@ public class Tablero {
         return full;
     }
 
-
-
     /**
      * Método <code>toString()</code> que devuelve una cadena con el valor de todas las piezas del tablero.
      */
@@ -141,6 +139,13 @@ public class Tablero {
      */
     @Override
     public boolean equals(Object x) {
-        return x.toString() == this.toString();
+        return this.toString() == x.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + Arrays.deepHashCode(this.tablero);
+        return hash;
     }
 }

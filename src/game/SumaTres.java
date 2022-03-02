@@ -1,6 +1,6 @@
 package game;
 
-import gui.MatrixSliderDialog;
+import gui.ModifyBoardDialog;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
@@ -202,7 +202,7 @@ public final class SumaTres extends JPanel {
         obtainedFromRandom = new TreeMap<>();
         tableros = new LinkedList<>();
         warning = new int[] {-1, 0};
-        selected = new int[] {-1, 0, 0};
+        selected = new int[] {-1, 0};
         puntos = 0;
         highestValue = 3;
         turno = 1;
@@ -236,9 +236,6 @@ public final class SumaTres extends JPanel {
 
 
         newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
-
-        addKeyListener(new KeyHandler()); // El programa comienza a escuchar por pulsaciones de tecla.
-        addMouseListener(new MouseHandler()); // El programa comienza a escuchar por clicks del usuario.
     }
 
     /**
@@ -288,8 +285,8 @@ public final class SumaTres extends JPanel {
     
     public int[] getSelected() {return this.selected;}
     
-    public void setSelected(int[] x) {if(x.length == 3 && x[0]>=0 && x[1]>=0 &&
-            x[0] < op.getX() && x[1] < op.getY() && (x[2] == 0 || x[2] == 1)) this.selected = x;}
+    public void setSelected(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
+            x[0] < op.getX() && x[1] < op.getY()) this.selected = x;}
 
     /**
      * Devuelve la ficha de mayor valor actual.
@@ -370,12 +367,6 @@ public final class SumaTres extends JPanel {
      * @return Entero con la cantidad de turnos.
      */
     public int getTurnos() {return this.turno;}
-
-    /**
-     * Devuelve el estado del modo. False para modo clásico.
-     * @return Valor booleano con el estado del modo experimental.
-     */
-    //public boolean getMode() {return op.isExperimental();}
 
     /**
      * Activa o desactiva el toString() por consola.
@@ -803,51 +794,7 @@ public final class SumaTres extends JPanel {
         finished = true;
         repaint();
     }
-    
-        /**
-     * Método que coloca una pieza en el tablero de manera artificial, obteniendo las coordenadas y el
-     * valor de la nueva pieza y comprobando que todo es correcto. <p>
-     * Para obtener las coordenadas, se utiliza el método {@link #inputCoord(String, int)}. <p>
-     * Para obtener el nuevo valor, se utiliza una versión ligeramente modificada de este último método,
-     * comprobando el valor con {@link #validValue(int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que informa de si se colocó la pieza o no.
-     */
-    public boolean colocarPieza() {
-        boolean completed = false;
-        MatrixSliderDialog gcd = new MatrixSliderDialog("Introducza las coordenadas de la pieza que desea colocar.", this, true);
-        
-        if (!gcd.showDialog()) { // Si no se pulsa el botón "OK", salir normalmente.
-            deactivateSelected(); // Puede haberse salido del diálogo sin pulsar cancelar.
-            return false;
-        } 
-        
-        int nV = Dialog.valueDialog("Introduzca el valor de la nueva pieza:");
-        if (nV != -1) {
-            setTab(gcd.getCoordsX(), gcd.getCoordsY(), nV);
-            completed = true;
-            update();
-        }
-        return completed;
-    }
-    
-        /**
-     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
-     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que determina si se ha eliminado o no una pieza.
-     */
-    public boolean quitarPieza() {
-        boolean check = false;
-        MatrixSliderDialog gcd1 = new MatrixSliderDialog("Introduzca las coordenadas de la pieza que desea eliminar", this, false);
-        if (gcd1.showDialog()) {
-            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
-            update();
-            check = true;
-        }
-        deactivateSelected();
-        return check;
-    }
+
     
     public void modificarSiguiente() {
         int nV = Dialog.valueDialog("Introduzca el nuevo valor de la pieza siguiente:");
@@ -855,6 +802,19 @@ public final class SumaTres extends JPanel {
             setSiguiente(nV);
             update();
         }
+    }
+    
+    public boolean modificarTablero() {
+        boolean check = false;
+        ModifyBoardDialog dialog = new ModifyBoardDialog(this);
+        if (dialog.showDialog()) {
+            if(dialog.getMode() == 0 || dialog.getMode() == 1) setTab(dialog.getCoordsX(), dialog.getCoordsY(), dialog.getValue());
+            else setTab(dialog.getCoordsX(), dialog.getCoordsY(), 0);
+            update();
+            check = true;
+        }
+        deactivateSelected();
+        return check;
     }
 
     // ----------------------------------------------------------------------------------------------------
@@ -866,54 +826,8 @@ public final class SumaTres extends JPanel {
      */
     @Override
     public void paintComponent(Graphics g) {
-        requestFocusInWindow();
+        requestFocusInWindow(); // <- IMPORTANTE! necesita el focus para poder redirigir el teclado
         super.paintComponent(g);
-        Paint.paint(g, this);
+        new Paint(this, g).paint();
     }
-
-    // -------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Recive los clicks del ratón en la aplicación y redirige el evento a 
-     * {@link game.SumaTres.rerouteMouse(event)}. <p>
-     * Para mayor libertad a la hora de programar, se pasa el evento independientemente
-     * de qué botón de ratón se haya pulsado.
-     */
-    private class MouseHandler extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(MouseEvent event) {
-            rerouteMouse(event);
-        }
-    }
-
-    /**
-     * Redirige todos los eventos del ratón a
-     * {@link handler.Mouse.mouseHandler(SumaTres, MouseEvent)}.
-     * @param e Evento de ratón.
-     */
-    public void rerouteMouse(MouseEvent e) {Mouse.mouseHandler(this, e);}
-
-
-
-    /**
-     * Recive pulsaciones de teclado y los introduce en
-     * {@link #game.SumaTres.rerouteKeyboard(event)}, con información sobre la tecla pulsada
-     * y si el control estaba pulsado o no durante la pulsación.
-     */
-    private class KeyHandler extends KeyAdapter {
-
-        @Override
-        public void keyPressed(KeyEvent event) {
-            rerouteKeyboard(event);
-        }
-    }	
-
-    /**
-     * Toda la lógica del teclado debería ocurrir en la propia clase del teclado. <p>
-     * Necesita estar fuera de la clase KeyHandler para poder pasar la partida 'SumaTres'
-     * como this. Esa es la única función de este método.
-     * @param e
-     */
-    public void rerouteKeyboard(KeyEvent e) {Keyboard.keyboardHandler(this, e);}
 }
