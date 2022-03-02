@@ -1,8 +1,6 @@
 package gui;
 
 import game.SumaTres;
-import javax.swing.ComboBoxModel;
-import javax.swing.SwingUtilities;
 import obj.Pieza;
 
 /**
