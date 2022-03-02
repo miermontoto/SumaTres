@@ -205,20 +205,11 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiTrucosA&#xf1;adir">
               <Properties>
-                <Property name="text" type="java.lang.String" value="A&#xf1;adir pieza"/>
+                <Property name="text" type="java.lang.String" value="Modificar tablero"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosA&#xf1;adirActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiTrucosEliminar">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Eliminar pieza"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosEliminarActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiTrucosModSiguiente">
@@ -330,7 +321,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jTabbedPane1" alignment="0" pref="297" max="32767" attributes="0"/>
+          <Component id="jTabbedPane1" alignment="0" pref="298" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>

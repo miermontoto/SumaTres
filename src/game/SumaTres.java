@@ -1,6 +1,6 @@
 package game;
 
-import gui.MatrixSliderDialog;
+import gui.ModifyBoardDialog;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
@@ -202,7 +202,7 @@ public final class SumaTres extends JPanel {
         obtainedFromRandom = new TreeMap<>();
         tableros = new LinkedList<>();
         warning = new int[] {-1, 0};
-        selected = new int[] {-1, 0, 0};
+        selected = new int[] {-1, 0};
         puntos = 0;
         highestValue = 3;
         turno = 1;
@@ -285,8 +285,8 @@ public final class SumaTres extends JPanel {
     
     public int[] getSelected() {return this.selected;}
     
-    public void setSelected(int[] x) {if(x.length == 3 && x[0]>=0 && x[1]>=0 &&
-            x[0] < op.getX() && x[1] < op.getY() && (x[2] == 0 || x[2] == 1)) this.selected = x;}
+    public void setSelected(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
+            x[0] < op.getX() && x[1] < op.getY()) this.selected = x;}
 
     /**
      * Devuelve la ficha de mayor valor actual.
@@ -794,51 +794,7 @@ public final class SumaTres extends JPanel {
         finished = true;
         repaint();
     }
-    
-        /**
-     * Método que coloca una pieza en el tablero de manera artificial, obteniendo las coordenadas y el
-     * valor de la nueva pieza y comprobando que todo es correcto. <p>
-     * Para obtener las coordenadas, se utiliza el método {@link #inputCoord(String, int)}. <p>
-     * Para obtener el nuevo valor, se utiliza una versión ligeramente modificada de este último método,
-     * comprobando el valor con {@link #validValue(int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que informa de si se colocó la pieza o no.
-     */
-    public boolean colocarPieza() {
-        boolean completed = false;
-        MatrixSliderDialog gcd = new MatrixSliderDialog("Introducza las coordenadas de la pieza que desea colocar.", this, true);
-        
-        if (!gcd.showDialog()) { // Si no se pulsa el botón "OK", salir normalmente.
-            deactivateSelected(); // Puede haberse salido del diálogo sin pulsar cancelar.
-            return false;
-        } 
-        
-        int nV = Dialog.valueDialog("Introduzca el valor de la nueva pieza:");
-        if (nV != -1) {
-            setTab(gcd.getCoordsX(), gcd.getCoordsY(), nV);
-            completed = true;
-            update();
-        }
-        return completed;
-    }
-    
-        /**
-     * Método que quita una pieza de manera artificial, obteniendo las coordenadas y comprobando que
-     * son correctas mediante {@link #util.Input.input(String, int, int)}. <p>
-     * El método debería ser accesible solamente cuando los trucos estén activados.
-     * @return Valor booleano que determina si se ha eliminado o no una pieza.
-     */
-    public boolean quitarPieza() {
-        boolean check = false;
-        MatrixSliderDialog gcd1 = new MatrixSliderDialog("Introduzca las coordenadas de la pieza que desea eliminar", this, false);
-        if (gcd1.showDialog()) {
-            setTab(gcd1.getCoordsX(), gcd1.getCoordsY(), 0);
-            update();
-            check = true;
-        }
-        deactivateSelected();
-        return check;
-    }
+
     
     public void modificarSiguiente() {
         int nV = Dialog.valueDialog("Introduzca el nuevo valor de la pieza siguiente:");
@@ -846,6 +802,19 @@ public final class SumaTres extends JPanel {
             setSiguiente(nV);
             update();
         }
+    }
+    
+    public boolean modificarTablero() {
+        boolean check = false;
+        ModifyBoardDialog dialog = new ModifyBoardDialog(this);
+        if (dialog.showDialog()) {
+            if(dialog.getMode() == 0 || dialog.getMode() == 1) setTab(dialog.getCoordsX(), dialog.getCoordsY(), dialog.getValue());
+            else setTab(dialog.getCoordsX(), dialog.getCoordsY(), 0);
+            update();
+            check = true;
+        }
+        deactivateSelected();
+        return check;
     }
 
     // ----------------------------------------------------------------------------------------------------

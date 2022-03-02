@@ -167,7 +167,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucos = new javax.swing.JCheckBoxMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jmiTrucosAñadir = new javax.swing.JMenuItem();
-        jmiTrucosEliminar = new javax.swing.JMenuItem();
         jmiTrucosModSiguiente = new javax.swing.JMenuItem();
         jmiTrucosForzarSiguiente = new javax.swing.JMenuItem();
         jmiTrucosPuntos = new javax.swing.JMenuItem();
@@ -356,7 +355,7 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuTrucos.add(jmiTrucos);
         mnuTrucos.add(jSeparator2);
 
-        jmiTrucosAñadir.setText("Añadir pieza");
+        jmiTrucosAñadir.setText("Modificar tablero");
         jmiTrucosAñadir.setEnabled(false);
         jmiTrucosAñadir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -364,15 +363,6 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         mnuTrucos.add(jmiTrucosAñadir);
-
-        jmiTrucosEliminar.setText("Eliminar pieza");
-        jmiTrucosEliminar.setEnabled(false);
-        jmiTrucosEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiTrucosEliminarActionPerformed(evt);
-            }
-        });
-        mnuTrucos.add(jmiTrucosEliminar);
 
         jmiTrucosModSiguiente.setText("Modificar siguiente");
         jmiTrucosModSiguiente.setEnabled(false);
@@ -448,19 +438,15 @@ public class LauncherRF extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmiTrucosAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosAñadirActionPerformed
-        juego.colocarPieza();
+        juego.modificarTablero();
     }//GEN-LAST:event_jmiTrucosAñadirActionPerformed
-
-    private void jmiTrucosEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosEliminarActionPerformed
-        juego.quitarPieza();
-    }//GEN-LAST:event_jmiTrucosEliminarActionPerformed
 
     private void jmiTrucosUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosUndoActionPerformed
         juego.undo();
@@ -486,7 +472,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private void setCheatsEnabled(final boolean status) {
         boolean opdef = juego.areCheatsEnabled() && juego.getSettings().isPossibleCheats() && status;
         jmiTrucosAñadir.setEnabled(opdef);
-        jmiTrucosEliminar.setEnabled(opdef);
         jmiTrucosPuntos.setEnabled(opdef);
         jmiTrucosUndo.setEnabled(opdef);
         jmiTrucosLoopStart.setEnabled(opdef);
@@ -747,7 +732,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jmiSaveOnExit;
     private javax.swing.JCheckBoxMenuItem jmiTrucos;
     private javax.swing.JMenuItem jmiTrucosAñadir;
-    private javax.swing.JMenuItem jmiTrucosEliminar;
     private javax.swing.JMenuItem jmiTrucosForzarSiguiente;
     private javax.swing.JMenu jmiTrucosLoop;
     private javax.swing.JMenuItem jmiTrucosLoopEnd;
