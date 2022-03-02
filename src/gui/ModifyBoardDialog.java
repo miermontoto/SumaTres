@@ -84,7 +84,7 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
         cmbValores = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("SumaTres - Input coordenadas");
+        setTitle("SumaTres - Modificar tablero");
         setAlwaysOnTop(true);
         setResizable(false);
 
@@ -179,7 +179,7 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(sldVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(btnModificar)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -189,10 +189,10 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
                                         .addComponent(lblInfo)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(pnlPieza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(btnAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cmbValores, 0, 1, Short.MAX_VALUE))))))
+                                        .addComponent(cmbValores, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(49, 49, 49)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -217,7 +217,7 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addComponent(lblInfo)))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAñadir)
                             .addComponent(cmbValores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -275,13 +275,14 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
     private void update() {
         int valor = s.getTablero().getTab(getCoordsX(), getCoordsY());
         if(valor != 0) {
+            pnlPieza.setVisible(true);
             displayer.setPieza(valor);
             btnModificar.setEnabled(true);
             btnEliminar.setEnabled(true);
             btnAñadir.setEnabled(false);
             btnAñadir.setSelected(false);
         } else {
-            displayer.setPieza(0);
+            pnlPieza.setVisible(false); // java está roto y es necesario ocultar el panel entero.
             btnModificar.setEnabled(false);
             btnEliminar.setEnabled(false);
             btnAñadir.setEnabled(true);
