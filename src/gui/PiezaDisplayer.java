@@ -30,8 +30,6 @@ class PiezaDisplayer extends JPanel {
         brillo = Pieza.getBrillos().get(nv);
     }
     
-    protected int getPieza() {return valor;}
-    
     @Override
     public void paintComponent(Graphics g1) {
         if(valor != 0) {
