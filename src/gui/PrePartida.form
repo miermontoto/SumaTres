@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="grpModo">
     </Component>
@@ -121,8 +121,8 @@
   <SubComponents>
     <Component class="javax.swing.JSlider" name="sldVertical">
       <Properties>
-        <Property name="maximum" type="int" value="15"/>
-        <Property name="minimum" type="int" value="2"/>
+        <Property name="maximum" type="int" value="12"/>
+        <Property name="minimum" type="int" value="3"/>
         <Property name="orientation" type="int" value="1"/>
         <Property name="value" type="int" value="5"/>
       </Properties>
@@ -132,8 +132,8 @@
     </Component>
     <Component class="javax.swing.JSlider" name="sldHorizontal">
       <Properties>
-        <Property name="maximum" type="int" value="15"/>
-        <Property name="minimum" type="int" value="2"/>
+        <Property name="maximum" type="int" value="12"/>
+        <Property name="minimum" type="int" value="3"/>
         <Property name="value" type="int" value="5"/>
       </Properties>
       <Events>

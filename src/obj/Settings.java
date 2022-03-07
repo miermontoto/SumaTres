@@ -24,6 +24,7 @@ public class Settings {
     private boolean saveResultsToFileEnabled;
     private boolean drawZonesEnabled;
     private boolean drawGridEnabled;
+    private boolean drawCoordsEnabled;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
@@ -42,6 +43,7 @@ public class Settings {
         saveResultsToFileEnabled = m;
         drawGridEnabled = false;
         drawZonesEnabled = false;
+        drawCoordsEnabled = false;
     }
     
     public Settings(String s) throws IOException {
@@ -63,11 +65,13 @@ public class Settings {
         saveResultsToFileEnabled = Boolean.parseBoolean(data[13]);
         drawZonesEnabled = Boolean.parseBoolean(data[14]);
         drawGridEnabled = Boolean.parseBoolean(data[14]);
+        drawCoordsEnabled = Boolean.parseBoolean(data[15]);
+
         
         if(!experimentalMode && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||
                     moreNextValuesEnabled || balancedStartEnabled || !drawArrowsEnabled ||
                         enhancedDiffMultEnabled || saveResultsToFileEnabled || drawZonesEnabled ||
-                            drawGridEnabled)) 
+                            drawGridEnabled || drawCoordsEnabled)) 
                 throw new IOException("Leídos valores inválidos desde archivo de opciones.");
     }
 
@@ -152,6 +156,10 @@ public class Settings {
         return drawGridEnabled;
     }
     
+    public boolean isDrawCoordsEnabled() {
+        return drawCoordsEnabled;
+    }
+    
     public void toggleHud() {hudEnabled = !hudEnabled;}
     public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
     public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
@@ -165,14 +173,16 @@ public class Settings {
     public void toggleSaveResultsToFile() {saveResultsToFileEnabled = !saveResultsToFileEnabled;}
     public void toggleDrawGrid() {drawGridEnabled = !drawGridEnabled;}
     public void toggleDrawZones() {drawZonesEnabled = !drawZonesEnabled;}
+    public void toggleDrawCoords() {drawCoordsEnabled = !drawCoordsEnabled;}
     
     @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
+        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
                 sizex, sizey, experimentalMode, consoleEnabled, 
                 diagonalMovementEnabled, possibleCheats, hudEnabled, 
                 moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled,
                 drawArrowsEnabled, darkModeEnabled, enhancedDiffMultEnabled,
-                saveResultsToFileEnabled, drawZonesEnabled, drawGridEnabled);
+                saveResultsToFileEnabled, drawZonesEnabled, drawGridEnabled,
+                drawCoordsEnabled);
     }
 }

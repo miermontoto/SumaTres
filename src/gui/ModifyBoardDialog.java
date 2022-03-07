@@ -30,12 +30,12 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
         this.s = si;
         sldHorizontal.setMaximum(si.getSettings().getY() - 1);
         sldVertical.setMaximum(si.getSettings().getX() - 1);
-        updateValues();
-        
+        updateValues(); 
     }
     
     public void updateValues() {
-        for(Integer i : Pieza.COLORES.keySet()) {
+        cmbValores.removeAllItems();
+        for(Integer i : Pieza.getColores().keySet()) {
             cmbValores.addItem(String.valueOf(i));
         }
         

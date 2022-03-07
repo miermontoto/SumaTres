@@ -23,6 +23,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-91,0,0,2,118"/>
   </AuxValues>
 
   <Layout>
@@ -33,40 +34,74 @@
               <Component id="btnClásico" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="btnExperimental" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
           </Group>
           <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace pref="414" max="32767" attributes="0"/>
+              <Component id="chkDrawZones" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="98" max="-2" attributes="0"/>
+          </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="chkExitOnEnd" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkPaintArrows" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkDrawZones" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkDrawGrid" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jSeparator4" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="chkConsoleOutput" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkDrawGrid" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkHUD" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="chkPaintArrows" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkDrawCoords" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="chkExitOnEnd" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="chkSaveResults" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="chkBalancedStart" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkMoreNextValues" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkSaveResults" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="chkHUD" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkConsoleOutput" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="jSeparator6" alignment="0" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace pref="315" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="chkMoreNextValues" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkBalancedStart" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkCheatsAvailable" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chkDiagonalMovement" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="312" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="chkCheatsAvailable" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkDiagonalMovement" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="0" pref="28" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -81,36 +116,47 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jSeparator2" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="chkDiagonalMovement" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chkConsoleOutput" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkExitOnEnd" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkSaveResults" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jSeparator4" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="chkHUD" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkCheatsAvailable" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="chkExitOnEnd" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkMoreNextValues" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="chkPaintArrows" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkBalancedStart" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="chkEnhancedDiffMult" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chkDrawZones" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="chkSaveResults" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chkDrawGrid" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkDrawCoords" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jSeparator6" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkDiagonalMovement" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkMoreNextValues" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="chkCheatsAvailable" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkBalancedStart" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="chkEnhancedDiffMult" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="18" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -205,7 +251,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="chkPaintArrows">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Pintar flechas"/>
+        <Property name="text" type="java.lang.String" value="Dibujar flechas"/>
         <Property name="toolTipText" type="java.lang.String" value="Si est&#xe1; activado, se pintan las flechas que indican el movimiento de las fichas."/>
       </Properties>
       <Events>
@@ -230,7 +276,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="chkDrawZones">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Pintar zonas"/>
+        <Property name="text" type="java.lang.String" value="Dibujar zonas"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDrawZonesActionPerformed"/>
@@ -238,11 +284,40 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="chkDrawGrid">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Pintar grid"/>
+        <Property name="text" type="java.lang.String" value="Dibujar grid"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDrawGridActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Opciones generales"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="jSeparator2">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Interfaz"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkDrawCoords">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Dibujar coordenadas"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDrawCoordsActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="jSeparator4">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel3">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mejoras experimentales"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="jSeparator6">
     </Component>
   </SubComponents>
 </Form>

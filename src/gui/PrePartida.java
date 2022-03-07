@@ -25,7 +25,7 @@ public class PrePartida extends javax.swing.JFrame {
      */
     private PrePartida() {
         initComponents();
-        btnJugar.requestFocus();
+        btnJugar.requestFocus(); // permite comenzar la partida al darle enter nada más iniciar.
     }
     
     public PrePartida(LauncherRF p) {
@@ -35,8 +35,6 @@ public class PrePartida extends javax.swing.JFrame {
         
         // las opciones por defecto son: tamaño 5x5, modo experimental.
         op = new Settings(5, 5, true);
-        if(MAX_SIZE[1] < 15) sldHorizontal.setMaximum(MAX_SIZE[1]);
-        if(MAX_SIZE[0] < 15) sldVertical.setMaximum(MAX_SIZE[0]);
         avanzadas.readValues();
         File defaultSettings = new File("default.sto");
         if(defaultSettings.exists()) {
@@ -81,8 +79,8 @@ public class PrePartida extends javax.swing.JFrame {
         setName("Prepartida"); // NOI18N
         setResizable(false);
 
-        sldVertical.setMaximum(15);
-        sldVertical.setMinimum(2);
+        sldVertical.setMaximum(12);
+        sldVertical.setMinimum(3);
         sldVertical.setOrientation(javax.swing.JSlider.VERTICAL);
         sldVertical.setValue(5);
         sldVertical.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -91,8 +89,8 @@ public class PrePartida extends javax.swing.JFrame {
             }
         });
 
-        sldHorizontal.setMaximum(15);
-        sldHorizontal.setMinimum(2);
+        sldHorizontal.setMaximum(12);
+        sldHorizontal.setMinimum(3);
         sldHorizontal.setValue(5);
         sldHorizontal.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {

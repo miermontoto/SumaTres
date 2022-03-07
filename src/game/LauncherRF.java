@@ -115,6 +115,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiInterfaz.setEnabled(op.isExperimental());
         jmiIntefazGrid.setSelected(op.isDrawGridEnabled());
         jmiInterfazZonas.setSelected(op.isDrawZonesEnabled());
+        jmiInterfazCoords.setSelected(op.isDrawCoordsEnabled());
         
         // Se selecciona qué modo y si se puede cambiar entre modos o no.
         jmiModoClassic.setEnabled(op.isExperimental());
@@ -157,6 +158,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiInterfazHud = new javax.swing.JCheckBoxMenuItem();
         jmiInterfazZonas = new javax.swing.JCheckBoxMenuItem();
         jmiIntefazGrid = new javax.swing.JCheckBoxMenuItem();
+        jmiInterfazCoords = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiColores = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -179,6 +181,7 @@ public class LauncherRF extends javax.swing.JFrame {
         setTitle("SumaTres");
         setIconImage(Graphic.ICON.getImage());
         setResizable(false);
+        getContentPane().setLayout(new java.awt.CardLayout());
 
         pneInfo.setEditable(false);
         pneInfo.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -187,6 +190,8 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         jTabbedPane1.addTab("Info", pneInfo);
+
+        getContentPane().add(jTabbedPane1, "card2");
 
         mnuArchivo.setText("Archivo");
 
@@ -295,6 +300,15 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         jmiInterfaz.add(jmiIntefazGrid);
+
+        jmiInterfazCoords.setSelected(true);
+        jmiInterfazCoords.setText("Dibujar coordenadas");
+        jmiInterfazCoords.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiInterfazCoordsActionPerformed(evt);
+            }
+        });
+        jmiInterfaz.add(jmiInterfazCoords);
 
         mnuOpciones.add(jmiInterfaz);
         mnuOpciones.add(jSeparator3);
@@ -429,17 +443,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jMenuBar1.add(mnuTrucos);
 
         setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -669,6 +672,11 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazZonasActionPerformed
 
+    private void jmiInterfazCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazCoordsActionPerformed
+        juego.getSettings().toggleDrawCoords();
+        juego.repaint();
+    }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
+
     
     public SumaTres getPartida() {
         return this.juego;
@@ -718,6 +726,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jmiExtrasConsole;
     private javax.swing.JCheckBoxMenuItem jmiIntefazGrid;
     private javax.swing.JMenu jmiInterfaz;
+    private javax.swing.JCheckBoxMenuItem jmiInterfazCoords;
     private javax.swing.JCheckBoxMenuItem jmiInterfazFlechas;
     private javax.swing.JCheckBoxMenuItem jmiInterfazHud;
     private javax.swing.JCheckBoxMenuItem jmiInterfazZonas;

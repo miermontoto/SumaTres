@@ -235,7 +235,7 @@ public class EditarColores extends javax.swing.JFrame {
     
     public void updateValues() {
         model.removeAllElements();
-        for(Integer i : Pieza.COLORES.keySet()) {
+        for(Integer i : Pieza.getColores().keySet()) {
             model.addElement(i);
         }
         model.removeElement(-2);

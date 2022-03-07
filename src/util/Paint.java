@@ -25,6 +25,7 @@ public final class Paint {
     public static final Color LIGHT_BACKGROUND = new Color(214, 217, 223);
     public static final Color DARK_BACKGROUND = new Color(60, 63, 65);
     public static final Color BOARD_COLOR = new Color(242, 242, 242);
+    public static final Color GRID_COLOR = new Color(60, 63, 65);
 
     private final Graphics2D g;
     private final SumaTres s;
@@ -75,13 +76,15 @@ public final class Paint {
 
         g.setRenderingHints(rh);
         g.setStroke(new BasicStroke(STROKE_SIZE));
+        Settings temp = s.getSettings();
 
         pintarTablero();
         pintarFichas();
-        if(s.getSettings().isPaintArrowsEnabled()) pintarFlechas();
-        if(s.getSettings().isHudEnabled()) pintarInfo();
-        if(s.getSettings().isDrawZonesEnabled()) pintarZonas();
-        if(s.getSettings().isDrawGridEnabled()) pintarGrid();
+        if(temp.isPaintArrowsEnabled()) pintarFlechas();
+        if(temp.isHudEnabled()) pintarInfo();
+        if(temp.isDrawZonesEnabled()) pintarZonas();
+        if(temp.isDrawGridEnabled()) pintarGrid();
+        if(temp.isDrawCoordsEnabled()) pintarCoords();
     }
 
     /**
@@ -205,10 +208,22 @@ public final class Paint {
     
     private void pintarGrid() {
         g.setStroke(new BasicStroke(1));
-        g.setColor(new Color(0f, 0f, 0f, .25f));
+        g.setColor(GRID_COLOR);
         for(int i = 0; i <= s.getSettings().getX(); i++) g.drawLine(MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, Graphic.lateralSize(s.getSettings().getY()), MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2);
         for(int i = 0; i <= s.getSettings().getY(); i++) g.drawLine(MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, Graphic.lateralSize(s.getSettings().getX()));
         g.setStroke(new BasicStroke(STROKE_SIZE));
+    }
+    
+    private void pintarCoords() {
+        g.setColor(Color.BLACK);
+        setFontSize(11);
+        for(int i = 0; i < s.getSettings().getX(); i++) {
+            for(int j = 0; j < s.getSettings().getY(); j++) {
+                g.drawString(String.format("[%d, %d]", i, j), 
+                        MAIN_SPACER + BOARD_SPACER + j * (SPOT_SPACER + SQUARE_SIZE), 
+                        MAIN_SPACER + 2*BOARD_SPACER + i * (SPOT_SPACER + SQUARE_SIZE));
+            }
+        }
     }
 
     /**

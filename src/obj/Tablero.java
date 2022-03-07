@@ -117,14 +117,14 @@ public class Tablero {
     @Override
     public String toString() {
         String s = "";
-        for(int i=0; i < this.getColumns(); i++) for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
+        for(int i=0; i < this.getColumns(); i++) for(int j=0; j < this.getRows(); j++) s += String.valueOf(this.getTab(i, j));
         return s;
     }
 
     public String formattedToString() {
         String s = "";
         for(int i=0; i < this.getColumns(); i++) {
-            for(int j=0; j < this.getRows(); j++) s += String.format("%d", this.getTab(i, j));
+            for(int j=0; j < this.getRows(); j++) s += String.valueOf(getTab(i, j));
             s += String.format("%n");
         }
         return s;

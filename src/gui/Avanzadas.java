@@ -46,6 +46,13 @@ public class Avanzadas extends javax.swing.JFrame {
         chkSaveResults = new javax.swing.JCheckBox();
         chkDrawZones = new javax.swing.JCheckBox();
         chkDrawGrid = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel2 = new javax.swing.JLabel();
+        chkDrawCoords = new javax.swing.JCheckBox();
+        jSeparator4 = new javax.swing.JSeparator();
+        jLabel3 = new javax.swing.JLabel();
+        jSeparator6 = new javax.swing.JSeparator();
 
         setTitle("SumaTres - Opciones avanzadas");
         setResizable(false);
@@ -122,7 +129,7 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
-        chkPaintArrows.setText("Pintar flechas");
+        chkPaintArrows.setText("Dibujar flechas");
         chkPaintArrows.setToolTipText("Si está activado, se pintan las flechas que indican el movimiento de las fichas.");
         chkPaintArrows.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,19 +151,32 @@ public class Avanzadas extends javax.swing.JFrame {
             }
         });
 
-        chkDrawZones.setText("Pintar zonas");
+        chkDrawZones.setText("Dibujar zonas");
         chkDrawZones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkDrawZonesActionPerformed(evt);
             }
         });
 
-        chkDrawGrid.setText("Pintar grid");
+        chkDrawGrid.setText("Dibujar grid");
         chkDrawGrid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkDrawGridActionPerformed(evt);
             }
         });
+
+        jLabel1.setText("Opciones generales");
+
+        jLabel2.setText("Interfaz");
+
+        chkDrawCoords.setText("Dibujar coordenadas");
+        chkDrawCoords.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkDrawCoordsActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Mejoras experimentales");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,32 +187,56 @@ public class Avanzadas extends javax.swing.JFrame {
                 .addComponent(btnClásico)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExperimental)
-                .addGap(88, 88, 88))
+                .addGap(54, 54, 54))
             .addComponent(jSeparator1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(414, Short.MAX_VALUE)
+                .addComponent(chkDrawZones)
+                .addGap(98, 98, 98))
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkExitOnEnd)
-                            .addComponent(chkPaintArrows)
-                            .addComponent(chkDrawZones)
-                            .addComponent(chkDrawGrid))
-                        .addGap(101, 101, 101)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkBalancedStart)
-                            .addComponent(chkEnhancedDiffMult)
-                            .addComponent(chkMoreNextValues)
-                            .addComponent(chkSaveResults)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkHUD)
-                            .addComponent(chkConsoleOutput))
-                        .addGap(88, 88, 88)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkCheatsAvailable)
-                            .addComponent(chkDiagonalMovement))))
-                .addGap(0, 28, Short.MAX_VALUE))
+                            .addComponent(jSeparator2)
+                            .addComponent(jSeparator4)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkConsoleOutput)
+                                    .addComponent(chkDrawGrid)
+                                    .addComponent(jLabel2)
+                                    .addComponent(chkHUD))
+                                .addGap(46, 46, 46)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkPaintArrows)
+                                    .addComponent(chkDrawCoords)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(chkExitOnEnd)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(chkSaveResults)))))
+                        .addGap(59, 59, 59))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jSeparator6, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(chkMoreNextValues)
+                                        .addComponent(chkBalancedStart)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(chkEnhancedDiffMult)
+                                        .addComponent(chkCheatsAvailable)
+                                        .addComponent(chkDiagonalMovement))
+                                    .addGap(312, 312, 312))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -204,38 +248,46 @@ public class Avanzadas extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkDiagonalMovement)
-                    .addComponent(chkConsoleOutput))
+                    .addComponent(chkConsoleOutput)
+                    .addComponent(chkExitOnEnd)
+                    .addComponent(chkSaveResults))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkHUD)
-                    .addComponent(chkCheatsAvailable))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkExitOnEnd)
-                    .addComponent(chkMoreNextValues))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkPaintArrows)
-                    .addComponent(chkBalancedStart))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkEnhancedDiffMult)
                     .addComponent(chkDrawZones))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkSaveResults)
-                    .addComponent(chkDrawGrid))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(chkDrawGrid)
+                    .addComponent(chkDrawCoords))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkDiagonalMovement)
+                    .addComponent(chkMoreNextValues))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkCheatsAvailable)
+                    .addComponent(chkBalancedStart))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkEnhancedDiffMult)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void chkDiagonalMovementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDiagonalMovementActionPerformed
-        ventanaSecundaria.getSettings().toggleDiagonalMovement();
-    }//GEN-LAST:event_chkDiagonalMovementActionPerformed
 
     private void btnClásicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClásicoActionPerformed
         ventanaSecundaria.setClassic();
@@ -255,18 +307,6 @@ public class Avanzadas extends javax.swing.JFrame {
         ventanaSecundaria.getSettings().toggleHud();
     }//GEN-LAST:event_chkHUDActionPerformed
 
-    private void chkCheatsAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheatsAvailableActionPerformed
-        ventanaSecundaria.getSettings().togglePossibleCheats();
-    }//GEN-LAST:event_chkCheatsAvailableActionPerformed
-
-    private void chkMoreNextValuesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMoreNextValuesActionPerformed
-        ventanaSecundaria.getSettings().toggleMoreNextValues();
-    }//GEN-LAST:event_chkMoreNextValuesActionPerformed
-
-    private void chkBalancedStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBalancedStartActionPerformed
-        ventanaSecundaria.getSettings().toggleBalancedStart();
-    }//GEN-LAST:event_chkBalancedStartActionPerformed
-
     private void chkExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkExitOnEndActionPerformed
         ventanaSecundaria.getSettings().toggleExitOnEnd();
     }//GEN-LAST:event_chkExitOnEndActionPerformed
@@ -274,10 +314,6 @@ public class Avanzadas extends javax.swing.JFrame {
     private void chkPaintArrowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPaintArrowsActionPerformed
         ventanaSecundaria.getSettings().togglePaintArrows();
     }//GEN-LAST:event_chkPaintArrowsActionPerformed
-
-    private void chkEnhancedDiffMultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEnhancedDiffMultActionPerformed
-        ventanaSecundaria.getSettings().toggleEnhancedDiffMult();
-    }//GEN-LAST:event_chkEnhancedDiffMultActionPerformed
 
     private void chkSaveResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSaveResultsActionPerformed
         ventanaSecundaria.getSettings().toggleSaveResultsToFile();
@@ -290,6 +326,30 @@ public class Avanzadas extends javax.swing.JFrame {
     private void chkDrawGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawGridActionPerformed
         ventanaSecundaria.getSettings().toggleDrawGrid();
     }//GEN-LAST:event_chkDrawGridActionPerformed
+
+    private void chkDrawCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawCoordsActionPerformed
+        ventanaSecundaria.getSettings().toggleDrawCoords();
+    }//GEN-LAST:event_chkDrawCoordsActionPerformed
+
+    private void chkBalancedStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBalancedStartActionPerformed
+        ventanaSecundaria.getSettings().toggleBalancedStart();
+    }//GEN-LAST:event_chkBalancedStartActionPerformed
+
+    private void chkMoreNextValuesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMoreNextValuesActionPerformed
+        ventanaSecundaria.getSettings().toggleMoreNextValues();
+    }//GEN-LAST:event_chkMoreNextValuesActionPerformed
+
+    private void chkCheatsAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheatsAvailableActionPerformed
+        ventanaSecundaria.getSettings().togglePossibleCheats();
+    }//GEN-LAST:event_chkCheatsAvailableActionPerformed
+
+    private void chkDiagonalMovementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDiagonalMovementActionPerformed
+        ventanaSecundaria.getSettings().toggleDiagonalMovement();
+    }//GEN-LAST:event_chkDiagonalMovementActionPerformed
+
+    private void chkEnhancedDiffMultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEnhancedDiffMultActionPerformed
+        ventanaSecundaria.getSettings().toggleEnhancedDiffMult();
+    }//GEN-LAST:event_chkEnhancedDiffMultActionPerformed
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
@@ -306,6 +366,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkEnhancedDiffMult.setEnabled(op.isExperimental());
         chkDrawGrid.setEnabled(op.isExperimental());
         chkDrawZones.setEnabled(op.isExperimental());
+        chkDrawCoords.setEnabled(op.isExperimental());
         
         chkDiagonalMovement.setSelected(op.isDiagonalMovementEnabled());
         chkHUD.setSelected(op.isHudEnabled());
@@ -319,6 +380,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkSaveResults.setSelected(op.isSaveResultsToFileEnabled());
         chkDrawGrid.setSelected(op.isDrawGridEnabled());
         chkDrawZones.setSelected(op.isDrawZonesEnabled());
+        chkDrawCoords.setSelected(op.isDrawCoordsEnabled());
     }
     
     
@@ -359,6 +421,7 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkCheatsAvailable;
     private javax.swing.JCheckBox chkConsoleOutput;
     private javax.swing.JCheckBox chkDiagonalMovement;
+    private javax.swing.JCheckBox chkDrawCoords;
     private javax.swing.JCheckBox chkDrawGrid;
     private javax.swing.JCheckBox chkDrawZones;
     private javax.swing.JCheckBox chkEnhancedDiffMult;
@@ -367,6 +430,12 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkMoreNextValues;
     private javax.swing.JCheckBox chkPaintArrows;
     private javax.swing.JCheckBox chkSaveResults;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator6;
     // End of variables declaration//GEN-END:variables
 }
