@@ -29,11 +29,24 @@ public final class Paint {
 
     private final Graphics2D g;
     private final SumaTres s;
+    
+    private final int lateralSizeX;
+    private final int lateralSizeY;
+    private final int defineX;
+    private final int defineY;
+    private final Settings op;
 
 
     public Paint(SumaTres si, Graphics gi) {
         g = (Graphics2D) gi;
         s = si;
+        
+        op = si.getSettings();
+        
+        lateralSizeX = Graphic.lateralSize(op.getY());
+        lateralSizeY = Graphic.lateralSize(op.getX());
+        defineX = Graphic.defineX(si);
+        defineY = Graphic.defineY(si);
     }
 
     /**
@@ -76,15 +89,14 @@ public final class Paint {
 
         g.setRenderingHints(rh);
         g.setStroke(new BasicStroke(STROKE_SIZE));
-        Settings temp = s.getSettings();
 
         pintarTablero();
         pintarFichas();
-        if(temp.isPaintArrowsEnabled()) pintarFlechas();
-        if(temp.isHudEnabled()) pintarInfo();
-        if(temp.isDrawZonesEnabled()) pintarZonas();
-        if(temp.isDrawGridEnabled()) pintarGrid();
-        if(temp.isDrawCoordsEnabled()) pintarCoords();
+        if(op.isPaintArrowsEnabled()) pintarFlechas();
+        if(op.isHudEnabled()) pintarInfo();
+        if(op.isDrawZonesEnabled()) pintarZonas();
+        if(op.isDrawGridEnabled()) pintarGrid();
+        if(op.isDrawCoordsEnabled()) pintarCoords();
     }
 
     /**
@@ -100,15 +112,14 @@ public final class Paint {
      * SumaTres correspondiente.
      */
     private void pintarFlechas() {
-        Settings op = s.getSettings();
         
         int topRow = MAIN_SPACER * 7 / 12;
-        int middleRow = (Graphic.lateralSize(op.getX()) - MAIN_SPACER) / 2 + MAIN_SPACER;
-        int bottomRow = Graphic.lateralSize(op.getX()) + topRow;
+        int middleRow = (lateralSizeY - MAIN_SPACER) / 2 + MAIN_SPACER;
+        int bottomRow = lateralSizeY + topRow;
         
         int leftColumn = MAIN_SPACER * 9 / 24;
-        int middleColumn = Graphic.defineX(s) / 2;
-        int rightColumn = Graphic.defineX(s) - MAIN_SPACER * 2 / 3;
+        int middleColumn = defineX / 2;
+        int rightColumn = defineX - MAIN_SPACER * 2 / 3;
         
         g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : Color.blue);
         setFontSize(20);
@@ -138,8 +149,8 @@ public final class Paint {
     private void pintarTablero() {
         g.setColor(BOARD_COLOR);
         g.fillRoundRect(MAIN_SPACER, MAIN_SPACER,
-            s.getTablero().getRows() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
-            s.getTablero().getColumns() * (SPOT_SPACER + SQUARE_SIZE) + 2 * BOARD_SPACER - SPOT_SPACER,
+            lateralSizeX - MAIN_SPACER,
+            lateralSizeY - MAIN_SPACER,
             ROUND_DIAMETER, ROUND_DIAMETER);
     }
 
@@ -149,13 +160,13 @@ public final class Paint {
      * posiciones correctamente y obtener información sobre la partida.
      */
     private void pintarInfo() {
-        g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : new Color(48, 50, 52));
+        g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : new Color(48, 50, 52));
         setFontSize(15);
 
         // Siguiente:
-        g.drawString("Siguiente:", MAIN_SPACER * 2 - 75, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
+        g.drawString("Siguiente:", MAIN_SPACER * 2 - 75, lateralSizeY + MAIN_SPACER * 3 / 2);
         // Turnos:
-        g.drawString(String.format("[%d]", s.getTurnos()), Graphic.defineX(s) / 2, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
+        g.drawString(String.format("[%d]", s.getTurnos()), defineX / 2, lateralSizeY + MAIN_SPACER * 3 / 2);
         // Puntos:
         /*
          *  Primero se calcula si es necesario decrecer el tamaño de la fuente dependiendo
@@ -163,12 +174,12 @@ public final class Paint {
          *  rara ocasión el usuario va a llegar a cantidades tan altas, pero eh.
          */
         setFontSize(s.getPuntos() >= 10000000 ? 12 : 15);
-        g.drawString(String.format("Puntos: %d", s.getPuntos()), Graphic.defineX(s) - 2 * MAIN_SPACER,
-            Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
+        g.drawString(String.format("Puntos: %d", s.getPuntos()), defineX - 2 * MAIN_SPACER,
+            lateralSizeY + MAIN_SPACER * 3 / 2);
 
         // Pieza siguiente:
         g.setColor(Pieza.getColores().get(s.getSiguiente()));
-        g.fillRoundRect(MAIN_SPACER * 2, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER,
+        g.fillRoundRect(MAIN_SPACER * 2, lateralSizeY + MAIN_SPACER,
             SQUARE_SIZE, SQUARE_SIZE,
             ROUND_DIAMETER, ROUND_DIAMETER);
         g.setColor(BOARD_COLOR);
@@ -177,48 +188,50 @@ public final class Paint {
         int displacer = 2*(String.valueOf(s.getSiguiente()).length() - 1);
         g.drawString(String.valueOf(s.getSiguiente()), 
                 MAIN_SPACER * (112 - displacer) / 48,
-                Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER * 3 / 2);
+                lateralSizeY + MAIN_SPACER * 3 / 2);
         
         // Final de partida:
         if(s.isFinished()) {
-            // dibujar marco transparente
+            g.setColor(new Color(0f,0f,0f,.3f));
+            int size = (lateralSizeY - MAIN_SPACER) / 3;
+            g.fillRect(0, (size + MAIN_SPACER), defineX, size * 2);
             
-            int wx = Graphic.defineX(s) * 13 / 48;
-            int wy = Graphic.defineY(s) * 23 / 48;
-            String s = "FINAL";
+            int wx = defineX * 13 / 48;
+            int wy = lateralSizeY / 2 + MAIN_SPACER*5/6;
+            String endMsg = "FINAL";
             g.setFont(new Font("Helvetica", Font.BOLD, 70));
             g.setColor(Color.black);
-            g.drawString(s, wx + 1, wy);
-            g.drawString(s, wx - 1, wy);
-            g.drawString(s, wx, wy + 1);
-            g.drawString(s, wx, wy - 1);
+            g.drawString(endMsg, wx + 1, wy);
+            g.drawString(endMsg, wx - 1, wy);
+            g.drawString(endMsg, wx, wy + 1);
+            g.drawString(endMsg, wx, wy - 1);
             g.setColor(Color.red);
-            g.drawString(s, wx, wy);
+            g.drawString(endMsg, wx, wy);
         }
     }
     
     private void pintarZonas() {
-        g.setColor(s.getSettings().isDarkModeEnabled() ? BOARD_COLOR : Color.DARK_GRAY);
-        g.drawLine(MAIN_SPACER, 0, MAIN_SPACER, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER);
-        g.drawLine(Graphic.lateralSize(s.getSettings().getY()), 0, Graphic.lateralSize(s.getSettings().getY()), Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER);
-        g.drawLine(0, MAIN_SPACER, Graphic.defineX(s), MAIN_SPACER);
-        g.drawLine(0, Graphic.lateralSize(s.getSettings().getX()), Graphic.defineX(s), Graphic.lateralSize(s.getSettings().getX()));
-        g.drawLine(0, Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER, Graphic.defineX(s), Graphic.lateralSize(s.getSettings().getX()) + MAIN_SPACER);
+        g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : Color.DARK_GRAY);
+        g.drawLine(MAIN_SPACER, 0, MAIN_SPACER, lateralSizeY + MAIN_SPACER);
+        g.drawLine(lateralSizeX, 0, lateralSizeX, lateralSizeY + MAIN_SPACER);
+        g.drawLine(0, MAIN_SPACER, defineX, MAIN_SPACER);
+        g.drawLine(0, lateralSizeY, defineX, lateralSizeY);
+        g.drawLine(0, lateralSizeY + MAIN_SPACER, defineX, lateralSizeY + MAIN_SPACER);
     }
     
     private void pintarGrid() {
         g.setStroke(new BasicStroke(1));
         g.setColor(GRID_COLOR);
-        for(int i = 0; i <= s.getSettings().getX(); i++) g.drawLine(MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, Graphic.lateralSize(s.getSettings().getY()), MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2);
-        for(int i = 0; i <= s.getSettings().getY(); i++) g.drawLine(MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, Graphic.lateralSize(s.getSettings().getX()));
+        for(int i = 0; i <= op.getX(); i++) g.drawLine(MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, lateralSizeX, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2);
+        for(int i = 0; i <= op.getY(); i++) g.drawLine(MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, MAIN_SPACER, MAIN_SPACER + BOARD_SPACER + i * (SQUARE_SIZE + SPOT_SPACER) - SPOT_SPACER / 2, lateralSizeY);
         g.setStroke(new BasicStroke(STROKE_SIZE));
     }
     
     private void pintarCoords() {
         g.setColor(Color.BLACK);
         setFontSize(11);
-        for(int i = 0; i < s.getSettings().getX(); i++) {
-            for(int j = 0; j < s.getSettings().getY(); j++) {
+        for(int i = 0; i < op.getX(); i++) {
+            for(int j = 0; j < op.getY(); j++) {
                 g.drawString(String.format("[%d, %d]", i, j), 
                         MAIN_SPACER + BOARD_SPACER + j * (SPOT_SPACER + SQUARE_SIZE), 
                         MAIN_SPACER + 2*BOARD_SPACER + i * (SPOT_SPACER + SQUARE_SIZE));
