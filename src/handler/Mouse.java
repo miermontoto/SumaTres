@@ -30,7 +30,7 @@ public class Mouse {
     }
     
     private boolean inFrameClick() {
-        return e.getY() <= Graphic.lateralSize(s.getSettings().getX());
+        return e.getY() <= (Graphic.lateralSize(s.getSettings().getX()) + Paint.MAIN_SPACER);
     }
     
     private boolean inBoardClick() {
