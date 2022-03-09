@@ -40,15 +40,15 @@ public class Jugada {
 
     public Jugada(char c) {
         switch (Character.toString(c).toLowerCase().charAt(0)) {
-            case 'w': this.up    = 1;                 nombre = "up"; break;         // ARRIBA
-            case 'a': this.left  = 1;                 nombre = "left"; break;       // IZQUIERDA
+            case 'w': this.up    = 1;                 nombre = "up";         break; // ARRIBA
+            case 'a': this.left  = 1;                 nombre = "left";       break; // IZQUIERDA
             case 'x':                                                               // EXPEIRMENTAL: ABAJO
-            case 's': this.down  = 1;                 nombre = "down"; break;       // ABAJO
-            case 'd': this.right = 1;                 nombre = "right"; break;      // DERECHA
-            case 'q': this.up    = 1; this.left  = 1; nombre = "up-left"; break;    // EXPERIMENTAL: IZQ-ARR
-            case 'z': this.down  = 1; this.left  = 1; nombre = "down-left"; break;  // EXPERIMENTAL: IZQ-ABA
-            case 'c': this.down  = 1; this.right = 1; nombre = "up-right"; break;   // EXPERIMENTAL: DER-ABA
-            case 'e': this.up    = 1; this.right = 1; nombre = "down-right"; break; // EXPERIMENTAL: DER-ARR
+            case 's': this.down  = 1;                 nombre = "down";       break; // ABAJO
+            case 'd': this.right = 1;                 nombre = "right";      break; // DERECHA
+            case 'q': this.up    = 1; this.left  = 1; nombre = "up-left";    break; // EXPERIMENTAL: IZQ-ARR
+            case 'z': this.down  = 1; this.left  = 1; nombre = "down-left";  break; // EXPERIMENTAL: IZQ-ABA
+            case 'c': this.down  = 1; this.right = 1; nombre = "down-right"; break; // EXPERIMENTAL: DER-ABA
+            case 'e': this.up    = 1; this.right = 1; nombre = "up-right";   break; // EXPERIMENTAL: DER-ARR
             default:
                 Dialog.showError("ERROR: Caracter de jugada inválido.");
                 System.exit(1);

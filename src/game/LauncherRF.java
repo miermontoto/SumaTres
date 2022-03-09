@@ -126,6 +126,8 @@ public class LauncherRF extends javax.swing.JFrame {
         // TODO: habilitar estas funciones
         jmiLoad.setEnabled(false);
         jmiSave.setEnabled(false);
+        
+        requestFocusInWindow();
     }
 
     /**
