@@ -25,6 +25,7 @@ public class Settings {
     private boolean drawZonesEnabled;
     private boolean drawGridEnabled;
     private boolean drawCoordsEnabled;
+    private int verbosityLevel;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
@@ -44,6 +45,7 @@ public class Settings {
         drawGridEnabled = false;
         drawZonesEnabled = false;
         drawCoordsEnabled = false;
+        verbosityLevel = 0;
     }
     
     public Settings(String s) throws IOException {
@@ -66,6 +68,7 @@ public class Settings {
         drawZonesEnabled = Boolean.parseBoolean(data[14]);
         drawGridEnabled = Boolean.parseBoolean(data[14]);
         drawCoordsEnabled = Boolean.parseBoolean(data[15]);
+        verbosityLevel = Integer.parseInt(data[16]);
 
         
         if(!experimentalMode && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||
@@ -160,6 +163,10 @@ public class Settings {
         return drawCoordsEnabled;
     }
     
+    public int verbosity() {
+        return verbosityLevel;
+    }
+    
     public void toggleHud() {hudEnabled = !hudEnabled;}
     public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
     public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
@@ -174,15 +181,16 @@ public class Settings {
     public void toggleDrawGrid() {drawGridEnabled = !drawGridEnabled;}
     public void toggleDrawZones() {drawZonesEnabled = !drawZonesEnabled;}
     public void toggleDrawCoords() {drawCoordsEnabled = !drawCoordsEnabled;}
+    public void setVerbosityLevel(int l) {verbosityLevel = l;}
     
     @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
+        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %d", 
                 sizex, sizey, experimentalMode, consoleEnabled, 
                 diagonalMovementEnabled, possibleCheats, hudEnabled, 
                 moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled,
                 drawArrowsEnabled, darkModeEnabled, enhancedDiffMultEnabled,
                 saveResultsToFileEnabled, drawZonesEnabled, drawGridEnabled,
-                drawCoordsEnabled);
+                drawCoordsEnabled, verbosityLevel);
     }
 }

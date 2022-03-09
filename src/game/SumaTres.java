@@ -15,7 +15,6 @@ import handler.FileWS;
 
 import static java.lang.System.out;
 import static java.lang.System.err;
-import java.awt.event.*;
 import java.awt.Graphics;
 import java.io.File;
 import java.time.format.DateTimeFormatter;
@@ -172,6 +171,7 @@ public final class SumaTres extends JPanel {
     private Tablero t; // Tablero sobre el que se juega la partida.
     private final Settings op; // Opciones de la partida.
     private boolean finished; // Booleano que determina si la partida se ha terminado ya o no.
+    private long startTime; // Computer time para el comienzo de la partida.
 
     /**
     * Constructor de la clase sobrecargado por tres enteros.
@@ -196,6 +196,11 @@ public final class SumaTres extends JPanel {
     * @param op: Objeto de tipo obj.Settings que defina la partida.
     */
     public SumaTres(Settings op) {
+        
+        startTime = System.currentTimeMillis();
+        this.op = op;
+        vrbMsg(2, "Partida iniciada.");
+        vrbMsg(1, String.format("INFO: Verbosity level = %d", op.verbosity()));
 
         // Se inicializan variables.
         cheatsUsed = false;
@@ -207,7 +212,6 @@ public final class SumaTres extends JPanel {
         highestValue = 3;
         turno = 1;
         finished = false;
-        this.op = op;
         difficultyMultiplier = op.isEnhancedDiffMultEnabled() ? calculateMultiplier() : 1.0;
 
         try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
@@ -521,12 +525,19 @@ public final class SumaTres extends JPanel {
          * son iguales, significa que el nuevo tablero no se ha visto modificado, por lo
          * que no debería añadirse un turno al contador.
          */
-        var temp = new Tablero(t);
-        var x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
+        Tablero temp = new Tablero(t);
+        Jugada x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
+        Turno turn = new Turno(this, x); // Se crea un objeto tipo "Turno" que ejecute la jugada.
+        
+        vrbMsg(1, String.format("Jugada: %s", x.getNombre()));
 
-        Turno.mover(x, this);
+        long tmpTime = System.currentTimeMillis();
+        long tmpPuntos = getPuntos();
+        turn.mover();
         if(op.isConsoleEnabled()) out.println(this); //TODO: hacer que los saltos de línea coincidan
-        Turno.sumar(x, this);
+        turn.sumar();
+        vrbMsg(2, String.format("La jugada ha tardado %s en calcularse.", getTime(tmpTime)));
+        vrbMsg(1, String.format("Se han conseguido %d puntos en la última jugada.", getPuntos() - tmpPuntos));
 
 
         /*
@@ -535,15 +546,24 @@ public final class SumaTres extends JPanel {
          * que el tablero no esté lleno mediante isFull(). Así, la siguiente ficha
          * a colocar no varía.
          */
-        if (!t.isFull()) colocarSiguiente();
+        if (!t.isFull()) {
+            vrbMsg(1, String.format("Colocando ficha siguiente, \"%d\"", getSiguiente()));
+            colocarSiguiente();
+        }
+        else vrbMsg(1, "El tablero está lleno, no se ha colocado ficha siguiente.");
 
         if (!t.equals(temp)) {
+            vrbMsg(2, "La jugada ha modificado el tablero, sumando un turno.");
             addTurno(); // Si el tablero ha cambiado, se añade un turno.
             tableros.addLast(temp);
-        } else deactivateWarning();
+        } else {
+            vrbMsg(2, "La jugada no ha modificado el tablero.");
+            deactivateWarning();
+        }
 
         update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
         if (!Turno.ableToMove(this)) finalDePartida(); // Si no se puede mover, se termina la partida.
+        else vrbMsg(2, "Quedan jugadas posibles.");
     }
     
 
@@ -566,6 +586,14 @@ public final class SumaTres extends JPanel {
     public void update() {
         repaint();
         if(op.isConsoleEnabled()) out.print(fullToString());
+    }
+    
+    private String getTime() {
+        return getTime(startTime);
+    }
+    
+    private String getTime(long start) {
+        return String.valueOf((System.currentTimeMillis() - start) / 1000.0);
     }
     
     public void colocarSiguiente() throws NullPointerException {
@@ -600,6 +628,10 @@ public final class SumaTres extends JPanel {
 
             return vlsSig;
         }
+    }
+    
+    public void vrbMsg(int i, String s) {
+        if(i <= op.verbosity()) {out.printf("[%s] %s%n", getTime(), s);}
     }
 
     /**
@@ -830,4 +862,6 @@ public final class SumaTres extends JPanel {
         super.paintComponent(g);
         new Paint(this, g).paint();
     }
+
+
 }

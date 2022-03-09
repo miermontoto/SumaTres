@@ -36,29 +36,35 @@ public class Jugada {
     private int down  = 0;
     private int left  = 0;
     private int right = 0;
+    private String nombre;
 
     public Jugada(char c) {
         switch (Character.toString(c).toLowerCase().charAt(0)) {
-            case 'w': this.up    = 1;                 break; // ARRIBA
-            case 'a': this.left  = 1;                 break; // IZQUIERDA
-            case 's': this.down  = 1;                 break; // ABAJO
-            case 'd': this.right = 1;                 break; // DERECHA
-            case 'q': this.up    = 1; this.left  = 1; break; // EXPERIMENTAL: IZQ-ARR
-            case 'z': this.down  = 1; this.left  = 1; break; // EXPERIMENTAL: IZQ-ABA
-            case 'c': this.down  = 1; this.right = 1; break; // EXPERIMENTAL: DER-ABA
-            case 'e': this.up    = 1; this.right = 1; break; // EXPERIMENTAL: DER-ARR
-            case 'x': this.down  = 1;                 break; // EXPERIMENTAL: ABAJO
+            case 'w': this.up    = 1;                 nombre = "up"; break;         // ARRIBA
+            case 'a': this.left  = 1;                 nombre = "left"; break;       // IZQUIERDA
+            case 'x':                                                               // EXPEIRMENTAL: ABAJO
+            case 's': this.down  = 1;                 nombre = "down"; break;       // ABAJO
+            case 'd': this.right = 1;                 nombre = "right"; break;      // DERECHA
+            case 'q': this.up    = 1; this.left  = 1; nombre = "up-left"; break;    // EXPERIMENTAL: IZQ-ARR
+            case 'z': this.down  = 1; this.left  = 1; nombre = "down-left"; break;  // EXPERIMENTAL: IZQ-ABA
+            case 'c': this.down  = 1; this.right = 1; nombre = "up-right"; break;   // EXPERIMENTAL: DER-ABA
+            case 'e': this.up    = 1; this.right = 1; nombre = "down-right"; break; // EXPERIMENTAL: DER-ARR
             default:
                 Dialog.showError("ERROR: Caracter de jugada inválido.");
                 System.exit(1);
-                break;
         }
     }
+    
+    /**
+     * Devuelve el nombre de la dirección de la jugada.
+     * @return String con el nombre.
+     */
+    public String getNombre() {return this.nombre;}
 
     /**
-    * Devuelve el valor del movimiento hacia arriba de la jugada.
-    * @return Valor entero
-    */
+     * Devuelve el valor del movimiento hacia arriba de la jugada.
+     * @return Valor entero
+     */
     public int getUp() {return this.up;}
 
     /**
@@ -68,26 +74,26 @@ public class Jugada {
     public int getDown() {return this.down;}
 
     /**
-    * Devuelve el valor del movimiento hacia la izquierda de la jugada.
-    * @return Valor entero
-    */
+     * Devuelve el valor del movimiento hacia la izquierda de la jugada.
+     * @return Valor entero
+     */
     public int getLeft() {return this.left;}
 
     /**
-    * Devuelve el valor del movimiento hacia la derecha de la jugada.
-    * @return Valor entero
-    */
+     * Devuelve el valor del movimiento hacia la derecha de la jugada.
+     * @return Valor entero
+     */
     public int getRight() {return this.right;}
 
     /**
-    * Devuelve el movimiento vertical de la jugada.
-    * @return Valor entero
-    */
+     * Devuelve el movimiento vertical de la jugada.
+     * @return Valor entero
+     */
     public int moveVert() {return this.getDown() - this.getUp();}
 
     /**
-    * Devuelve el movimiento horizontal de la jugada.
-    * @return Valor entero
-    */
+     * Devuelve el movimiento horizontal de la jugada.
+     * @return Valor entero
+     */
     public int moveHorz() {return this.getRight() - this.getLeft();}
 }

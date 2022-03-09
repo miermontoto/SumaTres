@@ -13,14 +13,15 @@ import handler.Keyboard;
  */
 public final class Turno {
 
-    /**
-     * Constrctor generado para cumplir con SonarLint:S1118.
-     * 
-     * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
-     * 		Regla SonarLint:S1118 </a>
-     */
-    private Turno() {
-        throw new IllegalStateException("Utility class");
+    private final SumaTres s;
+    private final Tablero t;
+    private final Jugada x;
+    
+    public Turno(SumaTres si, Jugada ji) {
+        s = si;
+        x = ji;
+        
+        t = si.getTablero();
     }
 
     /**
@@ -32,13 +33,12 @@ public final class Turno {
      * que se mantiene el bucle while y se vuelven a mover todas las piezas.
      * Obviamente, aquellas piezas que no se puedan mover más en la dirección
      * escogida, se quedarán en la misma casilla.
-     * 
-     * @param x Objeto de la clase 'Jugada' que define el movimiento.
-     * @param t Objeto de la clase 'Tablero' del que obtener información.
      */
-    public static void mover(Jugada x, Tablero t) {
+    public void mover() {
         boolean check = true;
         while (check) {
+            
+            // Si se detecta un espacio vacío en la dirección de movimiento, se mueve la pieza.
             for (int i = x.getUp() + x.getDown()*(t.getColumns() - 2); i < t.getColumns() && i >= 0; i += 1 -2*x.getDown())
                 for (int j = x.getLeft() + x.getRight()*(t.getRows() - 2); j < t.getRows() && j >= 0; j += 1 - 2*x.getRight()) {
                     if (t.getTab(i + x.moveVert(), j + x.moveHorz()) == 0) {
@@ -62,10 +62,6 @@ public final class Turno {
         }
     }
 
-    public static void mover(Jugada x, SumaTres s) {
-        mover(x, s.getTablero());
-    }
-
     /**
      * Método utilizado por {@link #jugada(char)} para sumar las piezas contiguas en
      * la dirección seleccionada. Para detectar dichas sumas, se recorre todo el
@@ -82,12 +78,8 @@ public final class Turno {
      * <p>
      * Se comprueba si la ficha que resulta de la suma es la mayor en el tablero a
      * través de {@link #game.SumaTres.setHighest(int)}.
-     * 
-     * @param x Objeto de la clase 'Jugada' que define el movimiento.
-     * @param s Objeto de la clase 'SumaTres' del que obtener información.
      */
-    public static void sumar(Jugada x, SumaTres s) {
-        Tablero t = s.getTablero();
+    public void sumar() {
         for (int i = x.getUp() + x.getDown() * (t.getColumns() - 2); i < t.getColumns() && i >= 0; i += 1 - 2 * x.getDown())
             for (int j = x.getLeft() + x.getRight() * (t.getRows() - 2); j < t.getRows() && j >= 0; j += 1 - 2 * x.getRight()) {
                 if (sumaCond(i, j, x, t)) { // Si se puede sumar, se convierte la nueva casilla en la suma y la antigua en 0.
@@ -98,7 +90,7 @@ public final class Turno {
                     // Se comprueba si la mayor pieza es la recién sumada.
             }
         }
-        mover(x, s); // Se mueve al terminar de suma para evitar que queden huecos vacíos.
+        mover(); // Se mueve al terminar de suma para evitar que queden huecos vacíos.
     }
 
     /**
