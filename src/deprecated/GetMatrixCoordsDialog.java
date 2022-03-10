@@ -8,6 +8,7 @@ import util.Dialog;
  *
  * @author JuanMier
  */
+@Deprecated
 public class GetMatrixCoordsDialog extends javax.swing.JDialog {
     
     private boolean pressedOk;

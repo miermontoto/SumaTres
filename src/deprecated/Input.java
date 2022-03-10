@@ -2,6 +2,7 @@ package deprecated;
 
 import util.Dialog;
 
+@Deprecated
 public final class Input {
 	
 	private static int errorVal;
