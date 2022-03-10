@@ -169,7 +169,7 @@ public final class SumaTres extends JPanel {
     private double difficultyMultiplier; // Multiplicador de puntuación final.
     private boolean cheatsUsed; // Estado de activación de los trucos.
     private Tablero t; // Tablero sobre el que se juega la partida.
-    private final Settings op; // Opciones de la partida.
+    private Settings op; // Opciones de la partida.
     private boolean finished; // Booleano que determina si la partida se ha terminado ya o no.
     private long startTime; // Computer time para el comienzo de la partida.
 
@@ -464,12 +464,17 @@ public final class SumaTres extends JPanel {
         return obtainedFromRandom;
     }
 
-    /*
-     *  No existe setTurnos() porque no es necesario, los turnos son un simple contador sin
-     *  ninguna implicación en la partida. Además, solo se puede mover hacia atrás o hacia
-     *  adelante con UN turno de diferencia, por lo que con sumar o restar uno al contador
-     *  sirve.
-     */
+    public void setPuntos(long nv) {
+        if(nv >= 0) this.puntos = nv;
+    }
+    
+    public void setTurno(int nv) {
+        if(nv >= 1) this.turno = nv;
+    }
+    
+    public void setSettings(Settings nv) {
+        this.op = nv;
+    }
 
     // --- sets y gets --- //
 

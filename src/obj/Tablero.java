@@ -2,7 +2,6 @@ package obj;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Base64;
 import util.Dialog;
 
 /**
@@ -58,7 +57,7 @@ public class Tablero {
     }
     
     public Tablero(String s) throws IOException {
-        String[] data = s.split(" ");
+        String[] data = s.split(":");
         columns = Integer.parseInt(data[0]);
         rows = Integer.parseInt(data[1]);
         char[] tab = data[2].toCharArray();
@@ -68,7 +67,7 @@ public class Tablero {
         for(int i = 0, k = 0; i < columns; i++) for(int j = 0; j < rows; j++, k++) {
             tablero[i][j] = new Pieza();
             int val = Character.getNumericValue(tab[k]);
-            System.out.println(val);
+            //System.out.println(val);
             if(!Pieza.validValue(val)) throw new IOException("Valor de pieza inválido.");
             if(val != 0) {
                 addAmount();
@@ -79,8 +78,8 @@ public class Tablero {
     }
     
     public static boolean validTabcode(String s) {
-        String[] data = s.split(" ");
-        if(data.length != 3) return false;
+        String[] data = s.split(":");
+        if(data.length != 7) return false;
         try {
             int x = Integer.parseInt(data[0]);
             int y = Integer.parseInt(data[1]);
@@ -155,7 +154,7 @@ public class Tablero {
      */
     @Override
     public String toString() {
-        String s = String.format("%d %d ", columns, rows);
+        String s = String.format("%d:%d:", columns, rows);
         for(int i=0; i < this.getColumns(); i++) 
             for(int j=0; j < this.getRows(); j++) 
                 s += String.valueOf(this.getTab(i, j));

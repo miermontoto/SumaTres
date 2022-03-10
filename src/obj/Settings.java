@@ -50,7 +50,7 @@ public class Settings {
     
     public Settings(String s) throws IOException {
         String[] data = s.split(" ");
-        if(data.length != 17) throw new IOException("Tamaño de información incorrecto.");
+        if(data.length != 18) throw new IOException("Tamaño de información incorrecto.");
         sizex = Integer.parseInt(data[0]);
         sizey = Integer.parseInt(data[1]);
         experimentalMode = Boolean.parseBoolean(data[2]);
@@ -66,9 +66,9 @@ public class Settings {
         enhancedDiffMultEnabled = Boolean.parseBoolean(data[12]);
         saveResultsToFileEnabled = Boolean.parseBoolean(data[13]);
         drawZonesEnabled = Boolean.parseBoolean(data[14]);
-        drawGridEnabled = Boolean.parseBoolean(data[14]);
-        drawCoordsEnabled = Boolean.parseBoolean(data[15]);
-        verbosityLevel = Integer.parseInt(data[16]);
+        drawGridEnabled = Boolean.parseBoolean(data[15]);
+        drawCoordsEnabled = Boolean.parseBoolean(data[16]);
+        verbosityLevel = Integer.parseInt(data[17]);
 
         
         if(!experimentalMode && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||

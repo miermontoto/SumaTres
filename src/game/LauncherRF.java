@@ -700,17 +700,29 @@ public class LauncherRF extends javax.swing.JFrame {
 
     private void jmiLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoadActionPerformed
         LoadSaveDialog lsd = new LoadSaveDialog(juego);
-        try {
-            if(lsd.showDialog()) juego.setTablero(new Tablero(lsd.getValue()));
-            juego.repaint();
-            actualizarPneInfo();
+        try { 
+            if(lsd.showDialog()) {
+                String[] a = lsd.getValue().split(":");
+                if(Integer.parseInt(a[0]) == juego.getSettings().getX() && 
+                        Integer.parseInt(a[1]) == juego.getSettings().getY()) {
+                    juego.setTablero(new Tablero(lsd.getValue()));
+                    juego.setPuntos(Long.parseLong(a[3]));
+                    juego.setTurno(Integer.parseInt(a[4]));
+                    juego.setHighest(Integer.parseInt(a[5]));
+                    juego.setSettings(new Settings(a[6]));
+                    juego.update();
+                    actualizarPneInfo();
+                }
+            } else {Dialog.showError("El tamaño del tablero no es el actual.");}
         } catch (Exception ex) {Dialog.showError(ex);}
     }//GEN-LAST:event_jmiLoadActionPerformed
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
+        String toSave = juego.getTablero().toString();
+        toSave += String.format(":%d:%d:%d:%s", juego.getPuntos(), juego.getTurnos(), juego.getHighest(), juego.getSettings().toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
                 new StringSelection(Base64.getEncoder().encodeToString(
-                        juego.getTablero().toString().getBytes())), null);
+                        toSave.getBytes())), null);
         Dialog.show("Código de tablero copiado al portapapeles.");
     }//GEN-LAST:event_jmiSaveActionPerformed
 
