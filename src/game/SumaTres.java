@@ -96,7 +96,7 @@ import javax.swing.JPanel;
  * 
  * Desde la versión 14, el proyecto ya no forma parte del trabajo en grupo para
  * la EPI. La versión entregada fue 'v13'. <p> 
- * Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode.
+ * Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode, NetBeans.
  * 
  * @author Juan Mier
  * @version v21
