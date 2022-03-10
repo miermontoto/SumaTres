@@ -532,7 +532,8 @@ public final class SumaTres extends JPanel {
         if(op.verbosity() == 2) jstTime = System.currentTimeMillis();
         
         String oldStatus = t.toString();
-        Tablero temp = new Tablero(t);
+        Tablero temp = new Tablero(op.getX(), op.getY());
+        temp.setFromString(t.toString());
         Jugada x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
         Turno turn = new Turno(this, x); // Se crea un objeto tipo "Turno" que ejecute la jugada.
         

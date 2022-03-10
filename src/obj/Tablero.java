@@ -1,6 +1,5 @@
 package obj;
 
-import java.io.IOException;
 import java.util.Arrays;
 import util.Dialog;
 
@@ -39,21 +38,6 @@ public class Tablero {
             for (int i = 0; i < x; i++) for (int j = 0; j < y; j++) tablero[i][j] = new Pieza();
             amountOfPiezas = 0;
         }
-    }
-
-    /**
-     * Constructor que copia los parámetros y valores de las piezas de otro tablero.
-     * 
-     * @param x Objeto tablero a copiar.
-     */
-    public Tablero(Tablero x) {
-        columns = x.getColumns();
-        rows = x.getRows();
-        tablero = new Pieza[columns][rows];
-        for(int i = 0; i < columns; i++)
-            for(int j = 0; j < rows; j++)
-                tablero[i][j] = x.tablero[i][j];
-        amountOfPiezas = x.amount();
     }
     
     public boolean setFromString(String s) {    
