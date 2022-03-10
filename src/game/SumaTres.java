@@ -561,8 +561,8 @@ public final class SumaTres extends JPanel {
 
         
         String newStatus = t.toString();
-        //vrbMsg(2, String.format("ID tablero previo: %s", oldStatus));
-        //vrbMsg(2, String.format("ID tablero nuevo : %s", newStatus));
+        vrbMsg(2, String.format("ID tablero previo: %s", oldStatus));
+        vrbMsg(2, String.format("ID tablero nuevo : %s", newStatus));
         
         if (!newStatus.equals(oldStatus)) {
             vrbMsg(2, "La jugada ha modificado el tablero, sumando un turno.");

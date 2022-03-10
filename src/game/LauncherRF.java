@@ -149,6 +149,8 @@ public class LauncherRF extends javax.swing.JFrame {
         pneInfo = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
+        jmiNuevaPartida = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jmiSave = new javax.swing.JMenuItem();
         jmiLoad = new javax.swing.JMenuItem();
         jmiResults = new javax.swing.JMenuItem();
@@ -202,6 +204,16 @@ public class LauncherRF extends javax.swing.JFrame {
 
         mnuArchivo.setText("Archivo");
 
+        jmiNuevaPartida.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jmiNuevaPartida.setText("Nueva partida");
+        jmiNuevaPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiNuevaPartidaActionPerformed(evt);
+            }
+        });
+        mnuArchivo.add(jmiNuevaPartida);
+        mnuArchivo.add(jSeparator6);
+
         jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiSave.setText("Guardar");
         jmiSave.addActionListener(new java.awt.event.ActionListener() {
@@ -220,7 +232,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuArchivo.add(jmiLoad);
 
-        jmiResults.setText("Resultados prev.");
+        jmiResults.setText("Resultados");
         jmiResults.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiResultsActionPerformed(evt);
@@ -727,6 +739,13 @@ public class LauncherRF extends javax.swing.JFrame {
         Dialog.show("Código de tablero copiado al portapapeles.");
     }//GEN-LAST:event_jmiSaveActionPerformed
 
+    private void jmiNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNuevaPartidaActionPerformed
+        if(!Dialog.confirm("¿Desea iniciar una nueva partida?")) return; 
+        //juego.finalDePartida();
+        secundaria.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jmiNuevaPartidaActionPerformed
+
     
     /**
      * Método que devuelve el objeto de tipo <code>SumaTres</code> con el que se
@@ -784,6 +803,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jmiColores;
     private javax.swing.JCheckBoxMenuItem jmiDarkMode;
@@ -800,6 +820,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jmiModoClassic;
     private javax.swing.JRadioButtonMenuItem jmiModoExperimental;
     private javax.swing.ButtonGroup jmiModoGroup;
+    private javax.swing.JMenuItem jmiNuevaPartida;
     private javax.swing.JMenuItem jmiResults;
     private javax.swing.JMenuItem jmiSalir;
     private javax.swing.JMenuItem jmiSave;

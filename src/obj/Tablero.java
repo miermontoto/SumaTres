@@ -56,13 +56,13 @@ public class Tablero {
         amountOfPiezas = x.amount();
     }
     
-    public boolean setFromString(String s) {
-        if(s.length() != columns*rows) return false;
+    public boolean setFromString(String s) {    
+        String[] tab = s.split(",");
+        if(tab.length != columns*rows) return false;
         amountOfPiezas = 0;
-        char[] tab = s.toCharArray();
         
         for(int i = 0, k = 0; i < columns; i++) for(int j = 0; j < rows; j++, k++) {
-            int val = Character.getNumericValue(tab[k]);
+            int val = Integer.parseInt(tab[k]);
             if(val != 0) {
                 addAmount();
                 tablero[i][j].setValor(val);
@@ -140,7 +140,7 @@ public class Tablero {
         String s = "";
         for(int i=0; i < this.getColumns(); i++) 
             for(int j=0; j < this.getRows(); j++) 
-                s += String.valueOf(this.getTab(i, j));
+                s += String.format("%d,", this.getTab(i, j));
         return s;
     }
 
