@@ -4,17 +4,22 @@ import com.formdev.flatlaf.FlatDarkLaf; // Modo claro que reemplaza a Nimbus.
 import com.formdev.flatlaf.FlatLightLaf; // Modo oscuro.
 import gui.PrePartida; // Ventana de opciones prepartida.
 import gui.EditarColores; // Ventana de edición de colores de piezas.
+import gui.LoadSaveDialog;
 import handler.Keyboard;
 import handler.Mouse;
 import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Map; // Map.EntrySet
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
 import obj.Settings; // Se utiliza para guardar y editar opciones.
+import obj.Tablero;
 import obj.Turno;
 import thread.LoopComms;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
@@ -126,10 +131,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiModoClassic.setSelected(op.isExperimental());
         jmiModoExperimental.setEnabled(op.isExperimental());
         jmiModoExperimental.setSelected(op.isExperimental());
-              
-        // TODO: habilitar estas funciones
-        jmiLoad.setEnabled(false);
-        jmiSave.setEnabled(false);
         
         requestFocusInWindow();
     }
@@ -203,10 +204,20 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiSave.setText("Guardar");
+        jmiSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiSaveActionPerformed(evt);
+            }
+        });
         mnuArchivo.add(jmiSave);
 
         jmiLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiLoad.setText("Cargar");
+        jmiLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiLoadActionPerformed(evt);
+            }
+        });
         mnuArchivo.add(jmiLoad);
 
         jmiResults.setText("Resultados prev.");
@@ -537,7 +548,7 @@ public class LauncherRF extends javax.swing.JFrame {
                 juego.getHighest(), juego.getTablero().amount());
 
             s += String.format("Posibles piezas siguientes actualmente: ");
-            for(int i : juego.possibleValuesNewSiguiente()) 
+            for(int i : juego.possibleNextValues()) 
                 s += String.format("%d ", i);
 
             s += String.format("%nPiezas \"siguientes\" obtenidas:%n");
@@ -686,6 +697,22 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.getSettings().toggleDrawCoords();
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
+
+    private void jmiLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoadActionPerformed
+        LoadSaveDialog lsd = new LoadSaveDialog(juego);
+        try {
+            if(lsd.showDialog()) juego.setTablero(new Tablero(lsd.getValue()));
+            juego.repaint();
+            actualizarPneInfo();
+        } catch (Exception ex) {Dialog.showError(ex);}
+    }//GEN-LAST:event_jmiLoadActionPerformed
+
+    private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                new StringSelection(Base64.getEncoder().encodeToString(
+                        juego.getTablero().toString().getBytes())), null);
+        Dialog.show("Código de tablero copiado al portapapeles.");
+    }//GEN-LAST:event_jmiSaveActionPerformed
 
     
     /**

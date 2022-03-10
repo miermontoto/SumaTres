@@ -621,14 +621,14 @@ public final class SumaTres extends JPanel {
      * 
      * @return
      */
-    public int[] possibleValuesNewSiguiente() {
-        if(getHighest() <= 12) {
-            // Si la ficha no supera 12, el método de obtener el valor de
+    public int[] possibleNextValues() {
+        if(getHighest() <= 24) {
+            // Si la ficha no supera 24, el método de obtener el valor de
             // la siguiente ficha es el clásico.
                 return new int[] {1, 2, 3};
         } else {
             var i = 0;
-            while(getHighest() != 6*Math.pow(2, i)) {i++;}
+            while(getHighest() != 12*Math.pow(2, i)) {i++;}
 
             var vlsSig = new int[i+1];
             for(int h=0; h<3; h++) vlsSig[h] = h+1; // Se introducen 1, 2 y 3 en el vector de posibles valores.+
@@ -654,7 +654,7 @@ public final class SumaTres extends JPanel {
      */
     private void newSiguienteExperimental() {
    	if(op.isMoreNextValuesEnabled()) {
-            int[] values = possibleValuesNewSiguiente();
+            int[] values = possibleNextValues();
             if(values.length == 3) setSiguiente(Random.newRandom(3) + 1);
             else {
                 int finalValue;
@@ -688,7 +688,7 @@ public final class SumaTres extends JPanel {
     @Deprecated (since="v20", forRemoval=false)
     private void newSiguiente() {
         if(op.isMoreNextValuesEnabled()) 
-            setSiguiente(possibleValuesNewSiguiente()[Random.newRandom(possibleValuesNewSiguiente().length)]);
+            setSiguiente(possibleNextValues()[Random.newRandom(possibleNextValues().length)]);
         else 
             setSiguiente(Random.newRandom(3) + 1);
         
@@ -815,9 +815,9 @@ public final class SumaTres extends JPanel {
         if(op.isConsoleEnabled()) {
             out.printf("%n%n%s%n",salida);
             out.print("Fichas obtenidas: ");
-            for(int i=0; i < possibleValuesNewSiguiente().length; i++) {
+            for(int i=0; i < possibleNextValues().length; i++) {
                 out.printf("[%d]: %d ",
-                    possibleValuesNewSiguiente()[i], obtainedFromRandom.get(possibleValuesNewSiguiente()[i]));
+                    possibleNextValues()[i], obtainedFromRandom.get(possibleNextValues()[i]));
             }
             out.println();
         }
