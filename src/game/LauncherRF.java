@@ -530,10 +530,11 @@ public class LauncherRF extends javax.swing.JFrame {
             String s = String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
                 + "Turnos jugados: %d%n"
                 + "Siguiente ficha: %d%n"
-                + "Pieza más alta: %d%n",
+                + "Pieza más alta: %d%n"
+                + "Cantidad de piezas: %d%n",
                 (int) (juego.getPuntos()*juego.getMultiplier()), 
                 juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente(),
-                juego.getHighest());
+                juego.getHighest(), juego.getTablero().amount());
 
             s += String.format("Posibles piezas siguientes actualmente: ");
             for(int i : juego.possibleValuesNewSiguiente()) 

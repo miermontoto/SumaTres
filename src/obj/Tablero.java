@@ -15,6 +15,7 @@ public class Tablero {
     private Pieza[][] tablero;
     private final int columns;
     private final int rows;
+    private int amountOfPiezas;
 
     /**
      * Constructor que inicializa el tablero. Para hacerlo, se toman las dimensiones
@@ -35,6 +36,7 @@ public class Tablero {
             columns = x;
             rows = y;
             for (int i = 0; i < x; i++) for (int j = 0; j < y; j++) tablero[i][j] = new Pieza();
+            amountOfPiezas = 0;
         }
     }
 
@@ -46,7 +48,11 @@ public class Tablero {
     public Tablero(Tablero x) {
         columns = x.getColumns();
         rows = x.getRows();
-        tablero = x.tablero;
+        tablero = new Pieza[columns][rows];
+        for(int i = 0; i < columns; i++)
+            for(int j = 0; j < rows; j++)
+                tablero[i][j] = x.tablero[i][j];
+        amountOfPiezas = x.amount();
     }
 
     /**
@@ -69,6 +75,17 @@ public class Tablero {
 
     public void setTab(int x, int y, int nv) {this.getPieza(x, y).setValor(nv);}
     public int getTab(int x, int y) {return this.getPieza(x, y).getValor();}
+    
+    public void addAmount() {this.amountOfPiezas++;}
+    public void subAmount() {this.amountOfPiezas--;}
+    
+    /**
+     * Devuelve la cantidad de piezas en tablero.
+     * Se utiliza para evitar recorrer el tablero cuando ya se han encontrado
+     * todas las piezas.
+     * @return 
+     */
+    public int amount() {return this.amountOfPiezas;}
 
     /**
      * Método que devuelve la pieza localizada en la posición especificada. Se puede
@@ -90,25 +107,13 @@ public class Tablero {
     }
 
     /**
-    * Comprueba que si el tablero está lleno. Se recorre todo el tablero,
-    * si se detecta una casilla vacía (sin valor), se para de comprobar y
-    * se devuelve <code>false</code>. Si se llega al final del tablero y
-    * ninguna pieza está vacía, se devuelve <code>true</code>.
+    * Comprueba que si el tablero está lleno. Si la cantidad de piezas es igual
+    * a la cantidad de espacios en tablero, se devuelve 'true'.
     * 
     * @return Devuelve un booleano, 'true' si está lleno, 'false' si no.
     */
     public boolean isFull() {
-        int i = 0;
-        boolean full = true;
-        while (full && i < this.getColumns()) {
-            int j = 0;
-            while(j < this.getRows()) {
-                if(this.getPieza(i, j).getValor() == 0) full = false;
-                j++;
-            }
-            i++;
-        }
-        return full;
+        return amount() == getColumns() * getRows();
     }
 
     /**
@@ -116,8 +121,10 @@ public class Tablero {
      */
     @Override
     public String toString() {
-        String s = "";
-        for(int i=0; i < this.getColumns(); i++) for(int j=0; j < this.getRows(); j++) s += String.valueOf(this.getTab(i, j));
+        String s = String.format("%d %d ", columns, rows);
+        for(int i=0; i < this.getColumns(); i++) 
+            for(int j=0; j < this.getRows(); j++) 
+                s += String.valueOf(this.getTab(i, j));
         return s;
     }
 
@@ -139,7 +146,7 @@ public class Tablero {
      */
     @Override
     public boolean equals(Object x) {
-        return this.toString() == x.toString();
+        return x.toString().equals(this.toString());
     }
 
     @Override

@@ -12,7 +12,7 @@ import obj.Pieza;
 import obj.Settings;
 
 
-public final class Paint {
+public class Paint {
 
     public static final int SPOT_SPACER    = (int) (3  * Graphic.SCALE); // Espacio entre piezas.
     public static final int BOARD_SPACER   = (int) (6  * Graphic.SCALE); // Espacio entre el borde del tablero y las piezas.
@@ -55,7 +55,6 @@ public final class Paint {
      * Se utiliza Helvetica como fuente porque se encuentra en casi cualquier sistema operativo hoy en día y
      * además está mejor diseñada y adaptada que Arial.
      * 
-     * @param g2d  Entorno gráfico
      * @param size Tamaño de fuente a establecer
      */
     private void setFontSize(int size) {
@@ -107,9 +106,7 @@ public final class Paint {
      * experimental, se pintan las flechas que delimitan el movimiento en diagonal. Se han
      * escogido estos caracteres en concreto porque representan bastante bien el carácter del
      * movimiento en diagonal: se mueve hasta encontrarse con otra pieza o el borde del tablero,
-     * no hasta estar en la posición más extrema en la dirección indicada. <p> Necesita información
-     * sobre la partida para dibujar correctamente, por lo que se le debe pasar el objeto de tipo
-     * SumaTres correspondiente.
+     * no hasta estar en la posición más extrema en la dirección indicada. 
      */
     private void pintarFlechas() {
         
@@ -138,13 +135,8 @@ public final class Paint {
     }
 
     /**
-     * Método sencillo que imprime el tablero, es decir, un rectángulo blanco, en la aplicación
-     * gráfica. Para obtener las dimensiones del tablero, se tienen en cuenta los espaciados
-     * entre el tablero y el borde de la ventana, el tamaño de las piezas, la separación entre
-     * piezas y la separación entre las piezas y el tablero. También se encarga de pintar los botones.
-     * 
-     * @param g Entorno gráfico
-     * @param s Objeto SumaTres que contiene la partida en sí
+     * Método sencillo que imprime el tablero. El tablero no es más que un rectángulo
+     * redondeado blanco.
      */
     private void pintarTablero() {
         g.setColor(BOARD_COLOR);
@@ -156,8 +148,7 @@ public final class Paint {
 
     /**
      * Método que imprime información sobre la partida como los turnos, los puntos o la
-     * siguiente pieza en pantalla. Requiere un objeto de tipo SumaTres para calcular
-     * posiciones correctamente y obtener información sobre la partida.
+     * siguiente pieza en pantalla.
      */
     private void pintarInfo() {
         g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : new Color(48, 50, 52));
@@ -246,24 +237,20 @@ public final class Paint {
      * pintan las fichas. Para esto, se examina el tablero entero. Si la posición en el tablero
      * tiene valor <code>0</code>, no se pinta nada.
      * <p>
-     * Para obtener los colores con los que se va a pintar las piezas, se utiliza un HashMap con
-     * los valores de las piezas como claves y los colores como valores. Si no existe una clave,
-     * se genera un nuevo color y se guarda, de modo que todas las futuras piezas con ese valor
-     * tengan el mismo color. Para esto, se utiliza {@link #newRandom(int)}. Esto puede causar
-     * que el color de algunas piezas sea muy similar al de algunos valores predeterminados, o
-     * que la fuente blanca no se vea encima al imprimir el valor de la ficha.
+     * Para obtener los colores con los que se va a pintar las piezas, se utiliza un Map con
+     * los valores de las piezas como claves y los colores como valores.
      * <p>
      * Dependiendo de la cantidad de dígitos que tiene una ficha, su valor se imprime desplazado
      * hacia la izquierda para centrar el valor de las fichas más grandes.
-     * 
-     * @param g Entorno gráfico
-     * @param s Objeto SumaTres que contiene la partida en sí
      */
     private void pintarFichas() {
-        for (int i = 0; i < s.getTablero().getColumns(); i++)
-            for (int j = 0; j < s.getTablero().getRows(); j++) { // Se recorre el tablero.
+        int limit = 0;
+        for (int i = 0; i < s.getTablero().getColumns() && limit < s.getTablero().amount(); i++)
+            for (int j = 0; j < s.getTablero().getRows() && limit < s.getTablero().amount(); j++) { // Se recorre el tablero.
                 Pieza next = s.getTablero().getPieza(i, j);
-                if (!next.isEmpty()) { // Al detectarse una pieza, se obtiene su color referente.        
+                if (!next.isEmpty()) { // Al detectarse una pieza, se obtiene su color referente.  
+                    limit++;
+                    
                     // Se pinta la pieza en sí.
                     g.setColor(next.getColor());
                     g.fillRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * j,

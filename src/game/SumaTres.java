@@ -254,6 +254,7 @@ public final class SumaTres extends JPanel {
         for(int i = 1; i <= 3; i++) {
             int[] loc = validLocation();
             setTab(loc[0], loc[1], i);
+            t.addAmount();
         }
     }
     
@@ -332,7 +333,7 @@ public final class SumaTres extends JPanel {
      * @param y Coordenada y que se desea analizar.
      * @return  Entero con el valor de la casilla.
      */
-    public int getTab(int x, int y) {return this.t.getPieza(x, y).getValor();}
+    public int getTab(int x, int y) {return this.t.getTab(x, y);}
 
     /**
      * Establece el valor de una ficha para una casilla.
@@ -341,7 +342,7 @@ public final class SumaTres extends JPanel {
      * @param y  Coordenada y que se desea cambiar.
      * @param nv Nuevo Valor de la casilla.
      */
-    public void setTab(int x, int y, int nv) {this.t.getPieza(x, y).setValor(nv);}
+    public void setTab(int x, int y, int nv) {this.t.setTab(x, y, nv);}
 
     /**
      * Devuelve el valor de la próxima ficha.
@@ -521,20 +522,18 @@ public final class SumaTres extends JPanel {
      * @param c Caracter que determina el movimiento (w/s/a/d) y, en modo experimental, (q/w/e/d/c/x/z/a).
      */
     public void jugada(char c) {
+        long jstTime = 0;
+        long tmpTime = 0;
+        if(op.verbosity() == 2) jstTime = System.currentTimeMillis();
         
-        /*
-         * Se genera una copia del tablero para comparar después de realizar la jugada.
-         * Si al compararse el tablero nuevo con su posición anterior resulta que ambos
-         * son iguales, significa que el nuevo tablero no se ha visto modificado, por lo
-         * que no debería añadirse un turno al contador.
-         */
+        String oldStatus = t.toString();
         Tablero temp = new Tablero(t);
         Jugada x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
         Turno turn = new Turno(this, x); // Se crea un objeto tipo "Turno" que ejecute la jugada.
         
         vrbMsg(1, String.format("Jugada: %s", x.getNombre()));
 
-        long tmpTime = System.currentTimeMillis();
+        if(op.verbosity() == 2) tmpTime = System.currentTimeMillis();
         long tmpPuntos = getPuntos();
         turn.mover();
         if(op.isConsoleEnabled()) out.println(this); //TODO: hacer que los saltos de línea coincidan
@@ -555,7 +554,12 @@ public final class SumaTres extends JPanel {
         }
         else vrbMsg(1, "El tablero está lleno, no se ha colocado ficha siguiente.");
 
-        if (!t.equals(temp)) {
+        
+        String newStatus = t.toString();
+        //vrbMsg(2, String.format("ID tablero previo: %s", oldStatus));
+        //vrbMsg(2, String.format("ID tablero nuevo : %s", newStatus));
+        
+        if (!newStatus.equals(oldStatus)) {
             vrbMsg(2, "La jugada ha modificado el tablero, sumando un turno.");
             addTurno(); // Si el tablero ha cambiado, se añade un turno.
             tableros.addLast(temp);
@@ -563,10 +567,13 @@ public final class SumaTres extends JPanel {
             vrbMsg(2, "La jugada no ha modificado el tablero.");
             deactivateWarning();
         }
+        
 
         update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
         if (!Turno.ableToMove(this)) finalDePartida(); // Si no se puede mover, se termina la partida.
         else vrbMsg(2, "Quedan jugadas posibles.");
+        
+        vrbMsg(2, String.format("La jugada ha tardado %s en ejecutarse.", getTime(jstTime)));
     }
     
 
@@ -604,6 +611,7 @@ public final class SumaTres extends JPanel {
         if(loc == null) throw new NullPointerException("No se ha encontrado lugar donde insertar pieza siguiente (NULL).");
         setWarning(loc);
         setTab(loc[0], loc[1], getSiguiente());
+        t.addAmount();
         newSiguiente();
     }
 
@@ -683,7 +691,7 @@ public final class SumaTres extends JPanel {
             setSiguiente(possibleValuesNewSiguiente()[Random.newRandom(possibleValuesNewSiguiente().length)]);
         else 
             setSiguiente(Random.newRandom(3) + 1);
-
+        
         obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
     }
@@ -843,8 +851,14 @@ public final class SumaTres extends JPanel {
         boolean check = false;
         ModifyBoardDialog dialog = new ModifyBoardDialog(this);
         if (dialog.showDialog()) {
-            if(dialog.getMode() == 0 || dialog.getMode() == 1) setTab(dialog.getCoordsX(), dialog.getCoordsY(), dialog.getValue());
-            else setTab(dialog.getCoordsX(), dialog.getCoordsY(), 0);
+            if(dialog.getMode() == 0 || dialog.getMode() == 1) {
+                if(getTab(dialog.getCoordsX(), dialog.getCoordsY()) != 0) t.addAmount();
+                setTab(dialog.getCoordsX(), dialog.getCoordsY(), dialog.getValue());
+            }
+            else {
+                t.subAmount();
+                setTab(dialog.getCoordsX(), dialog.getCoordsY(), 0);
+            }
             update();
             check = true;
         }

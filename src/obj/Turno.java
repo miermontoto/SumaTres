@@ -87,6 +87,7 @@ public final class Turno {
                     t.setTab(i, j, 0);
                     s.addPuntos(t.getTab(i + x.moveVert(), j + x.moveHorz()));
                     s.setHighest(t.getTab(i + x.moveVert(), j + x.moveHorz()));
+                    t.subAmount();
                     // Se comprueba si la mayor pieza es la recién sumada.
             }
         }
@@ -152,8 +153,9 @@ public final class Turno {
      * @return  Un booleano, 'true' si se puede sumar, 'false' si no.
      */
     private static boolean sumaCond(int i, int j, Jugada x, Tablero t) {
-        return t.getTab(i + x.moveVert(), j + x.moveHorz()) == t.getTab(i, j) &&
-            t.getTab(i, j) >= 3  ||
-            t.getTab(i, j) + t.getTab(i + x.moveVert(), j + x.moveHorz()) == 3;
+        return (t.getTab(i + x.moveVert(), j + x.moveHorz()) == t.getTab(i, j) &&
+            t.getTab(i, j) >= 3)  ||
+            (t.getTab(i, j) + t.getTab(i + x.moveVert(), j + x.moveHorz()) == 3 &&
+                (t.getTab(i, j) == 2 || t.getTab(i, j) == 1));
     }
 }
