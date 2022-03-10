@@ -34,6 +34,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private SumaTres juego;
     private Thread loopThread;
     private static LoopComms loopComms;
+    private int threadProgress;
     
     
     /**
@@ -46,6 +47,7 @@ public class LauncherRF extends javax.swing.JFrame {
         ventanaColores.setVisible(false);
         secundaria = new PrePartida(this);
         secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
+        threadProgress = -1; // No se ha iniciado el loop todavía.
     }
     
     /**
@@ -421,7 +423,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoop.setEnabled(false);
 
         jmiTrucosLoopStart.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PAGE_DOWN, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jmiTrucosLoopStart.setText("Iniciar");
+        jmiTrucosLoopStart.setText("Iniciar / Continuar");
         jmiTrucosLoopStart.setEnabled(false);
         jmiTrucosLoopStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -565,7 +567,9 @@ public class LauncherRF extends javax.swing.JFrame {
                 activado(op.isSaveResultsToFileEnabled())
                 );
             
-            s += String.format("%n%n%s", juego.isFinished() ? "Partida terminada." : "");
+            s += String.format("%s%n", threadProgress == -1 ? "" : String.format("Progreso del loop: %d", threadProgress));
+            
+            s += String.format("%n%s", juego.isFinished() ? "Partida terminada." : "");
             pneInfo.setText(s);
         }
     }
@@ -606,6 +610,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiInterfazHudActionPerformed
 
     private void jmiTrucosLoopStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopStartActionPerformed
+        if(loopThread != null) loopComms.setStop(false);
         loopThread = new Thread() {@Override
             public void run(){LauncherRF.loopComms.Run();};
         };
@@ -645,7 +650,7 @@ public class LauncherRF extends javax.swing.JFrame {
 
     private void jmiTrucosLoopEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopEndActionPerformed
         jmiTrucosLoopEnd.setSelected(true);
-        loopComms.setStop();
+        loopComms.setStop(true);
     }//GEN-LAST:event_jmiTrucosLoopEndActionPerformed
 
     private void jmiTrucosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosActionPerformed
@@ -682,6 +687,10 @@ public class LauncherRF extends javax.swing.JFrame {
     
     public SumaTres getPartida() {
         return this.juego;
+    }
+    
+    public void setProgress(int val) {
+        if(val >= -1 && val <= 100) threadProgress = val;
     }
     
     /**

@@ -9,9 +9,11 @@ import game.LauncherRF;
 public class LoopComms extends LoopTask {
     
     private boolean isStopped;
+    private LauncherRF ventanaPrincipal;
 
     public LoopComms(LauncherRF l) {
         super(l);
+        ventanaPrincipal = l;
     }
 
     @Override
@@ -34,13 +36,13 @@ public class LoopComms extends LoopTask {
         return isStopped;
     }
     
-    public void setStop() {
-        this.isStopped = true;
+    public void setStop(boolean t) {
+        this.isStopped = t;
     }
 
     @Override
     public void Progress(int val) {
-        return; // TODO
+        ventanaPrincipal.setProgress(val);
     }
     
 }
