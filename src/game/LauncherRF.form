@@ -271,7 +271,7 @@
                     <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                       <KeyStroke key="Shift+Ctrl+PAGE_DOWN"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Iniciar"/>
+                    <Property name="text" type="java.lang.String" value="Iniciar / Continuar"/>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>

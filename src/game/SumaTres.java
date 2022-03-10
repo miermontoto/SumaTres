@@ -225,11 +225,14 @@ public final class SumaTres extends JPanel {
          * generar el set de fichas inicial. De lo contrario, la primera jugada contaría con piezas
          * de colores aleatorios durante ese turno solamente.
          */
-        Pieza.inicializarColores();
-        if (op.isBalancedStartEnabled()) 
-            for(int i = 0; i < Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1); i++) 
+        Pieza.inicializarColores(); vrbMsg(2, "Colores inicializados.");
+        if (op.isBalancedStartEnabled()) {
+            int tmpLimit = Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1);
+            for(int i = 0; i < tmpLimit; i++) 
                 generarSetFichas();
-        else generarSetFichas();
+            vrbMsg(2, String.format("Generado(s) %d set(s) de ficha(s).", tmpLimit));
+        }
+        else generarSetFichas(); vrbMsg(2, "Generado set de fichas.");
          /*
           * Se hace Math.max porque en el tablero 3x3, el resultado del cálculo es 0.45,
           * que convertido a entero es 0, lo que resulta en un tablero vacío al empezar
