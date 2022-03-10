@@ -126,9 +126,7 @@ public class LoadSaveDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void pswCodeInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_pswCodeInputMethodTextChanged
-        try {
-            btnAceptar.setEnabled(Tablero.validTabcode(new String(Base64.getDecoder().decode(new String(pswCode.getPassword())))));
-        } catch (Exception ex) {}
+
     }//GEN-LAST:event_pswCodeInputMethodTextChanged
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
@@ -140,7 +138,6 @@ public class LoadSaveDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void pswCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pswCodeActionPerformed
-        pswCodeInputMethodTextChanged(null);
     }//GEN-LAST:event_pswCodeActionPerformed
     
     /**

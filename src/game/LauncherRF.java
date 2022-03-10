@@ -705,7 +705,7 @@ public class LauncherRF extends javax.swing.JFrame {
                 String[] a = lsd.getValue().split(":");
                 if(Integer.parseInt(a[4].split(" ")[0]) == juego.getSettings().getX() && 
                         Integer.parseInt(a[4].split(" ")[1]) == juego.getSettings().getY()) {
-                    juego.setTablero(new Tablero(lsd.getValue()));
+                    juego.setTablero(new Tablero(juego.getSettings().getX(), juego.getSettings().getY()).setFromString(a[0]));
                     juego.setPuntos(Long.parseLong(a[1]));
                     juego.setTurno(Integer.parseInt(a[2]));
                     juego.setHighest(Integer.parseInt(a[3]));

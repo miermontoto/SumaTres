@@ -56,35 +56,18 @@ public class Tablero {
         amountOfPiezas = x.amount();
     }
     
-    public Tablero(String s) throws IOException {
-        String[] data = s.split(":");
-        columns = Integer.parseInt(data[4].split(" ")[0]);
-        rows = Integer.parseInt(data[4].split(" ")[1]);
-        char[] tab = data[0].toCharArray();
+    public boolean setFromString(String s) {
+        if(s.length() != columns*rows) return false;
         amountOfPiezas = 0;
-        tablero = new Pieza[columns][rows];
+        char[] tab = s.toCharArray();
         
         for(int i = 0, k = 0; i < columns; i++) for(int j = 0; j < rows; j++, k++) {
-            tablero[i][j] = new Pieza();
             int val = Character.getNumericValue(tab[k]);
-            //System.out.println(val);
-            if(!Pieza.validValue(val)) throw new IOException("Valor de pieza inválido.");
             if(val != 0) {
                 addAmount();
                 tablero[i][j].setValor(val);
-            }
-            
+            } 
         }
-    }
-    
-    public static boolean validTabcode(String s) {
-        String[] data = s.split(":");
-        if(data.length != 7) return false;
-        try {
-            int x = Integer.parseInt(data[4].split(" ")[0]);
-            int y = Integer.parseInt(data[4].split(" ")[1]);
-            if(x <= 2 || y <= 2 || x > 33 || y > 33) throw new UnsupportedOperationException();
-        } catch (UnsupportedOperationException | NumberFormatException ex) {return false;}
         return true;
     }
 
