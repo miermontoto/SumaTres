@@ -232,6 +232,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuArchivo.add(jmiLoad);
 
+        jmiResults.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiResults.setText("Resultados");
         jmiResults.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -254,6 +255,7 @@ public class LauncherRF extends javax.swing.JFrame {
 
         mnuOpciones.setText("Opciones");
 
+        jmiExtrasConsole.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiExtrasConsole.setSelected(true);
         jmiExtrasConsole.setText("Salida por consola");
         jmiExtrasConsole.addActionListener(new java.awt.event.ActionListener() {
@@ -263,6 +265,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuOpciones.add(jmiExtrasConsole);
 
+        jmiExitOnEnd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiExitOnEnd.setSelected(true);
         jmiExitOnEnd.setText("Salir al terminar");
         jmiExitOnEnd.addActionListener(new java.awt.event.ActionListener() {
@@ -272,6 +275,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuOpciones.add(jmiExitOnEnd);
 
+        jmiDarkMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_HOME, 0));
         jmiDarkMode.setSelected(true);
         jmiDarkMode.setText("Modo oscuro");
         jmiDarkMode.addActionListener(new java.awt.event.ActionListener() {
@@ -281,8 +285,9 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuOpciones.add(jmiDarkMode);
 
+        jmiSaveOnExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiSaveOnExit.setSelected(true);
-        jmiSaveOnExit.setText("Guardar res. al terminar");
+        jmiSaveOnExit.setText("Guardar al terminar");
         jmiSaveOnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiSaveOnExitActionPerformed(evt);
@@ -294,6 +299,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiInterfaz.setText("Interfaz");
         jmiInterfaz.setEnabled(false);
 
+        jmiInterfazFlechas.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiInterfazFlechas.setSelected(true);
         jmiInterfazFlechas.setText("Dibujar flechas");
         jmiInterfazFlechas.addActionListener(new java.awt.event.ActionListener() {
@@ -303,6 +309,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         jmiInterfaz.add(jmiInterfazFlechas);
 
+        jmiInterfazHud.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiInterfazHud.setSelected(true);
         jmiInterfazHud.setText("Dibujar HUD");
         jmiInterfazHud.addActionListener(new java.awt.event.ActionListener() {
@@ -312,6 +319,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         jmiInterfaz.add(jmiInterfazHud);
 
+        jmiInterfazZonas.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiInterfazZonas.setSelected(true);
         jmiInterfazZonas.setText("Dibujar zonas");
         jmiInterfazZonas.addActionListener(new java.awt.event.ActionListener() {
@@ -321,6 +329,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         jmiInterfaz.add(jmiInterfazZonas);
 
+        jmiIntefazGrid.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiIntefazGrid.setSelected(true);
         jmiIntefazGrid.setText("Dibujar grid");
         jmiIntefazGrid.addActionListener(new java.awt.event.ActionListener() {
@@ -330,6 +339,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         jmiInterfaz.add(jmiIntefazGrid);
 
+        jmiInterfazCoords.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiInterfazCoords.setSelected(true);
         jmiInterfazCoords.setText("Dibujar coordenadas");
         jmiInterfazCoords.addActionListener(new java.awt.event.ActionListener() {
@@ -342,6 +352,7 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuOpciones.add(jmiInterfaz);
         mnuOpciones.add(jSeparator3);
 
+        jmiColores.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiColores.setText("Editar colores");
         jmiColores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -398,6 +409,7 @@ public class LauncherRF extends javax.swing.JFrame {
         mnuTrucos.add(jmiTrucos);
         mnuTrucos.add(jSeparator2);
 
+        jmiTrucosAñadir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucosAñadir.setText("Modificar tablero");
         jmiTrucosAñadir.setEnabled(false);
         jmiTrucosAñadir.addActionListener(new java.awt.event.ActionListener() {
@@ -407,6 +419,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuTrucos.add(jmiTrucosAñadir);
 
+        jmiTrucosModSiguiente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.ALT_DOWN_MASK));
         jmiTrucosModSiguiente.setText("Modificar siguiente");
         jmiTrucosModSiguiente.setEnabled(false);
         jmiTrucosModSiguiente.addActionListener(new java.awt.event.ActionListener() {
@@ -416,6 +429,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuTrucos.add(jmiTrucosModSiguiente);
 
+        jmiTrucosForzarSiguiente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucosForzarSiguiente.setText("Forzar siguiente");
         jmiTrucosForzarSiguiente.setEnabled(false);
         jmiTrucosForzarSiguiente.addActionListener(new java.awt.event.ActionListener() {
@@ -425,6 +439,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         mnuTrucos.add(jmiTrucosForzarSiguiente);
 
+        jmiTrucosPuntos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ADD, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucosPuntos.setText("Añadir puntos");
         jmiTrucosPuntos.setEnabled(false);
         jmiTrucosPuntos.addActionListener(new java.awt.event.ActionListener() {
