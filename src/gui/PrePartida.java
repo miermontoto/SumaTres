@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import obj.Settings;
 import util.Dialog;
 import handler.FileWS;
+import java.awt.event.KeyEvent;
 import javax.swing.SwingUtilities;
 import util.Graphic;
 
@@ -17,8 +18,6 @@ public class PrePartida extends javax.swing.JFrame {
     private Settings op;
     private LauncherRF principal;
     private Avanzadas avanzadas;
-    
-    private static final int[] MAX_SIZE = Graphic.maxValidSize();
 
     /**
      * Creates new form PrePartida
@@ -71,13 +70,18 @@ public class PrePartida extends javax.swing.JFrame {
         flcOpen.setDialogTitle("SumaTres - Cargar archivo de opciones");
 
         flcSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
-        flcSave.setCurrentDirectory(new java.io.File("/home/JuanMier/."));
+        flcSave.setCurrentDirectory(new java.io.File("/home/under/."));
         flcSave.setDialogTitle("SumaTres - Guardar opciones a archivo");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres - Prepartida");
         setName("Prepartida"); // NOI18N
         setResizable(false);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         sldVertical.setMaximum(12);
         sldVertical.setMinimum(3);
@@ -246,6 +250,8 @@ public class PrePartida extends javax.swing.JFrame {
     private void chkCustomSizesToggled(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCustomSizesToggled
         txtHorizontal.setEditable(chkCustomSizes.isSelected());
         txtVertical.setEditable(chkCustomSizes.isSelected());
+        sldVertical.setEnabled(!chkCustomSizes.isSelected());
+        sldHorizontal.setEnabled(!chkCustomSizes.isSelected());
     }//GEN-LAST:event_chkCustomSizesToggled
 
     private void sldHorizontalChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldHorizontalChanged
@@ -278,8 +284,15 @@ public class PrePartida extends javax.swing.JFrame {
     private void txtVerticalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVerticalActionPerformed
         try {
             int val = Integer.parseInt(txtVertical.getText());
-            sldVertical.setValue(val);
-            op.setSizex(sldVertical.getValue());
+            if(val > 20) {
+                val = 20;
+                txtVertical.setText("20");
+            } else if (val < 2) {
+                val = 2;
+                txtVertical.setText("2");
+            }
+            
+            op.setSizex(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
             txtVertical.setText(String.valueOf(op.getX()));
@@ -289,8 +302,14 @@ public class PrePartida extends javax.swing.JFrame {
     private void txtHorizontalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHorizontalActionPerformed
         try {
             int val = Integer.parseInt(txtHorizontal.getText());
-            sldHorizontal.setValue(val);
-            op.setSizey(sldHorizontal.getValue());
+            if(val > 20) {
+                val = 20;
+                txtHorizontal.setText("20");
+            } else if(val < 2) {
+                val = 2;
+                txtHorizontal.setText("2");
+            }
+            op.setSizey(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
             txtHorizontal.setText(String.format("%d", op.getY()));
@@ -358,6 +377,10 @@ public class PrePartida extends javax.swing.JFrame {
         op.toggleDarkMode();
         checkDarkMode();
     }//GEN-LAST:event_btnDarkModeActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
+    }//GEN-LAST:event_formKeyPressed
 
     /**
      * Método que comprueba el estado del modo oscuro actual a través del botón
