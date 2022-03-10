@@ -92,6 +92,8 @@ public class LauncherRF extends javax.swing.JFrame {
         setBounds(0, 0, Graphic.defineX(juego), Graphic.defineY(juego));
         setVisible(true);
         loopComms = new LoopComms(this);
+        loopComms.setLimit(-1); // se establece el límite del bucle al máximo posible.
+        //loopComms.setLimit(50);
          
         // Propiedades del JPanel de la partida.
         juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
@@ -685,10 +687,21 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
 
     
+    /**
+     * Método que devuelve el objeto de tipo <code>SumaTres</code> con el que se
+     * está jugando.
+     * @return Objeto de la clase game.SumaTres
+     */
     public SumaTres getPartida() {
         return this.juego;
     }
     
+    /**
+     * Método que establece el progreso del bucle automático.
+     * El progreso es un valor porcentual que representa lo cerca que está de
+     * terminar el bucle.
+     * @param val Valor entero entre 0 y 100.
+     */
     public void setProgress(int val) {
         if(val >= -1 && val <= 100) threadProgress = val;
     }
