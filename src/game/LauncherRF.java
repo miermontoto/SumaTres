@@ -703,13 +703,13 @@ public class LauncherRF extends javax.swing.JFrame {
         try { 
             if(lsd.showDialog()) {
                 String[] a = lsd.getValue().split(":");
-                if(Integer.parseInt(a[0]) == juego.getSettings().getX() && 
-                        Integer.parseInt(a[1]) == juego.getSettings().getY()) {
+                if(Integer.parseInt(a[4].split(" ")[0]) == juego.getSettings().getX() && 
+                        Integer.parseInt(a[4].split(" ")[1]) == juego.getSettings().getY()) {
                     juego.setTablero(new Tablero(lsd.getValue()));
-                    juego.setPuntos(Long.parseLong(a[3]));
-                    juego.setTurno(Integer.parseInt(a[4]));
-                    juego.setHighest(Integer.parseInt(a[5]));
-                    juego.setSettings(new Settings(a[6]));
+                    juego.setPuntos(Long.parseLong(a[1]));
+                    juego.setTurno(Integer.parseInt(a[2]));
+                    juego.setHighest(Integer.parseInt(a[3]));
+                    juego.setSettings(new Settings(a[4]));
                     juego.update();
                     actualizarPneInfo();
                 }

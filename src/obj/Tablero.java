@@ -58,9 +58,9 @@ public class Tablero {
     
     public Tablero(String s) throws IOException {
         String[] data = s.split(":");
-        columns = Integer.parseInt(data[0]);
-        rows = Integer.parseInt(data[1]);
-        char[] tab = data[2].toCharArray();
+        columns = Integer.parseInt(data[4].split(" ")[0]);
+        rows = Integer.parseInt(data[4].split(" ")[1]);
+        char[] tab = data[0].toCharArray();
         amountOfPiezas = 0;
         tablero = new Pieza[columns][rows];
         
@@ -81,8 +81,8 @@ public class Tablero {
         String[] data = s.split(":");
         if(data.length != 7) return false;
         try {
-            int x = Integer.parseInt(data[0]);
-            int y = Integer.parseInt(data[1]);
+            int x = Integer.parseInt(data[4].split(" ")[0]);
+            int y = Integer.parseInt(data[4].split(" ")[1]);
             if(x <= 2 || y <= 2 || x > 33 || y > 33) throw new UnsupportedOperationException();
         } catch (UnsupportedOperationException | NumberFormatException ex) {return false;}
         return true;
@@ -154,7 +154,7 @@ public class Tablero {
      */
     @Override
     public String toString() {
-        String s = String.format("%d:%d:", columns, rows);
+        String s = "";
         for(int i=0; i < this.getColumns(); i++) 
             for(int j=0; j < this.getRows(); j++) 
                 s += String.valueOf(this.getTab(i, j));
