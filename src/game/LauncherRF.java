@@ -1,10 +1,14 @@
 package game;
 
+import Examen.Bloque1;
+import Examen.Bloque3;
 import com.formdev.flatlaf.FlatDarkLaf; // Modo claro que reemplaza a Nimbus.
 import com.formdev.flatlaf.FlatLightLaf; // Modo oscuro.
 import gui.PrePartida; // Ventana de opciones prepartida.
 import gui.EditarColores; // Ventana de edición de colores de piezas.
 import gui.LoadSaveDialog;
+import Examen.Ventana1;
+import Examen.Ventana2;
 import handler.Keyboard;
 import handler.Mouse;
 import java.awt.Desktop;
@@ -41,6 +45,9 @@ public class LauncherRF extends javax.swing.JFrame {
     private static LoopComms loopComms;
     private int threadProgress;
     
+    private Ventana1 v1;
+    private Ventana2 v2;
+    private Bloque1 b1;
     
     /**
      * Constructor principal y único. No necesita parámetros.
@@ -53,6 +60,12 @@ public class LauncherRF extends javax.swing.JFrame {
         secundaria = new PrePartida(this);
         secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
         threadProgress = -1; // No se ha iniciado el loop todavía.
+        v1 = new Ventana1(this);
+        v2 = new Ventana2(this);
+        b1 = new Bloque1();
+        v1.setVisible(false);
+        v2.setVisible(false);
+        b1.setVisible(false);
     }
     
     /**
@@ -185,6 +198,10 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoop = new javax.swing.JMenu();
         jmiTrucosLoopStart = new javax.swing.JMenuItem();
         jmiTrucosLoopEnd = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SumaTres");
@@ -486,6 +503,34 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jMenuBar1.add(mnuTrucos);
 
+        jMenu1.setText("Examen");
+
+        jMenuItem2.setText("Bloque1");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem1.setText("Bloque2");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem3.setText("Bloque3");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         pack();
@@ -761,6 +806,26 @@ public class LauncherRF extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_jmiNuevaPartidaActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        v1.setVisible(true);
+        v2.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        b1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        Bloque3 b3 = new Bloque3(null, true);
+        if(b3.showDialog()) {
+            System.out.println(b3.getUser());
+            System.out.println(b3.getPass());
+            if(b3.getUser().equals(new String("Admin")) && b3.getPass().equals(new String("Admin"))) {
+                Dialog.show("Usuario en sesión como Admin");
+            } else Dialog.showError("Combinación usuario-contraseña inválida.");
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
     
     /**
      * Método que devuelve el objeto de tipo <code>SumaTres</code> con el que se
@@ -779,6 +844,14 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     public void setProgress(int val) {
         if(val >= -1 && val <= 100) threadProgress = val;
+    }
+    
+    public void setTextVentana1(String s) {
+        v1.setText(s);
+    }
+    
+    public void setTextVentana2(String s) {
+        v2.setText(s);
     }
     
     /**
@@ -812,7 +885,11 @@ public class LauncherRF extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
