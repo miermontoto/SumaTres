@@ -1,11 +1,16 @@
 package handler;
 
-import static java.lang.System.out;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 import util.Dialog;
 
+/**
+ * Clase de utilidad que permite escribir cadenas de texto a archivos de manera
+ * rápida y fiable. Debido a que es una clase de utilidad, no se puede instanciar.
+ * @author Juan Mier.
+ */
 public class FileWS {
 	
     /**
@@ -18,9 +23,15 @@ public class FileWS {
         throw new IllegalStateException("File handling class");
     }
 
-    public static void write(String s, java.io.File file) {
+    /**
+     * Método que escribe una cadena a un archivo.
+     * Si el archivo no existe, se crea.
+     * @param s Cadena a introducir en el fichero.
+     * @param file Archivo en el que escribir.
+     */
+    public static void write(String s, File file) {
             try {
-                if(file.createNewFile()) {out.println("Creado archivo.");}
+                if(file.createNewFile()) {System.out.println("Creado archivo.");}
                 try (FileWriter writer = new FileWriter(file, true)) {
                     writer.write(s);
                     writer.close();
