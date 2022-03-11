@@ -740,9 +740,9 @@ public class LauncherRF extends javax.swing.JFrame {
                     juego.setSettings(new Settings(a[4]));
                     juego.update();
                     actualizarPneInfo();
-                }
-            } else {Dialog.showError("El tamaño del tablero no es el actual.");}
-        } catch (Exception ex) {Dialog.showError(ex);}
+                } else {Dialog.showError("El tamaño del tablero no es el actual.");}
+            }
+        } catch (IOException | NumberFormatException ex) {Dialog.showError(ex);}
     }//GEN-LAST:event_jmiLoadActionPerformed
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
