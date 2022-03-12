@@ -22,6 +22,7 @@ import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Tablero;
 import obj.Turno;
 import thread.LoopComms;
+import util.Crypto;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
 import util.Graphic; // Se utiliza para definir las dimensiones de la ventana.
 import util.Paint; // Se utiliza para obtener el color del fondo.
@@ -728,8 +729,9 @@ public class LauncherRF extends javax.swing.JFrame {
     private void jmiLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoadActionPerformed
         LoadSaveDialog lsd = new LoadSaveDialog(juego);
         try { 
-            if(lsd.showDialog()) {
-                String[] a = lsd.getValue().split(":");
+            if(lsd.showDialog())
+                    actualizarPneInfo(); {
+                String[] a = Crypto.decode(lsd.getValue()).split(":");
                 if(Integer.parseInt(a[4].split(" ")[0]) == juego.getSettings().getX() && 
                         Integer.parseInt(a[4].split(" ")[1]) == juego.getSettings().getY()) {
                     juego.setTablero(new Tablero(juego.getSettings().getX(), juego.getSettings().getY()));
@@ -749,16 +751,15 @@ public class LauncherRF extends javax.swing.JFrame {
         String toSave = juego.getTablero().toString();
         toSave += String.format(":%d:%d:%d:%s", juego.getPuntos(), juego.getTurnos(), juego.getHighest(), juego.getSettings().toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection(Base64.getEncoder().encodeToString(
-                        toSave.getBytes())), null);
+                new StringSelection(Crypto.encode(toSave)), null);
         Dialog.show("Código de tablero copiado al portapapeles.");
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNuevaPartidaActionPerformed
-        if(!Dialog.confirm("¿Desea iniciar una nueva partida?")) return; 
-        //juego.finalDePartida();
-        secundaria.setVisible(true);
-        this.setVisible(false);
+        if(Dialog.confirm("¿Desea iniciar una nueva partida?")) { 
+            secundaria.setVisible(true);
+            this.setVisible(false);
+        }
     }//GEN-LAST:event_jmiNuevaPartidaActionPerformed
 
     

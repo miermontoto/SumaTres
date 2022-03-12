@@ -7,7 +7,7 @@ package thread;
 import game.LauncherRF;
 import game.SumaTres;
 import handler.Keyboard;
-import util.Random;
+import util.Crypto;
 
 /**
  *
@@ -54,7 +54,7 @@ abstract class LoopTask implements SincroForeBack {
     
         int i = 0;
         while(!partida.isFinished() && i < limit) {
-            partida.jugada(jugadas.toCharArray()[Random.newRandom(jugadas.length())]);
+            partida.jugada(jugadas.toCharArray()[Crypto.newRandom(jugadas.length())]);
             Update();
             try {
                 Thread.sleep(0);

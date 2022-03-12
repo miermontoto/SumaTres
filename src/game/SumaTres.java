@@ -7,7 +7,7 @@ import obj.Turno;
 import obj.Settings;
 import util.Dialog;
 import util.Paint;
-import util.Random;
+import util.Crypto;
 import obj.Pieza;
 import handler.Mouse;
 import handler.Keyboard;
@@ -661,7 +661,7 @@ public final class SumaTres extends JPanel {
     private void newSiguienteExperimental() {
    	if(op.isMoreNextValuesEnabled()) {
             int[] values = possibleNextValues();
-            if(values.length == 3) setSiguiente(Random.newRandom(3) + 1);
+            if(values.length == 3) setSiguiente(Crypto.newRandom(3) + 1);
             else {
                 int finalValue;
                 //List<Integer> probabilities = Arrays.stream(values).boxed().collect(Collectors.toList());
@@ -670,7 +670,7 @@ public final class SumaTres extends JPanel {
                 if(max < 0.55) max = 0.55;
             }
      	}
-    	else setSiguiente(Random.newRandom(3) + 1);
+    	else setSiguiente(Crypto.newRandom(3) + 1);
     	obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
     }
@@ -694,9 +694,9 @@ public final class SumaTres extends JPanel {
     @Deprecated (since="v20", forRemoval=false)
     private void newSiguiente() {
         if(op.isMoreNextValuesEnabled()) 
-            setSiguiente(possibleNextValues()[Random.newRandom(possibleNextValues().length)]);
+            setSiguiente(possibleNextValues()[Crypto.newRandom(possibleNextValues().length)]);
         else 
-            setSiguiente(Random.newRandom(3) + 1);
+            setSiguiente(Crypto.newRandom(3) + 1);
         
         obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
@@ -710,11 +710,11 @@ public final class SumaTres extends JPanel {
         if(t.isFull()) return null;
         else {
             int[] x = new int[2];
-            int nX = Random.newRandom(t.getColumns());
-            int nY = Random.newRandom(t.getRows());
+            int nX = Crypto.newRandom(t.getColumns());
+            int nY = Crypto.newRandom(t.getRows());
             while (getTab(nX, nY) != 0) { // Si ya hay una pieza en la casilla indicada, se vuelve a obtener otra.
-                nX = Random.newRandom(t.getColumns());
-                nY = Random.newRandom(t.getRows());
+                nX = Crypto.newRandom(t.getColumns());
+                nY = Crypto.newRandom(t.getRows());
             }
             x[0] = nX;
             x[1] = nY;
@@ -829,10 +829,11 @@ public final class SumaTres extends JPanel {
         }
         
         if(op.isSaveResultsToFileEnabled()) {
-            String output = String.format("[%s] %s\t%dx%d\tPTS %d\tMAX %d\tTURN %d%n",
+            String output = String.format("%s;%s;%d;%d;%d;%d;%d;%f%n",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                VERSION, getTablero().getColumns(), getTablero().getRows(), puntos, getHighest(),
-                getTurnos());
+                VERSION, getTablero().getColumns(), getTablero().getRows(), getPuntos(), getHighest(),
+                getTurnos(), getMultiplier());
+            if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador%n", ARCHIVO);
             FileWS.write(output, ARCHIVO);
             if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
         }

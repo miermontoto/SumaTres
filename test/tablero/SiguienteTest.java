@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 
 import game.SumaTres;
 import obj.Settings;
-import util.Random;
+import util.Crypto;
 
 @DisplayName("Obtención de la posición de la ficha siguiente")
 class SiguienteTest {
@@ -21,8 +21,8 @@ class SiguienteTest {
 	@Test
 	@DisplayName("cuando solo hay una posición válida")
 	void onePositionTest() {
-		int x = Random.newRandom(3);
-		int y = Random.newRandom(3);
+		int x = Crypto.newRandom(3);
+		int y = Crypto.newRandom(3);
 		s.setTab(x, y, 0);
 		int[] z = s.validLocation();
 		assertEquals(x, z[0]);

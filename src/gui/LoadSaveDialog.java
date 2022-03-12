@@ -5,8 +5,6 @@
 package gui;
 
 import game.SumaTres;
-import java.util.Base64;
-import obj.Tablero;
 
 /**
  *
@@ -39,7 +37,7 @@ public class LoadSaveDialog extends javax.swing.JDialog {
     }
     
     public String getValue() {
-        return new String(Base64.getDecoder().decode(new String(pswCode.getPassword())));
+        return new String(pswCode.getPassword());
     }
     
     /**

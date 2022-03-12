@@ -3,7 +3,7 @@ package obj;
 import java.awt.Color;
 import java.util.Map;
 import java.util.TreeMap;
-import util.Random;
+import util.Crypto;
 
 /**
  * Clase que genera objetos tipo 'Pieza' para que sean utilizados en un tablero.
@@ -109,7 +109,7 @@ public class Pieza {
         int c = 0;
         while(check && c < 25) { // solo se busca 10 veces un color nuevo.
             check = false;
-            c1 = new Color(Random.newRandom(256), Random.newRandom(256), Random.newRandom(256));
+            c1 = new Color(Crypto.newRandom(256), Crypto.newRandom(256), Crypto.newRandom(256));
             for(Color c2 : COLORES.values()) {
                 double aR, aG, aB, rR, aC;
                 rR = (c1.getRed() + c2.getRed()) / 2.0;

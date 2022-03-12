@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import game.SumaTres;
 import obj.Settings;
-import util.Random;
+import util.Crypto;
 
 @DisplayName("Detección de tablero lleno")
 public class FullTest {
@@ -33,8 +33,8 @@ public class FullTest {
 		assertEquals(false, s.getTablero().isFull());
 		setUp();
 		for(int i=0; i<3; i++) for(int j=0; j<3; j++) s.setTab(i, j, 3);
-		int x = Random.newRandom(3);
-		int y = Random.newRandom(3);
+		int x = Crypto.newRandom(3);
+		int y = Crypto.newRandom(3);
 		s.setTab(x, y, 0);
 		assertEquals(false, s.getTablero().isFull());
 	}

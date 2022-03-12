@@ -5,6 +5,8 @@ import java.awt.Color;
 import javax.swing.DefaultListModel;
 import javax.swing.JColorChooser;
 import obj.Pieza;
+import obj.Settings;
+import obj.Tablero;
 
 /**
  *
@@ -244,10 +246,17 @@ public class EditarColores extends javax.swing.JFrame {
     }
     
     private void updateColorOfValue(int value) {
+        Settings op = principal.getPartida().getSettings();
+        Tablero tab = principal.getPartida().getTablero();
         Color newColor = Pieza.getColores().get(value);
-        for(int i = 0; i < principal.getPartida().getSettings().getX(); i++) {
-            for(int j = 0; j < principal.getPartida().getSettings().getY(); j++) {
-                if(principal.getPartida().getTab(i, j) == value) principal.getPartida().getTablero().getPieza(i, j).setColor(newColor);
+        int amount = tab.amount();
+        
+        for(int i = 0, k = 0; i < op.getX() && k < amount; i++) {
+            for(int j = 0; j < op.getY() && k < amount; j++) {
+                if(tab.getTab(i, j) != 0) {
+                    k++;
+                    if(tab.getTab(i, j) == value) tab.getPieza(i, j).setColor(newColor);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package util;
 
+import java.util.Base64;
 import org.uncommons.maths.random.XORShiftRNG;
 
 /**
@@ -12,7 +13,7 @@ import org.uncommons.maths.random.XORShiftRNG;
  * 
  * @author under
  */
-public class Random {
+public class Crypto {
     
     private static final java.util.Random RAND = new XORShiftRNG();
     
@@ -22,7 +23,7 @@ public class Random {
      * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
      * 		Regla SonarLint:S1118 </a>
      */
-    private Random() {
+    private Crypto() {
         throw new IllegalStateException("Utility class");
     }
     
@@ -34,5 +35,23 @@ public class Random {
      */
     public static int newRandom(int val) {
         return RAND.nextInt(val);
+    }
+    
+    /**
+     * Método que codifica una cadena a Base64.
+     * @param s Cadena a codificar.
+     * @return Cadena codificada.
+     */
+    public static String encode(String s) {
+        return Base64.getEncoder().encodeToString(s.getBytes());
+    }
+    
+    /**
+     * Método que descodifica una cadena en Base64.
+     * @param s Cadena a descodificar.
+     * @return Cadena descodificada.
+     */
+    public static String decode(String s) {
+        return new String(Base64.getDecoder().decode(s));
     }
 }
