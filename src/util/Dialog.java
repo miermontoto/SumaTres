@@ -1,5 +1,6 @@
 package util;
 
+import java.util.function.Predicate;
 import javax.swing.JOptionPane;
 import obj.Pieza;
 
@@ -54,8 +55,9 @@ public final class Dialog {
      * @param s Cadena a mostrar.
      * @return Cadena introducida por el usuario en respuesta.
      */
-    public static String input(String s) {
-        return JOptionPane.showInputDialog(null, s, TITLE, JOptionPane.QUESTION_MESSAGE);
+    public static String input(String s, Predicate<String> p) {
+        String val = JOptionPane.showInputDialog(null, s, TITLE, JOptionPane.QUESTION_MESSAGE);
+        return p.test(val) ? val : null;
     }
 
     /**
@@ -101,22 +103,19 @@ public final class Dialog {
     }
     
     public static int valueDialog(String s) {
-        int nV;
+        int nV = 0;
+        boolean check = true;
         try {
-            String respuesta = Dialog.input(s);
-            if (respuesta == null || respuesta.length() == 0) {
-                nV = -1;
-            } else {
-                nV = Integer.parseInt(respuesta);
-            }
-            while (nV != -1 || !Pieza.validValue(nV) || nV == 0) {
-                Dialog.showError();
-                respuesta = Dialog.input(s);
-                if (respuesta == null || respuesta.length() == 0) {
-                    nV = -1;
-                } else {
-                    nV = Integer.parseInt(respuesta);
-                }
+            while (nV == Integer.MIN_VALUE || !Pieza.validValue(nV) || nV == 0) {
+                String respuesta;
+                if(!check) Dialog.showError();
+                else check = false;
+                respuesta = Dialog.input(s,
+                        (x) -> (x.isBlank() || x.isEmpty() || Pieza.validValue(Integer.parseInt(x))));
+                if(respuesta == null) respuesta = String.valueOf(Integer.MIN_VALUE);
+                if (respuesta.isBlank() || respuesta.isEmpty()) {nV = Integer.MIN_VALUE; break;}
+                else nV = Integer.parseInt(respuesta);
+                //System.out.printf("%d: %s%n", nV, Pieza.validValue(nV));
             }
         } catch (NumberFormatException ex) {
             Dialog.showError(ex);

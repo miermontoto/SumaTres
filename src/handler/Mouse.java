@@ -24,6 +24,7 @@ public class Mouse {
     private final MouseEvent e;
     
     public static void disableHandling() {handlingEnabled = false;}
+    public static void enableHandling() {handlingEnabled = true;}
 
     /**
      * Constructor por defecto. Requiere el objeto de la partida que se está

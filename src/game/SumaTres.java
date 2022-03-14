@@ -319,12 +319,10 @@ public final class SumaTres extends JPanel {
 
     /**
      * Añade puntos al contador actual.
-     * El valor tiene que ser <code>3</code> o superior. Es imposible
-     * que la suma de puntos sea inferior a esto.
      * 
-     * @param puntos que se quieren sumar.
+     * @param puntos que se quieren sumar. Puede ser negativo.
      */
-    public void addPuntos(long puntos) {if(puntos>=3) this.puntos += puntos;}
+    public void addPuntos(long puntos) {this.puntos += puntos;}
 
     /**
      * Devuelve el valor de la ficha que se encuentre en unas coordenadas.

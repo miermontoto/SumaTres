@@ -29,6 +29,7 @@ public class LoopComms extends LoopTask {
     @Override
     public void Update() {
         partida.update();
+        ventana.actualizarPneInfo();
     }
 
     @Override
@@ -39,10 +40,4 @@ public class LoopComms extends LoopTask {
     public void setStop(boolean t) {
         this.isStopped = t;
     }
-
-    @Override
-    public void Progress(int val) {
-        ventanaPrincipal.setProgress(val);
-    }
-    
 }

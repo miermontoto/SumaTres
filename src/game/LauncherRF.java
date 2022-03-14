@@ -494,14 +494,18 @@ public class LauncherRF extends javax.swing.JFrame {
 
     private void jmiTrucosAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosAñadirActionPerformed
         juego.modificarTablero();
+        actualizarPneInfo();
     }//GEN-LAST:event_jmiTrucosAñadirActionPerformed
 
     private void jmiTrucosUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosUndoActionPerformed
         juego.undo();
+        actualizarPneInfo();
     }//GEN-LAST:event_jmiTrucosUndoActionPerformed
 
     private void jmiTrucosPuntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosPuntosActionPerformed
-        juego.addPuntos(Integer.parseInt(Dialog.input("Número de puntos a añadir:")));
+        juego.addPuntos(Integer.parseInt(Dialog.input("Número de puntos a añadir:", (x) -> true)));
+        juego.update();
+        actualizarPneInfo();
     }//GEN-LAST:event_jmiTrucosPuntosActionPerformed
 
     private void jmiModoClassicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoClassicActionPerformed
@@ -532,12 +536,16 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoopStart.setEnabled(false);
         jmiTrucosLoopEnd.setEnabled(true);
         jmiTrucosLoopStart.setSelected(true);
+        Keyboard.disableHandling();
+        Mouse.disableHandling();
     }
     
     public void loopEnding() {
         jmiTrucosLoopStart.setEnabled(true);
         jmiTrucosLoopEnd.setEnabled(false);
         jmiTrucosLoopStart.setSelected(false);
+        Keyboard.enableHandling();
+        Mouse.enableHandling();
     }
     
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
@@ -563,16 +571,16 @@ public class LauncherRF extends javax.swing.JFrame {
         SwingUtilities.updateComponentTreeUI(ventanaColores);
     }
     
-    private void actualizarPneInfo() {
+    public void actualizarPneInfo() {
         if(juego != null) {
             Settings op = juego.getSettings();
-            String s = String.format("Puntos obtenidos: %d (multiplicador: %.1f)%n"
+            String s = String.format("Puntos obtenidos: %d · multiplicador (%.1f) = %d%n"
                 + "Turnos jugados: %d%n"
                 + "Siguiente ficha: %d%n"
                 + "Pieza más alta: %d%n"
                 + "Cantidad de piezas: %d%n",
-                (int) (juego.getPuntos()*juego.getMultiplier()), 
-                juego.getMultiplier(), juego.getTurnos(), juego.getSiguiente(),
+                juego.getPuntos(), juego.getMultiplier(), (int) (juego.getPuntos()*juego.getMultiplier()), 
+                juego.getTurnos(), juego.getSiguiente(),
                 juego.getHighest(), juego.getTablero().amount());
 
             s += String.format("Posibles piezas siguientes actualmente: ");
@@ -608,9 +616,7 @@ public class LauncherRF extends javax.swing.JFrame {
                 activado(op.isEnhancedDiffMultEnabled()),
                 activado(op.isSaveResultsToFileEnabled())
                 );
-            
-            s += String.format("%s%n", threadProgress == -1 ? "" : String.format("Progreso del loop: %d", threadProgress));
-            
+                        
             s += String.format("%n%s", juego.isFinished() ? "Partida terminada." : "");
             pneInfo.setText(s);
         }
@@ -652,11 +658,15 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiInterfazHudActionPerformed
 
     private void jmiTrucosLoopStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopStartActionPerformed
-        if(loopThread != null) loopComms.setStop(false);
-        loopThread = new Thread() {@Override
-            public void run(){LauncherRF.loopComms.Run();};
-        };
-        loopThread.start();
+        if(loopThread != null) {
+            loopComms.setStop(false);
+            loopStarting();
+        } else {
+            loopThread = new Thread() {@Override
+                public void run(){LauncherRF.loopComms.Run();};
+            };
+            loopThread.start();
+        }
     }//GEN-LAST:event_jmiTrucosLoopStartActionPerformed
 
     private void jmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDarkModeActionPerformed
@@ -691,7 +701,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiResultsActionPerformed
 
     private void jmiTrucosLoopEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopEndActionPerformed
-        jmiTrucosLoopEnd.setSelected(true);
+        loopEnding();
         loopComms.setStop(true);
     }//GEN-LAST:event_jmiTrucosLoopEndActionPerformed
 
