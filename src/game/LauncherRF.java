@@ -53,10 +53,9 @@ public class LauncherRF extends javax.swing.JFrame {
         ventanaColores.setVisible(false);
         secundaria = new PrePartida(this);
         secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
-        threadProgress = -1; // No se ha iniciado el loop todavía.
     }
     
-    /**
+    /**git git
      * Método que lanza la partida como tal. Solo debería accederse una vez.
      * Establece el tamaño de ventana dependiendo del tamaño del tablero,
      * hace visible esta ventana y crea un objeto de tipo SumaTres según las
