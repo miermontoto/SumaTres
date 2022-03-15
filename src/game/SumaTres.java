@@ -155,7 +155,7 @@ public final class SumaTres extends JPanel {
      * 		Documentación de Oracle: Serializable </a>
      */
     public static final long serialVersionUID = -1110032705510692144L;
-    public static final File ARCHIVO = new File("./assets/resultados.csv");
+    public static final File ARCHIVO = new File("./resultados.csv");
     public static final String VERSION = "v22";
 
     private Map<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.

@@ -108,32 +108,37 @@ public class LauncherRF extends javax.swing.JFrame {
         });
       
         String[] titles = {"Fecha", "Versión", "Columnas", "Filas", "Puntos", "Ficha más alta", "Turnos", "Multiplicador", "Modo"};
-        try {
-            String[][] data = new String[(int) Files.lines(Paths.get(SumaTres.ARCHIVO.getAbsolutePath())).count()][9];
-            try (Scanner scr = new Scanner(SumaTres.ARCHIVO)) {
-                scr.useDelimiter(";");
-                int i = 0;
-                int j = 0;
-                scr.nextLine();
-                while(scr.hasNext()) {
-                    if(j == 9) {j = 0; i++;}
-                    String tmp = scr.next();
-                    //System.out.println(tmp);
-                    data[i][j] = tmp;
-                    j++;
+        if(SumaTres.ARCHIVO.exists()) {
+            try {
+                String[][] data = new String[(int) Files.lines(Paths.get(SumaTres.ARCHIVO.getAbsolutePath())).count()][9];
+                try (Scanner scr = new Scanner(SumaTres.ARCHIVO)) {
+                    scr.useDelimiter(";");
+                    int i = 0;
+                    int j = 0;
+                    scr.nextLine();
+                    while(scr.hasNext()) {
+                        if(j == 9) {j = 0; i++;}
+                        String tmp = scr.next();
+                        //System.out.println(tmp);
+                        data[i][j] = tmp;
+                        j++;
+                    }
+                } catch (FileNotFoundException ex) {
+                    throw new IOException();
                 }
-            } catch (FileNotFoundException ex) {
-                throw new IOException();
-            }
-            //for(int i = 0; i < data.length; i++) for(int j = 0; j < data[0].length; j++) System.out.print(data[i][j] + " ");
-            DefaultTableModel d = new DefaultTableModel(data, titles) {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            pneResultados.setModel(d);
-        } catch (IOException ex) {Dialog.showError("Error al leer resultados previos.");}
+                //for(int i = 0; i < data.length; i++) for(int j = 0; j < data[0].length; j++) System.out.print(data[i][j] + " ");
+                DefaultTableModel d = new DefaultTableModel(data, titles) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                pneResultados.setModel(d);
+            } catch (IOException ex) {Dialog.showError("Error al leer resultados previos.");}
+            
+        } else {
+            System.out.println("No se ha leído el archivo de resultados porque no existe.");
+        }
         
         
         
@@ -808,10 +813,6 @@ public class LauncherRF extends javax.swing.JFrame {
         } else {jmiTrucos.setSelected(false);}
     }//GEN-LAST:event_jmiTrucosActionPerformed
 
-    private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
-        actualizarPneInfo();
-    }//GEN-LAST:event_pneInfoComponentShown
-
     private void jmiIntefazGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiIntefazGridActionPerformed
         juego.getSettings().toggleDrawGrid();
         juego.repaint();
@@ -869,6 +870,10 @@ public class LauncherRF extends javax.swing.JFrame {
     private void jmiTrucosLoopLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopLimitActionPerformed
         loopComms.setLimit(Integer.parseInt(Dialog.input("Introduzca el límite de iteraciones:", (x) -> (Integer.parseInt(x) >= 0))));
     }//GEN-LAST:event_jmiTrucosLoopLimitActionPerformed
+
+    private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
+        actualizarPneInfo();
+    }//GEN-LAST:event_pneInfoComponentShown
 
     
     /**
