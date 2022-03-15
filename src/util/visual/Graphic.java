@@ -1,4 +1,4 @@
-package util;
+package util.visual;
 
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;

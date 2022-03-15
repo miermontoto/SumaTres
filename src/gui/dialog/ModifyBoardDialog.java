@@ -1,6 +1,7 @@
-package gui;
+package gui.dialog;
 
 import game.SumaTres;
+import util.visual.PiezaDisplayer;
 import obj.Pieza;
 
 /**
@@ -209,7 +210,7 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
                 .addGap(14, 14, 14)
                 .addComponent(txtX)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(sldVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -258,18 +259,21 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_sldHorizontalStateChanged
 
     private void btnAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAñadirActionPerformed
-        mode = 0;
+        mode = 1;
         cmbValores.setEnabled(true);
+        update();
     }//GEN-LAST:event_btnAñadirActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        mode = 1;
+        mode = 2;
         cmbValores.setEnabled(true);
+        update();
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        mode = 2;
+        mode = 3;
         cmbValores.setEnabled(false);
+        update();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void update() {
@@ -281,6 +285,7 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
             btnEliminar.setEnabled(true);
             btnAñadir.setEnabled(false);
             btnAñadir.setSelected(false);
+            if(mode == 1) mode = 0; // Si estaba seleccionado Añadir, se desactiva.
         } else {
             pnlPieza.setVisible(false); // java está roto y es necesario ocultar el panel entero.
             btnModificar.setEnabled(false);
@@ -288,10 +293,12 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
             btnAñadir.setEnabled(true);
             btnModificar.setSelected(false);
             btnEliminar.setSelected(false);
-            
+            if(mode == 2 || mode == 3) mode = 0;
+            // Si se estaba en modo modificar o eliminar, se resetea el modo.
         }
-        s.setSelected(new int[] {getCoordsX(), getCoordsY()});
-        displayer.repaint();
+        
+        s.setSelected(new int[] {getCoordsX(), getCoordsY(), mode});
+        if(pnlPieza.isVisible()) displayer.repaint();
         s.repaint();
     }
     

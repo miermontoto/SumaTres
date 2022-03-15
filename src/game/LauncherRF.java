@@ -4,7 +4,8 @@ import com.formdev.flatlaf.FlatDarkLaf; // Modo claro que reemplaza a Nimbus.
 import com.formdev.flatlaf.FlatLightLaf; // Modo oscuro.
 import gui.PrePartida; // Ventana de opciones prepartida.
 import gui.EditarColores; // Ventana de edición de colores de piezas.
-import gui.LoadSaveDialog;
+import gui.dialog.LoadDialog;
+import gui.dialog.SaveDialog;
 import handler.Keyboard;
 import handler.Mouse;
 import java.awt.Desktop;
@@ -14,8 +15,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Map; // Map.EntrySet
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
 import obj.Settings; // Se utiliza para guardar y editar opciones.
@@ -24,8 +26,8 @@ import obj.Turno;
 import thread.LoopComms;
 import util.Crypto;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
-import util.Graphic; // Se utiliza para definir las dimensiones de la ventana.
-import util.Paint; // Se utiliza para obtener el color del fondo.
+import util.visual.Graphic; // Se utiliza para definir las dimensiones de la ventana.
+import util.visual.Paint; // Se utiliza para obtener el color del fondo.
 
 
 /**
@@ -39,9 +41,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private final EditarColores ventanaColores;
     private SumaTres juego;
     private Thread loopThread;
-    private static LoopComms loopComms;
-    private int threadProgress;
-    
+    private static LoopComms loopComms; 
     
     /**
      * Constructor principal y único. No necesita parámetros.
@@ -55,7 +55,7 @@ public class LauncherRF extends javax.swing.JFrame {
         secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
     }
     
-    /**git git
+    /**
      * Método que lanza la partida como tal. Solo debería accederse una vez.
      * Establece el tamaño de ventana dependiendo del tamaño del tablero,
      * hace visible esta ventana y crea un objeto de tipo SumaTres según las
@@ -88,6 +88,15 @@ public class LauncherRF extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent event) {
                 new Mouse(juego, event).mouseHandler();
+            }
+        });
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent evt) {
+                // ¿Desea guardar la partida?
+                dispose();
+                System.exit(0);
             }
         });
                 
@@ -186,7 +195,7 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoopStart = new javax.swing.JMenuItem();
         jmiTrucosLoopEnd = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SumaTres");
         setIconImage(Graphic.ICON.getImage());
         setResizable(false);
@@ -736,7 +745,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
 
     private void jmiLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoadActionPerformed
-        LoadSaveDialog lsd = new LoadSaveDialog(juego);
+        LoadDialog lsd = new LoadDialog(juego);
         try { 
             if(lsd.showDialog())
                     actualizarPneInfo(); {
@@ -749,19 +758,18 @@ public class LauncherRF extends javax.swing.JFrame {
                     juego.setTurno(Integer.parseInt(a[2]));
                     juego.setHighest(Integer.parseInt(a[3]));
                     juego.setSettings(new Settings(a[4]));
+                    toggleDarkMode(juego.getSettings().isDarkModeEnabled());
                     juego.update();
                     actualizarPneInfo();
                 } else {Dialog.showError("El tamaño del tablero no es el actual.");}
             }
         } catch (IOException | NumberFormatException ex) {Dialog.showError(ex);}
+        catch (ArrayIndexOutOfBoundsException aix) {}
     }//GEN-LAST:event_jmiLoadActionPerformed
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
-        String toSave = juego.getTablero().toString();
-        toSave += String.format(":%d:%d:%d:%s", juego.getPuntos(), juego.getTurnos(), juego.getHighest(), juego.getSettings().toString());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection(Crypto.encode(toSave)), null);
-        Dialog.show("Código de tablero copiado al portapapeles.");
+        SaveDialog sd = new SaveDialog(juego);
+        sd.showDialog();
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNuevaPartidaActionPerformed
@@ -779,16 +787,6 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     public SumaTres getPartida() {
         return this.juego;
-    }
-    
-    /**
-     * Método que establece el progreso del bucle automático.
-     * El progreso es un valor porcentual que representa lo cerca que está de
-     * terminar el bucle.
-     * @param val Valor entero entre 0 y 100.
-     */
-    public void setProgress(int val) {
-        if(val >= -1 && val <= 100) threadProgress = val;
     }
     
     /**

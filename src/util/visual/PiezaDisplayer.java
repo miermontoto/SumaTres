@@ -1,6 +1,6 @@
 /*
  */
-package gui;
+package util.visual;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -10,21 +10,21 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JPanel;
 import obj.Pieza;
-import util.Paint;
+import util.visual.Paint;
 
 /**
  *
  * @author under
  */
-class PiezaDisplayer extends JPanel {
+public class PiezaDisplayer extends JPanel {
     
     private int valor;
     private Color color;
     private boolean brillo;
     
-    protected PiezaDisplayer() {}
+    public PiezaDisplayer() {}
     
-    protected void setPieza(int nv) {
+    public void setPieza(int nv) {
         valor = nv;
         color = Pieza.getColores().get(nv);
         brillo = Pieza.getBrillos().get(nv);

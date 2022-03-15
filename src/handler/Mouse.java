@@ -3,8 +3,8 @@ package handler;
 import java.awt.event.MouseEvent;
 
 import game.SumaTres;
-import util.Graphic;
-import util.Paint;
+import util.visual.Graphic;
+import util.visual.Paint;
 
 /**
  * Clase manejadora de eventos de ratón del programa SumaTres. <p>

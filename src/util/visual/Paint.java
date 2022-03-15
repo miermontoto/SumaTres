@@ -1,4 +1,4 @@
-package util;
+package util.visual;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -295,11 +295,31 @@ public class Paint {
         }
 
         if(s.getSelected()[0] != -1) {
-            g.setColor(Color.BLACK);
+            Color col;
+            char c;
+            switch(s.getSelected()[2]) {
+                case 1:
+                    col = Color.GREEN;
+                    c = '+';
+                    break;
+                case 2:
+                    col = Color.ORANGE;
+                    c = '~';
+                    break;
+                case 3:
+                    col = Color.RED;
+                    c = '-';
+                    break;
+                default:
+                    col = Color.BLACK;
+                    c = '?';
+                    break;
+            }
+            g.setColor(col);
             g.drawRoundRect(MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[1],
                 MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[0], SQUARE_SIZE, SQUARE_SIZE,
                 ROUND_DIAMETER, ROUND_DIAMETER);
-            g.drawString("?" ,
+            g.drawString(Character.toString(c) ,
                         MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[1] + SQUARE_SIZE * 13 / 32,
                         SQUARE_SIZE * 5 / 8 + MAIN_SPACER + BOARD_SPACER + (SQUARE_SIZE + SPOT_SPACER) * s.getSelected()[0]);
         }

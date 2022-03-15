@@ -8,9 +8,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import obj.Settings;
 import util.Dialog;
 import handler.FileWS;
+import handler.Loader;
 import java.awt.event.KeyEvent;
 import javax.swing.SwingUtilities;
-import util.Graphic;
 
 
 public class PrePartida extends javax.swing.JFrame {
@@ -321,15 +321,10 @@ public class PrePartida extends javax.swing.JFrame {
     }//GEN-LAST:event_bttAvanzadasActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-        JFileChooser jfcOpen = new JFileChooser();
-        jfcOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jfcOpen.setDialogTitle("Cargar archivo de opciones");
-        jfcOpen.setMultiSelectionEnabled(false);
-        jfcOpen.setFileFilter(new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
-        int res = jfcOpen.showOpenDialog(null);
-        if(res == JFileChooser.APPROVE_OPTION) {
-            openSettingsFile(jfcOpen.getSelectedFile());
-        }
+        File f = Loader.load("Cargar archivo de opciones",
+                new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
+        if(f == null) return;
+        openSettingsFile(f);
     }//GEN-LAST:event_btnOpenActionPerformed
 
     /**

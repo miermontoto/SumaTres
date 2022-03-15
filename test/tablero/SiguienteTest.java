@@ -24,7 +24,7 @@ class SiguienteTest {
 		int x = Crypto.newRandom(3);
 		int y = Crypto.newRandom(3);
 		s.setTab(x, y, 0);
-		int[] z = s.validLocation();
+		int[] z = s.getValidLocations();
 		assertEquals(x, z[0]);
 		assertEquals(y, z[1]);
 	}
@@ -32,7 +32,7 @@ class SiguienteTest {
 	@Test
 	@DisplayName("cuando no hay posiciones válidas")
 	void noPositionsTest() {
-		int[] y = s.validLocation();
+		int[] y = s.getValidLocations();
 		assertEquals(null, y);
 	}
 

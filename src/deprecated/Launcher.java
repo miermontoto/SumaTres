@@ -10,7 +10,7 @@ import javax.swing.JFrame; // Necesario para crear la ventana gráfica en sí.
 import javax.swing.WindowConstants; // Necesario para obtener la acción de cerrar la ventana.
 import obj.Settings;
 
-import util.Graphic; // Se utiliza para definir dimensiones, escala, etc.
+import util.visual.Graphic; // Se utiliza para definir dimensiones, escala, etc.
 import util.Dialog; // Se utiliza para preguntarle al usuario otra información.
 
 /**

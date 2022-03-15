@@ -1,12 +1,12 @@
 package game;
 
-import gui.ModifyBoardDialog;
+import gui.dialog.ModifyBoardDialog;
 import obj.Jugada;
 import obj.Tablero;
 import obj.Turno;
 import obj.Settings;
 import util.Dialog;
-import util.Paint;
+import util.visual.Paint;
 import util.Crypto;
 import obj.Pieza;
 import handler.Mouse;
@@ -207,7 +207,7 @@ public final class SumaTres extends JPanel {
         obtainedFromRandom = new TreeMap<>();
         tableros = new LinkedList<>();
         warning = new int[] {-1, 0};
-        selected = new int[] {-1, 0};
+        selected = new int[] {-1, 0, 0};
         puntos = 0;
         highestValue = 3;
         turno = 1;
@@ -252,7 +252,7 @@ public final class SumaTres extends JPanel {
      */
     public void generarSetFichas() {
         for(int i = 1; i <= 3; i++) {
-            int[] loc = validLocation();
+            int[] loc = getValidLocations();
             setTab(loc[0], loc[1], i);
             t.addAmount();
         }
@@ -283,7 +283,7 @@ public final class SumaTres extends JPanel {
     /**
      * Establece directamente un vector como el vector que contiene la posición
      * de la pieza siguiente. NO se comprueba que la posición sea válida ni
-     * correcta, ya que se presupone que la posición viene de <code>validLocation()</code>,
+     * correcta, ya que se presupone que la posición viene de <code>getValidLocations()</code>,
      * que solo puede generar posiciones válidas por definición.
      * @param x Vector a establecer.
      */
@@ -293,8 +293,8 @@ public final class SumaTres extends JPanel {
     
     public int[] getSelected() {return this.selected;}
     
-    public void setSelected(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
-            x[0] < op.getX() && x[1] < op.getY()) this.selected = x;}
+    public void setSelected(int[] x) {if(x.length == 3 && x[0]>=0 && x[1]>=0 &&
+            x[0] < op.getX() && x[1] < op.getY() && x[2] >= 0 && x[2] <= 3) this.selected = x;}
 
     /**
      * Devuelve la ficha de mayor valor actual.
@@ -611,7 +611,7 @@ public final class SumaTres extends JPanel {
     }
     
     public void colocarSiguiente() throws NullPointerException {
-        int[] loc = validLocation();
+        int[] loc = getValidLocations();
         if(loc == null) throw new NullPointerException("No se ha encontrado lugar donde insertar pieza siguiente (NULL).");
         setWarning(loc);
         setTab(loc[0], loc[1], getSiguiente());
@@ -704,7 +704,7 @@ public final class SumaTres extends JPanel {
      * Método que genera una posición válida en la que colocar una ficha.
      * @return Vector de enteros -> x[0] es la coordenada x, x[1] la y.
      */
-    public int[] validLocation() {
+    public int[] getValidLocations() {
         if(t.isFull()) return null;
         else {
             int[] x = new int[2];
@@ -842,8 +842,10 @@ public final class SumaTres extends JPanel {
         finished = true;
         repaint();
     }
-
     
+    // ----------------------------------------------------------------------------------------------------
+
+
     public void modificarSiguiente() {
         int nV = Dialog.valueDialog("Introduzca el nuevo valor de la pieza siguiente:");
         if (nV != -1) {
@@ -856,8 +858,8 @@ public final class SumaTres extends JPanel {
         boolean check = false;
         ModifyBoardDialog dialog = new ModifyBoardDialog(this);
         if (dialog.showDialog()) {
-            if(dialog.getMode() == 0 || dialog.getMode() == 1) {
-                if(getTab(dialog.getCoordsX(), dialog.getCoordsY()) != 0) t.addAmount();
+            if(dialog.getMode() == 1 || dialog.getMode() == 2) {
+                if(getTab(dialog.getCoordsX(), dialog.getCoordsY()) != 1) t.addAmount();
                 setTab(dialog.getCoordsX(), dialog.getCoordsY(), dialog.getValue());
             }
             else {
@@ -870,6 +872,7 @@ public final class SumaTres extends JPanel {
         deactivateSelected();
         return check;
     }
+
 
     // ----------------------------------------------------------------------------------------------------
 
