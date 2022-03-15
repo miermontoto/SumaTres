@@ -99,7 +99,7 @@ import javax.swing.JPanel;
  * Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode, NetBeans.
  * 
  * @author Juan Mier
- * @version v21
+ * @version v22
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  *      Documentación de Oracle: Number Format </a> <blockquote> A new line
  *      character appropriate to the platform running the application. You
@@ -155,8 +155,8 @@ public final class SumaTres extends JPanel {
      * 		Documentación de Oracle: Serializable </a>
      */
     public static final long serialVersionUID = -1110032705510692144L;
-    public static final File ARCHIVO = new File("./assets/resultados.txt");
-    public static final String VERSION = "v21";
+    public static final File ARCHIVO = new File("./assets/resultados.csv");
+    public static final String VERSION = "v22";
 
     private Map<Integer, Integer> obtainedFromRandom; // Diccionario que almacena las fichas obtenidas en el modo clásico.
     private LinkedList<Tablero> tableros; // Cola que guarda todos los tableros de la partida.
@@ -827,11 +827,11 @@ public final class SumaTres extends JPanel {
         }
         
         if(op.isSaveResultsToFileEnabled()) {
-            String output = String.format("%s;%s;%d;%d;%d;%d;%d;%.1f\n",
+            String output = String.format("%s;%s;%d;%d;%d;%d;%d;%.1f;%s;\n",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 VERSION, getTablero().getColumns(), getTablero().getRows(), getPuntos(), getHighest(),
-                getTurnos(), getMultiplier());
-            if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador\n", ARCHIVO);
+                getTurnos(), getMultiplier(), op.isExperimental() ? "Experimental" : "Clásico");
+            if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador;Modo\n", ARCHIVO);
             FileWS.write(output, ARCHIVO);
             if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
         }

@@ -15,9 +15,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map; // Map.EntrySet
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Tablero;
@@ -69,7 +77,6 @@ public class LauncherRF extends javax.swing.JFrame {
      */
     public void launch(Settings op) {
         juego = new SumaTres(op);
-
         
         /*
          * Handlers de teclado y ratón.
@@ -99,9 +106,36 @@ public class LauncherRF extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
+      
+        String[] titles = {"Fecha", "Versión", "Columnas", "Filas", "Puntos", "Ficha más alta", "Turnos", "Multiplicador", "Modo"};
+        try {
+            String[][] data = new String[(int) Files.lines(Paths.get(SumaTres.ARCHIVO.getAbsolutePath())).count()][9];
+            try (Scanner scr = new Scanner(SumaTres.ARCHIVO)) {
+                scr.useDelimiter(";");
+                int i = 0;
+                int j = 0;
+                scr.nextLine();
+                while(scr.hasNext()) {
+                    if(j == 9) {j = 0; i++;}
+                    String tmp = scr.next();
+                    //System.out.println(tmp);
+                    data[i][j] = tmp;
+                    j++;
+                }
+            } catch (FileNotFoundException ex) {
+                throw new IOException();
+            }
+            //for(int i = 0; i < data.length; i++) for(int j = 0; j < data[0].length; j++) System.out.print(data[i][j] + " ");
+            DefaultTableModel d = new DefaultTableModel(data, titles) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            pneResultados.setModel(d);
+        } catch (IOException ex) {Dialog.showError("Error al leer resultados previos.");}
         
-           
-                
+        
         
         // Propiedades de la ventana.
         setBounds(0, 0, Graphic.defineX(juego), Graphic.defineY(juego));
@@ -118,8 +152,8 @@ public class LauncherRF extends javax.swing.JFrame {
         // añade el panel de la partida y establece el orden correcto.
         tabTabbedPane.removeAll();
         tabTabbedPane.addTab("Juego", juego);
-        tabTabbedPane.addTab("Info", pneInfo);
-        //tabTabbedPane.addTab("Resultados", pneResultados);
+        tabTabbedPane.addTab("Info", new JScrollPane(pneInfo));
+        tabTabbedPane.addTab("Resultados", new JScrollPane(pneResultados));
         SwingUtilities.updateComponentTreeUI(this); // arregla pintura extra en la barra de pestañas.
         
         // Se determinan qué opciones del menú pueden ser seleccionadas y cuales ya lo están.
@@ -159,7 +193,7 @@ public class LauncherRF extends javax.swing.JFrame {
         tabTabbedPane = new javax.swing.JTabbedPane();
         pneInfo = new javax.swing.JTextPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        pneResultados = null;
+        pneResultados = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
         jmiNuevaPartida = new javax.swing.JMenuItem();
@@ -209,7 +243,6 @@ public class LauncherRF extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SumaTres");
         setIconImage(Graphic.ICON.getImage());
-        setResizable(false);
         getContentPane().setLayout(new java.awt.CardLayout());
 
         pneInfo.setEditable(false);
@@ -220,6 +253,7 @@ public class LauncherRF extends javax.swing.JFrame {
         });
         tabTabbedPane.addTab("Info", pneInfo);
 
+        pneResultados.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(pneResultados);
 
         tabTabbedPane.addTab("Resultados", jScrollPane1);
