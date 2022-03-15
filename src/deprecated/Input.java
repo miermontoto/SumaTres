@@ -65,7 +65,7 @@ public final class Input {
 	}
 	
 	public static int parseResponse() {
-		String x = Dialog.input(ask, (l) -> (true));
+		String x = Dialog.input(ask);
 		int value = errorVal;
 		if (x == null || x.length() == 0) {
 			if(exit) System.exit(0);

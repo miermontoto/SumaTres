@@ -9,8 +9,6 @@ import gui.dialog.SaveDialog;
 import handler.Keyboard;
 import handler.Mouse;
 import java.awt.Desktop;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -20,6 +18,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Map; // Map.EntrySet
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
+import javax.swing.table.TableModel;
 import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Tablero;
 import obj.Turno;
@@ -42,6 +41,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private SumaTres juego;
     private Thread loopThread;
     private static LoopComms loopComms; 
+    private TableModel dlm;
     
     /**
      * Constructor principal y único. No necesita parámetros.
@@ -99,7 +99,8 @@ public class LauncherRF extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
-                
+        
+           
                 
         
         // Propiedades de la ventana.
@@ -115,10 +116,10 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.setBackground(op.isDarkModeEnabled() ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
         
         // añade el panel de la partida y establece el orden correcto.
-        jTabbedPane1.addTab("Juego", juego);
-        jTabbedPane1.setComponentAt(0, juego);
-        jTabbedPane1.addTab("Info", pneInfo);
-        
+        tabTabbedPane.removeAll();
+        tabTabbedPane.addTab("Juego", juego);
+        tabTabbedPane.addTab("Info", pneInfo);
+        //tabTabbedPane.addTab("Resultados", pneResultados);
         SwingUtilities.updateComponentTreeUI(this); // arregla pintura extra en la barra de pestañas.
         
         // Se determinan qué opciones del menú pueden ser seleccionadas y cuales ya lo están.
@@ -154,8 +155,11 @@ public class LauncherRF extends javax.swing.JFrame {
     private void initComponents() {
 
         jmiModoGroup = new javax.swing.ButtonGroup();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jmiTrucosLoopModoGroup = new javax.swing.ButtonGroup();
+        tabTabbedPane = new javax.swing.JTabbedPane();
         pneInfo = new javax.swing.JTextPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        pneResultados = null;
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
         jmiNuevaPartida = new javax.swing.JMenuItem();
@@ -194,6 +198,13 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoop = new javax.swing.JMenu();
         jmiTrucosLoopStart = new javax.swing.JMenuItem();
         jmiTrucosLoopEnd = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JPopupMenu.Separator();
+        jmiTrucosLoopSlowdown = new javax.swing.JMenuItem();
+        jmiTrucosLoopLimit = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
+        jmiTrucosLoopModo = new javax.swing.JMenu();
+        jmiTrucosLoopModoSecuencial = new javax.swing.JRadioButtonMenuItem();
+        jmiTrucosLoopModoAleatorio = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SumaTres");
@@ -207,9 +218,13 @@ public class LauncherRF extends javax.swing.JFrame {
                 pneInfoComponentShown(evt);
             }
         });
-        jTabbedPane1.addTab("Info", pneInfo);
+        tabTabbedPane.addTab("Info", pneInfo);
 
-        getContentPane().add(jTabbedPane1, "card2");
+        jScrollPane1.setViewportView(pneResultados);
+
+        tabTabbedPane.addTab("Resultados", jScrollPane1);
+
+        getContentPane().add(tabTabbedPane, "card2");
 
         mnuArchivo.setText("Archivo");
 
@@ -490,6 +505,40 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         jmiTrucosLoop.add(jmiTrucosLoopEnd);
+        jmiTrucosLoop.add(jSeparator7);
+
+        jmiTrucosLoopSlowdown.setText("Editar slowdown (sleep time)");
+        jmiTrucosLoopSlowdown.setEnabled(false);
+        jmiTrucosLoopSlowdown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosLoopSlowdownActionPerformed(evt);
+            }
+        });
+        jmiTrucosLoop.add(jmiTrucosLoopSlowdown);
+
+        jmiTrucosLoopLimit.setText("Editar límite de iteraciones");
+        jmiTrucosLoopLimit.setEnabled(false);
+        jmiTrucosLoopLimit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosLoopLimitActionPerformed(evt);
+            }
+        });
+        jmiTrucosLoop.add(jmiTrucosLoopLimit);
+        jmiTrucosLoop.add(jSeparator8);
+
+        jmiTrucosLoopModo.setText("Modo");
+        jmiTrucosLoopModo.setEnabled(false);
+
+        jmiTrucosLoopModoGroup.add(jmiTrucosLoopModoSecuencial);
+        jmiTrucosLoopModoSecuencial.setText("Secuencial");
+        jmiTrucosLoopModo.add(jmiTrucosLoopModoSecuencial);
+
+        jmiTrucosLoopModoGroup.add(jmiTrucosLoopModoAleatorio);
+        jmiTrucosLoopModoAleatorio.setSelected(true);
+        jmiTrucosLoopModoAleatorio.setText("Aleatorio");
+        jmiTrucosLoopModo.add(jmiTrucosLoopModoAleatorio);
+
+        jmiTrucosLoop.add(jmiTrucosLoopModo);
 
         mnuTrucos.add(jmiTrucosLoop);
 
@@ -511,7 +560,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTrucosUndoActionPerformed
 
     private void jmiTrucosPuntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosPuntosActionPerformed
-        juego.addPuntos(Integer.parseInt(Dialog.input("Número de puntos a añadir:", (x) -> true)));
+        juego.addPuntos(Integer.parseInt(Dialog.input("Número de puntos a añadir:")));
         juego.update();
         actualizarPneInfo();
     }//GEN-LAST:event_jmiTrucosPuntosActionPerformed
@@ -538,12 +587,13 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosModSiguiente.setEnabled(opdef);
         jmiTrucosForzarSiguiente.setEnabled(opdef);
         jmiTrucosLoop.setEnabled(opdef);
+        jmiTrucosLoopSlowdown.setEnabled(opdef);
+        jmiTrucosLoopLimit.setEnabled(opdef);
     }
     
     public void loopStarting() {
         jmiTrucosLoopStart.setEnabled(false);
         jmiTrucosLoopEnd.setEnabled(true);
-        jmiTrucosLoopStart.setSelected(true);
         Keyboard.disableHandling();
         Mouse.disableHandling();
     }
@@ -551,7 +601,6 @@ public class LauncherRF extends javax.swing.JFrame {
     public void loopEnding() {
         jmiTrucosLoopStart.setEnabled(true);
         jmiTrucosLoopEnd.setEnabled(false);
-        jmiTrucosLoopStart.setSelected(false);
         Keyboard.enableHandling();
         Mouse.enableHandling();
     }
@@ -779,6 +828,14 @@ public class LauncherRF extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmiNuevaPartidaActionPerformed
 
+    private void jmiTrucosLoopSlowdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopSlowdownActionPerformed
+        loopComms.setSlowdown(Integer.parseInt(Dialog.input("Introduzca el valor del nuevo slowdown (ms):", (x) -> (0 <= Integer.parseInt(x)))));
+    }//GEN-LAST:event_jmiTrucosLoopSlowdownActionPerformed
+
+    private void jmiTrucosLoopLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopLimitActionPerformed
+        loopComms.setLimit(Integer.parseInt(Dialog.input("Introduzca el límite de iteraciones:", (x) -> (Integer.parseInt(x) >= 0))));
+    }//GEN-LAST:event_jmiTrucosLoopLimitActionPerformed
+
     
     /**
      * Método que devuelve el objeto de tipo <code>SumaTres</code> con el que se
@@ -821,13 +878,15 @@ public class LauncherRF extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JMenuItem jmiColores;
     private javax.swing.JCheckBoxMenuItem jmiDarkMode;
     private javax.swing.JCheckBoxMenuItem jmiExitOnEnd;
@@ -853,6 +912,12 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiTrucosForzarSiguiente;
     private javax.swing.JMenu jmiTrucosLoop;
     private javax.swing.JMenuItem jmiTrucosLoopEnd;
+    private javax.swing.JMenuItem jmiTrucosLoopLimit;
+    private javax.swing.JMenu jmiTrucosLoopModo;
+    private javax.swing.JRadioButtonMenuItem jmiTrucosLoopModoAleatorio;
+    private javax.swing.ButtonGroup jmiTrucosLoopModoGroup;
+    private javax.swing.JRadioButtonMenuItem jmiTrucosLoopModoSecuencial;
+    private javax.swing.JMenuItem jmiTrucosLoopSlowdown;
     private javax.swing.JMenuItem jmiTrucosLoopStart;
     private javax.swing.JMenuItem jmiTrucosModSiguiente;
     private javax.swing.JMenuItem jmiTrucosPuntos;
@@ -861,5 +926,7 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JMenu mnuOpciones;
     private javax.swing.JMenu mnuTrucos;
     private javax.swing.JTextPane pneInfo;
+    private javax.swing.JTable pneResultados;
+    private javax.swing.JTabbedPane tabTabbedPane;
     // End of variables declaration//GEN-END:variables
 }

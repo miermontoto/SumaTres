@@ -1,6 +1,7 @@
 package gui.dialog;
 
 import game.SumaTres;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import util.Crypto;
@@ -32,6 +33,7 @@ public class SaveDialog extends javax.swing.JDialog {
         current += String.format(":%d:%d:%d:%s", s.getPuntos(), s.getTurnos(), s.getHighest(), s.getSettings().toString());
         current = Crypto.encode(current);
         txtKey.setText(current);
+        txtKey.setSize(new Dimension(64, 25));
     }
 
     
@@ -56,9 +58,15 @@ public class SaveDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("SumaTres - Guardar");
         setResizable(false);
 
         btnGuardar.setText("Guardar a archivo");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
 
         btnCopiar.setText("⎘");
         btnCopiar.addActionListener(new java.awt.event.ActionListener() {
@@ -80,19 +88,19 @@ public class SaveDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(txtKey, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnCopiar))))
-                .addContainerGap(19, Short.MAX_VALUE))
+                            .addComponent(btnCopiar)))
+                    .addComponent(jLabel1))
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -110,7 +118,12 @@ public class SaveDialog extends javax.swing.JDialog {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
                 new StringSelection(current), null);
         Dialog.show("Código de tablero copiado al portapapeles.");
+        this.setVisible(false);
     }//GEN-LAST:event_btnCopiarActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        Dialog.showError("No implementado.");
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments

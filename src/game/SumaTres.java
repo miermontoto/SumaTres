@@ -827,11 +827,11 @@ public final class SumaTres extends JPanel {
         }
         
         if(op.isSaveResultsToFileEnabled()) {
-            String output = String.format("%s;%s;%d;%d;%d;%d;%d;%f%n",
+            String output = String.format("%s;%s;%d;%d;%d;%d;%d;%.1f\n",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 VERSION, getTablero().getColumns(), getTablero().getRows(), getPuntos(), getHighest(),
                 getTurnos(), getMultiplier());
-            if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador%n", ARCHIVO);
+            if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador\n", ARCHIVO);
             FileWS.write(output, ARCHIVO);
             if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
         }

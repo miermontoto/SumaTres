@@ -53,11 +53,16 @@ public final class Dialog {
     /**
      * Devuelve una cadena introducida por el usuario.
      * @param s Cadena a mostrar.
+     * @param p Predicado que filtra los resultados.
      * @return Cadena introducida por el usuario en respuesta.
      */
     public static String input(String s, Predicate<String> p) {
         String val = JOptionPane.showInputDialog(null, s, TITLE, JOptionPane.QUESTION_MESSAGE);
         return p.test(val) ? val : null;
+    }
+    
+    public static String input(String s) {
+        return input(s, x -> true);
     }
 
     /**
