@@ -19,6 +19,7 @@ abstract class LoopTask implements SincroForeBack {
     protected String jugadas;
     protected int limit;
     protected int slowdown;
+    protected boolean mode;
     
     protected LoopTask(LauncherRF l) {
         this.ventana = l;
@@ -27,6 +28,7 @@ abstract class LoopTask implements SincroForeBack {
                 Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
         limit = 1;
         slowdown = 0;
+        mode = false; // Modo aleatorio por defecto.
     }
     
     /**
@@ -47,14 +49,29 @@ abstract class LoopTask implements SincroForeBack {
         if(val >= 0) slowdown = val;
     }
     
+    /**
+     * Método que establece el modo de loop sobre el tablero.
+     * Cuando es falso, se recorre de forma aleatoria.
+     * Cuando es verdadero, se recorre de forma secuencial las jugadas disponibles.
+     * @param val Valor booleano que define el modo de la tarea.
+     */
+    public void setMode(boolean val) {
+        this.mode = val;
+    }
+    
     @Override
     public void Run() {
             
         Start();
     
         int i = 0;
+        int j = 0;
         while(!partida.isFinished() && i < limit) {
-            partida.jugada(jugadas.toCharArray()[Crypto.newRandom(jugadas.length())]);
+            if(mode) {
+                try {
+                    partida.jugada(Keyboard.VALID_EXPERIMENTAL_KEYS.charAt(i++)); 
+                } catch(StringIndexOutOfBoundsException oob) {i = 0;}
+            } else partida.jugada(jugadas.toCharArray()[Crypto.newRandom(jugadas.length())]);
             Update();
             try {
                 Thread.sleep(slowdown);

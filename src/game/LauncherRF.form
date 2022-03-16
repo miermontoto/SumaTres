@@ -338,7 +338,6 @@
                       <KeyStroke key="Shift+Ctrl+PAGE_DOWN"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Iniciar / Continuar"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosLoopStartActionPerformed"/>
@@ -361,7 +360,6 @@
                 <MenuItem class="javax.swing.JMenuItem" name="jmiTrucosLoopSlowdown">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Editar slowdown (sleep time)"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosLoopSlowdownActionPerformed"/>
@@ -370,7 +368,6 @@
                 <MenuItem class="javax.swing.JMenuItem" name="jmiTrucosLoopLimit">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Editar l&#xed;mite de iteraciones"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosLoopLimitActionPerformed"/>
@@ -381,7 +378,6 @@
                 <Menu class="javax.swing.JMenu" name="jmiTrucosLoopModo">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Modo"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <SubComponents>
                     <MenuItem class="javax.swing.JRadioButtonMenuItem" name="jmiTrucosLoopModoSecuencial">
@@ -391,6 +387,9 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Secuencial"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosLoopModoSecuencialActionPerformed"/>
+                      </Events>
                     </MenuItem>
                     <MenuItem class="javax.swing.JRadioButtonMenuItem" name="jmiTrucosLoopModoAleatorio">
                       <Properties>
@@ -400,6 +399,9 @@
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Aleatorio"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiTrucosLoopModoAleatorioActionPerformed"/>
+                      </Events>
                     </MenuItem>
                   </SubComponents>
                 </Menu>

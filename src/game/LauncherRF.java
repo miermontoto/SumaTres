@@ -527,7 +527,6 @@ public class LauncherRF extends javax.swing.JFrame {
 
         jmiTrucosLoopStart.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PAGE_DOWN, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jmiTrucosLoopStart.setText("Iniciar / Continuar");
-        jmiTrucosLoopStart.setEnabled(false);
         jmiTrucosLoopStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiTrucosLoopStartActionPerformed(evt);
@@ -547,7 +546,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoop.add(jSeparator7);
 
         jmiTrucosLoopSlowdown.setText("Editar slowdown (sleep time)");
-        jmiTrucosLoopSlowdown.setEnabled(false);
         jmiTrucosLoopSlowdown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiTrucosLoopSlowdownActionPerformed(evt);
@@ -556,7 +554,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoop.add(jmiTrucosLoopSlowdown);
 
         jmiTrucosLoopLimit.setText("Editar límite de iteraciones");
-        jmiTrucosLoopLimit.setEnabled(false);
         jmiTrucosLoopLimit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiTrucosLoopLimitActionPerformed(evt);
@@ -566,15 +563,24 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosLoop.add(jSeparator8);
 
         jmiTrucosLoopModo.setText("Modo");
-        jmiTrucosLoopModo.setEnabled(false);
 
         jmiTrucosLoopModoGroup.add(jmiTrucosLoopModoSecuencial);
         jmiTrucosLoopModoSecuencial.setText("Secuencial");
+        jmiTrucosLoopModoSecuencial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosLoopModoSecuencialActionPerformed(evt);
+            }
+        });
         jmiTrucosLoopModo.add(jmiTrucosLoopModoSecuencial);
 
         jmiTrucosLoopModoGroup.add(jmiTrucosLoopModoAleatorio);
         jmiTrucosLoopModoAleatorio.setSelected(true);
         jmiTrucosLoopModoAleatorio.setText("Aleatorio");
+        jmiTrucosLoopModoAleatorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTrucosLoopModoAleatorioActionPerformed(evt);
+            }
+        });
         jmiTrucosLoopModo.add(jmiTrucosLoopModoAleatorio);
 
         jmiTrucosLoop.add(jmiTrucosLoopModo);
@@ -622,12 +628,9 @@ public class LauncherRF extends javax.swing.JFrame {
         jmiTrucosAñadir.setEnabled(opdef);
         jmiTrucosPuntos.setEnabled(opdef);
         jmiTrucosUndo.setEnabled(opdef);
-        jmiTrucosLoopStart.setEnabled(opdef);
         jmiTrucosModSiguiente.setEnabled(opdef);
         jmiTrucosForzarSiguiente.setEnabled(opdef);
         jmiTrucosLoop.setEnabled(opdef);
-        jmiTrucosLoopSlowdown.setEnabled(opdef);
-        jmiTrucosLoopLimit.setEnabled(opdef);
     }
     
     public void loopStarting() {
@@ -874,6 +877,14 @@ public class LauncherRF extends javax.swing.JFrame {
     private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown
         actualizarPneInfo();
     }//GEN-LAST:event_pneInfoComponentShown
+
+    private void jmiTrucosLoopModoSecuencialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopModoSecuencialActionPerformed
+        loopComms.setMode(true);
+    }//GEN-LAST:event_jmiTrucosLoopModoSecuencialActionPerformed
+
+    private void jmiTrucosLoopModoAleatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopModoAleatorioActionPerformed
+        loopComms.setMode(false);
+    }//GEN-LAST:event_jmiTrucosLoopModoAleatorioActionPerformed
 
     
     /**
