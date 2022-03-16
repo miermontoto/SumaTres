@@ -205,7 +205,6 @@ public class LauncherRF extends javax.swing.JFrame {
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jmiSave = new javax.swing.JMenuItem();
         jmiLoad = new javax.swing.JMenuItem();
-        jmiResults = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiSalir = new javax.swing.JMenuItem();
         mnuOpciones = new javax.swing.JMenu();
@@ -294,15 +293,6 @@ public class LauncherRF extends javax.swing.JFrame {
             }
         });
         mnuArchivo.add(jmiLoad);
-
-        jmiResults.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jmiResults.setText("Resultados");
-        jmiResults.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiResultsActionPerformed(evt);
-            }
-        });
-        mnuArchivo.add(jmiResults);
         mnuArchivo.add(jSeparator1);
 
         jmiSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
@@ -791,14 +781,6 @@ public class LauncherRF extends javax.swing.JFrame {
         juego.getSettings().toggleSaveResultsToFile();
     }//GEN-LAST:event_jmiSaveOnExitActionPerformed
 
-    private void jmiResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResultsActionPerformed
-        try {
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) 
-                Desktop.getDesktop().open(SumaTres.ARCHIVO);
-            else throw new IOException();
-        } catch (IOException ex) {jmiResults.setEnabled(false); Dialog.showError("No se pudo abrir el archivo de resultados.");}
-    }//GEN-LAST:event_jmiResultsActionPerformed
-
     private void jmiTrucosLoopEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopEndActionPerformed
         loopEnding();
         loopComms.setStop(true);
@@ -953,7 +935,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jmiModoExperimental;
     private javax.swing.ButtonGroup jmiModoGroup;
     private javax.swing.JMenuItem jmiNuevaPartida;
-    private javax.swing.JMenuItem jmiResults;
     private javax.swing.JMenuItem jmiSalir;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JCheckBoxMenuItem jmiSaveOnExit;
