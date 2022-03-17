@@ -153,7 +153,7 @@ public class LoadDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_pswCodeActionPerformed
 
     private void btnLoadFromFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromFileActionPerformed
-        pswCode.setText(Loader.loadString("Cargar partida", new FileNameExtensionFilter("Partida de SumaTres (.stp)", "stp")));
+        pswCode.setText(new Loader("Cargar partida", new FileNameExtensionFilter("Partida de SumaTres (.stp)", "stp")).loadString());
     }//GEN-LAST:event_btnLoadFromFileActionPerformed
     
     /**

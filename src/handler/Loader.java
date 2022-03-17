@@ -16,32 +16,47 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class Loader {
     
+    private final String title;
+    private final FileNameExtensionFilter fnef;
+    
     /**
      * Constrctor generado para cumplir con SonarLint:S1118.
      * 
      * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
      * 		Regla SonarLint:S1118 </a>
      */
-    private Loader() {
-        throw new IllegalStateException("File handling class");
+    public Loader(String s, FileNameExtensionFilter f) {
+        title = s;
+        fnef = f;
     }
     
-    public static File load(String title, FileNameExtensionFilter fnef) {
+    public File load() {
+        JFileChooser jfc = jfcGenerator();
+        int res = jfc.showOpenDialog(null);
+        return res == JFileChooser.APPROVE_OPTION ? jfc.getSelectedFile() : null;
+    }
+    
+    private JFileChooser jfcGenerator() {
         JFileChooser jfc = new JFileChooser("./");
         jfc.setMultiSelectionEnabled(false);
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jfc.setDialogTitle(title);
         jfc.setFileFilter(fnef);
-        int res = jfc.showOpenDialog(null);
-        return res == JFileChooser.APPROVE_OPTION ? jfc.getSelectedFile() : null;
+        return jfc;
     }
     
-    public static String loadString(String title, FileNameExtensionFilter fnef) {
-        File f = Loader.load(title, fnef);
+    public String loadString() {
+        File f = this.load();
         if(f == null) return null;
         try {
             return Files.readString(f.toPath());
         } catch (IOException ex) {return null;}
+    }
+    
+    public File save() {
+        JFileChooser jfc = jfcGenerator();
+        int res = jfc.showSaveDialog(null);
+        return res == JFileChooser.APPROVE_OPTION ? jfc.getSelectedFile() : null;
     }
     
 }

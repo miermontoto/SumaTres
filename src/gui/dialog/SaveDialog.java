@@ -1,9 +1,13 @@
 package gui.dialog;
 
 import game.SumaTres;
+import handler.FileWS;
+import handler.Loader;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import util.Crypto;
 import util.Dialog;
 
@@ -122,7 +126,12 @@ public class SaveDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCopiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Dialog.showError("No implementado.");
+        File f = new Loader("Guardar partida",
+        new FileNameExtensionFilter("Partida de SumaTres (.stp)", "stp")).save();
+        try {
+            FileWS.write(current, new File(f.getAbsolutePath()));
+        } catch (Exception ex) {Dialog.showError(ex);}
+        this.setVisible(false);
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**

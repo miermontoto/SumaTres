@@ -321,8 +321,8 @@ public class PrePartida extends javax.swing.JFrame {
     }//GEN-LAST:event_bttAvanzadasActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-        File f = Loader.load("Cargar archivo de opciones",
-                new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
+        File f = new Loader("Cargar archivo de opciones",
+                new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto")).load();
         if(f == null) return;
         openSettingsFile(f);
     }//GEN-LAST:event_btnOpenActionPerformed
@@ -357,15 +357,11 @@ public class PrePartida extends javax.swing.JFrame {
     
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        JFileChooser jfcSave = new JFileChooser();
-        jfcSave.setDialogTitle("Guardar archivo de opciones");
-        jfcSave.setFileFilter(new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto"));
-        int res = jfcSave.showSaveDialog(null);
-        if(res == JFileChooser.APPROVE_OPTION) {
-            try {
-                FileWS.write(op.toString(), new File(jfcSave.getSelectedFile().getAbsolutePath()));
-            } catch (Exception ex) {Dialog.showError(ex);}
-        }
+        File f = new Loader("Guardar archivo de opciones",
+                new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto")).save();
+        try {
+            FileWS.write(op.toString(), new File(f.getAbsolutePath()));
+        } catch (Exception ex) {Dialog.showError(ex);}
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarkModeActionPerformed
