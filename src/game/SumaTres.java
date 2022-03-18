@@ -819,7 +819,7 @@ public final class SumaTres extends JPanel {
         Dialog.show(salida);
         
 
-        if(op.getStatus("consoleEnabled")) {
+        if(op.getStatus("consoleOutput")) {
             out.printf("%n%n%s%n",salida);
             out.print("Fichas obtenidas: ");
             for(int i=0; i < possibleNextValues().length; i++) {

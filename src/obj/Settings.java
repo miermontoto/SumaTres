@@ -1,10 +1,9 @@
 package obj;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.naming.OperationNotSupportedException;
+//import javax.naming.OperationNotSupportedException;
 
 /**
  *
@@ -113,7 +112,7 @@ public class Settings {
     }
     
     public void setVerbosity(int val) {
-        if(val >= 0 && val <= 3) verbosityLevel = val;
+        if(val >= 0 && val <= 2) verbosityLevel = val;
     }
 
     public void setExperimentalMode(boolean exp) {
