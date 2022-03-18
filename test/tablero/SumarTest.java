@@ -27,28 +27,28 @@ class SumarTest {
 		@Test
 		@DisplayName("hacia arriba")
 		void sumarArribaPositivoTest() {
-			Turno.sumar(new Jugada('w'), s);
+			new Turno(s, new Jugada('w')).sumar();
 			assertEquals(3, s.getTab(0, 1));
 		}
 		
 		@Test
 		@DisplayName("hacia abajo")
 		void sumarAbajoPositivoTest() {
-			Turno.sumar(new Jugada('s'), s);
+			new Turno(s, new Jugada('s')).sumar();
 			assertEquals(3, s.getTab(2, 1));
 		}
 		
 		@Test
 		@DisplayName("hacia la izquierda")
 		void sumarIzquierdaPositivoTest() {
-			Turno.sumar(new Jugada('a'), s);
+			new Turno(s, new Jugada('a')).sumar();
 			assertEquals(3, s.getTab(1, 0));
 		}
 		
 		@Test
 		@DisplayName("hacia la derecha")
 		void sumarDerechaPositivoTest() {
-			Turno.sumar(new Jugada('d'), s);
+			new Turno(s, new Jugada('d')).sumar();
 			assertEquals(3, s.getTab(1, 2));
 		}
 	}
@@ -60,28 +60,28 @@ class SumarTest {
 		@Test
 		@DisplayName("hacia el noroeste")
 		void sumarNWPositivoTest() {
-			Turno.sumar(new Jugada('q'), s);
+			new Turno(s, new Jugada('e')).sumar();
 			assertEquals(3, s.getTab(0, 0));
 		}
 		
 		@Test
 		@DisplayName("hacia el noreste")
 		void sumarNEPositivoTest() {
-			Turno.sumar(new Jugada('e'), s);
+			new Turno(s, new Jugada('q')).sumar();
 			assertEquals(3, s.getTab(0, 2));
 		}
 		
 		@Test
 		@DisplayName("hacia el suroeste")
 		void sumarSWPositivoTest() {
-			Turno.sumar(new Jugada('z'), s);
+			new Turno(s, new Jugada('z')).sumar();
 			assertEquals(3, s.getTab(2, 0));
 		}
 		
 		@Test
 		@DisplayName("hacia el sureste")
 		void sumarSEPositivoTest() {
-			Turno.sumar(new Jugada('c'), s);
+			new Turno(s, new Jugada('c')).sumar();
 			assertEquals(3, s.getTab(2, 2));
 		}
 		
@@ -94,7 +94,7 @@ class SumarTest {
 		s.setTab(0, 1, 48);
 		s.setTab(0, 0, 3);
 		s.setTab(1, 0, 3);
-		Turno.sumar(new Jugada('w'), s);
+		new Turno(s, new Jugada('w')).sumar();
 		assertEquals(96, s.getTab(0, 1));
 		assertEquals(6, s.getTab(0, 0));
 	}
@@ -106,7 +106,7 @@ class SumarTest {
 		s.setTab(0, 1, 12);
 		s.setTab(0, 0, 3);
 		s.setTab(1, 0, 2);
-		Turno.sumar(new Jugada('w'), s);
+		new Turno(s, new Jugada('w')).sumar();
 		assertEquals(12, s.getTab(0, 1));
 		assertEquals(3, s.getTab(0, 0));
 	}

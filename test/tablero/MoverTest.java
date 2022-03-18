@@ -1,39 +1,39 @@
 package tablero;
+import game.SumaTres;
 import static org.junit.jupiter.api.Assertions.*;
 import static java.lang.System.out;
 
 import org.junit.jupiter.api.*;
-import org.opentest4j.*;
 
 import obj.Jugada;
-import obj.Tablero;
+import obj.Settings;
 import obj.Turno;
 
 //@DisplayNameGeneration(DisplayNameGenerator.IndicativeSentences.class)
 @DisplayName("Movimiento")
 class MoverTest {
 
-	private Tablero tabCuadrado, tabIrregular1, tabIrregular2;
+	private SumaTres tabCuadrado, tabIrregular1, tabIrregular2;
 	private Jugada x;
 	
 	@BeforeEach
 	void setUp() throws Exception {
-		tabCuadrado = new Tablero(5, 5);
-		tabIrregular1 = new Tablero(4, 6);
-		tabIrregular2 = new Tablero(6, 4);
+		tabCuadrado = new SumaTres(new Settings(5, 5, true));
+		tabIrregular1 = new SumaTres(new Settings(4, 6, true));
+		tabIrregular2 = new SumaTres(new Settings(6, 4, true));
 		
 		x = null;
 	}
 	
 	void mover() {
-		Turno.mover(x, tabCuadrado);
-		Turno.mover(x, tabIrregular1);
-		Turno.mover(x, tabIrregular2);
+		new Turno(tabCuadrado, x).mover();
+		new Turno(tabIrregular1, x).mover();
+		new Turno(tabIrregular2, x).mover();
 	}
 	
 	void test() {
-		out.println(tabIrregular1.formattedToString());
-		out.println(tabIrregular2.formattedToString());
+		out.println(tabIrregular1.getTablero().formattedToString());
+		out.println(tabIrregular2.getTablero().formattedToString());
 	}
 	
 	@Nested
