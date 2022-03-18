@@ -794,17 +794,17 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTrucosActionPerformed
 
     private void jmiIntefazGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiIntefazGridActionPerformed
-        juego.getSettings().getStatus("drawGrid");
+        juego.getSettings().toggleStatus("drawGrid");
         juego.repaint();
     }//GEN-LAST:event_jmiIntefazGridActionPerformed
 
     private void jmiInterfazZonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazZonasActionPerformed
-        juego.getSettings().getStatus("drawZones");
+        juego.getSettings().toggleStatus("drawZones");
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazZonasActionPerformed
 
     private void jmiInterfazCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazCoordsActionPerformed
-        juego.getSettings().getStatus("drawCoords");
+        juego.getSettings().toggleStatus("drawCoords");
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
 
