@@ -24,7 +24,7 @@ abstract class LoopTask implements SincroForeBack {
     protected LoopTask(LauncherRF l) {
         this.ventana = l;
         this.partida = l.getPartida();
-        this.jugadas = partida.getSettings().isDiagonalMovementEnabled() ? 
+        this.jugadas = partida.getSettings().getStatus("diagonalMovement") ? 
                 Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
         limit = 1;
         slowdown = 0;

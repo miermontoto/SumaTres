@@ -312,92 +312,92 @@ public class Avanzadas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExperimentalActionPerformed
 
     private void chkConsoleOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkConsoleOutputActionPerformed
-        ventanaSecundaria.getSettings().toggleConsole();
+        ventanaSecundaria.getSettings().toggleStatus("consoleOutput");
     }//GEN-LAST:event_chkConsoleOutputActionPerformed
 
     private void chkHUDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkHUDActionPerformed
-        ventanaSecundaria.getSettings().toggleHud();
+        ventanaSecundaria.getSettings().toggleStatus("drawHud");
     }//GEN-LAST:event_chkHUDActionPerformed
 
     private void chkExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkExitOnEndActionPerformed
-        ventanaSecundaria.getSettings().toggleExitOnEnd();
+        ventanaSecundaria.getSettings().toggleStatus("exitOnEnd");
     }//GEN-LAST:event_chkExitOnEndActionPerformed
 
     private void chkPaintArrowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPaintArrowsActionPerformed
-        ventanaSecundaria.getSettings().togglePaintArrows();
+        ventanaSecundaria.getSettings().toggleStatus("drawArrows");
     }//GEN-LAST:event_chkPaintArrowsActionPerformed
 
     private void chkSaveResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSaveResultsActionPerformed
-        ventanaSecundaria.getSettings().toggleSaveResultsToFile();
+        ventanaSecundaria.getSettings().toggleStatus("saveResults");
     }//GEN-LAST:event_chkSaveResultsActionPerformed
 
     private void chkDrawZonesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawZonesActionPerformed
-        ventanaSecundaria.getSettings().toggleDrawZones();
+        ventanaSecundaria.getSettings().toggleStatus("drawZones");
     }//GEN-LAST:event_chkDrawZonesActionPerformed
 
     private void chkDrawGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawGridActionPerformed
-        ventanaSecundaria.getSettings().toggleDrawGrid();
+        ventanaSecundaria.getSettings().toggleStatus("drawGrid");
     }//GEN-LAST:event_chkDrawGridActionPerformed
 
     private void chkDrawCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDrawCoordsActionPerformed
-        ventanaSecundaria.getSettings().toggleDrawCoords();
+        ventanaSecundaria.getSettings().toggleStatus("drawCoords");
     }//GEN-LAST:event_chkDrawCoordsActionPerformed
 
     private void chkBalancedStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBalancedStartActionPerformed
-        ventanaSecundaria.getSettings().toggleBalancedStart();
+        ventanaSecundaria.getSettings().toggleStatus("balancedStart");
     }//GEN-LAST:event_chkBalancedStartActionPerformed
 
     private void chkMoreNextValuesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMoreNextValuesActionPerformed
-        ventanaSecundaria.getSettings().toggleMoreNextValues();
+        ventanaSecundaria.getSettings().toggleStatus("moreNextValues");
     }//GEN-LAST:event_chkMoreNextValuesActionPerformed
 
     private void chkCheatsAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheatsAvailableActionPerformed
-        ventanaSecundaria.getSettings().togglePossibleCheats();
+        ventanaSecundaria.getSettings().toggleStatus("possibleCheats");
     }//GEN-LAST:event_chkCheatsAvailableActionPerformed
 
     private void chkDiagonalMovementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDiagonalMovementActionPerformed
-        ventanaSecundaria.getSettings().toggleDiagonalMovement();
+        ventanaSecundaria.getSettings().toggleStatus("diagonalMovement");
     }//GEN-LAST:event_chkDiagonalMovementActionPerformed
 
     private void chkEnhancedDiffMultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEnhancedDiffMultActionPerformed
-        ventanaSecundaria.getSettings().toggleEnhancedDiffMult();
+        ventanaSecundaria.getSettings().toggleStatus("newDiffMult");
     }//GEN-LAST:event_chkEnhancedDiffMultActionPerformed
 
     private void spnVerbosityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnVerbosityStateChanged
-        ventanaSecundaria.getSettings().setVerbosityLevel((int) spnVerbosity.getValue());
+        ventanaSecundaria.getSettings().setVerbosity((int) spnVerbosity.getValue());
     }//GEN-LAST:event_spnVerbosityStateChanged
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
         
-        btnExperimental.setSelected(op.isExperimental());
-        btnClásico.setSelected(!op.isExperimental());
+        btnExperimental.setSelected(op.getStatus("experimental"));
+        btnClásico.setSelected(!op.getStatus("experimental"));
         
-        chkDiagonalMovement.setEnabled(op.isExperimental());
-        chkHUD.setEnabled(op.isExperimental());
-        chkCheatsAvailable.setEnabled(op.isExperimental());
-        chkMoreNextValues.setEnabled(op.isExperimental());
-        chkBalancedStart.setEnabled(op.isExperimental());
-        chkPaintArrows.setEnabled(op.isExperimental());
-        chkEnhancedDiffMult.setEnabled(op.isExperimental());
-        chkDrawGrid.setEnabled(op.isExperimental());
-        chkDrawZones.setEnabled(op.isExperimental());
-        chkDrawCoords.setEnabled(op.isExperimental());
+        chkDiagonalMovement.setEnabled(op.getStatus("experimental"));
+        chkHUD.setEnabled(op.getStatus("experimental"));
+        chkCheatsAvailable.setEnabled(op.getStatus("experimental"));
+        chkMoreNextValues.setEnabled(op.getStatus("experimental"));
+        chkBalancedStart.setEnabled(op.getStatus("experimental"));
+        chkPaintArrows.setEnabled(op.getStatus("experimental"));
+        chkEnhancedDiffMult.setEnabled(op.getStatus("experimental"));
+        chkDrawGrid.setEnabled(op.getStatus("experimental"));
+        chkDrawZones.setEnabled(op.getStatus("experimental"));
+        chkDrawCoords.setEnabled(op.getStatus("experimental"));
         //spnVerbosity.setEnabled(op.isExperimental()); // debería estar desactivado en modo clásico?
         
-        chkDiagonalMovement.setSelected(op.isDiagonalMovementEnabled());
-        chkHUD.setSelected(op.isHudEnabled());
-        chkCheatsAvailable.setSelected(op.isPossibleCheats());
-        chkBalancedStart.setSelected(op.isBalancedStartEnabled());
-        chkMoreNextValues.setSelected(op.isMoreNextValuesEnabled());
-        chkConsoleOutput.setSelected(op.isConsoleEnabled());
-        chkExitOnEnd.setSelected(op.isExitOnEndEnabled());
-        chkPaintArrows.setSelected(op.isPaintArrowsEnabled());
-        chkEnhancedDiffMult.setSelected(op.isEnhancedDiffMultEnabled());
-        chkSaveResults.setSelected(op.isSaveResultsToFileEnabled());
-        chkDrawGrid.setSelected(op.isDrawGridEnabled());
-        chkDrawZones.setSelected(op.isDrawZonesEnabled());
-        chkDrawCoords.setSelected(op.isDrawCoordsEnabled());
+        chkDiagonalMovement.setSelected(op.getStatus("diagonalMovement"));
+        chkHUD.setSelected(op.getStatus("drawHud"));
+        chkCheatsAvailable.setSelected(op.getStatus("possibleCheats"));
+        chkBalancedStart.setSelected(op.getStatus("balancedStart"));
+        chkMoreNextValues.setSelected(op.getStatus("moreNextValues"));
+        chkConsoleOutput.setSelected(op.getStatus("consoleOutput"));
+        chkExitOnEnd.setSelected(op.getStatus("exitOnEnd"));
+        chkPaintArrows.setSelected(op.getStatus("drawArrows"));
+        chkEnhancedDiffMult.setSelected(op.getStatus("newDiffMult"));
+        chkSaveResults.setSelected(op.getStatus("saveResults"));
+        chkDrawGrid.setSelected(op.getStatus("drawGrid"));
+        chkDrawZones.setSelected(op.getStatus("drawZones"));
+        chkDrawCoords.setSelected(op.getStatus("drawCoords"));
         spnVerbosity.setValue(op.verbosity());
     }
     

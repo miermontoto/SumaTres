@@ -60,8 +60,8 @@ public class Keyboard {
          * @return Valor booleano que define la validez.
          */
         private boolean validKeychar() {
-            return (s.getSettings().isDiagonalMovementEnabled() && (VALID_EXPERIMENTAL_KEYS.indexOf(e.getKeyChar())) >= 0) ||
-                    (!s.getSettings().isDiagonalMovementEnabled() && (VALID_CLASSIC_KEYS.indexOf(e.getKeyChar()) >= 0));
+            return (s.getSettings().getStatus("diagonalMovement") && (VALID_EXPERIMENTAL_KEYS.indexOf(e.getKeyChar())) >= 0) ||
+                    (!s.getSettings().getStatus("diagonalMovement") && (VALID_CLASSIC_KEYS.indexOf(e.getKeyChar()) >= 0));
         }
         
         /**

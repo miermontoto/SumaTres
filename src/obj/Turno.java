@@ -117,7 +117,7 @@ public final class Turno {
         Tablero t = s.getTablero();
         if (t.isFull()) {
             check = false;
-            String movesToCheck = s.getSettings().isDiagonalMovementEnabled() ? 
+            String movesToCheck = s.getSettings().getStatus("diagonalMovement") ? 
                 Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
 
             int b = 0;

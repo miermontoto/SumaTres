@@ -3,7 +3,6 @@ import game.LauncherRF;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import obj.Settings;
 import util.Dialog;
@@ -345,11 +344,11 @@ public class PrePartida extends javax.swing.JFrame {
             op = new Settings(Files.readString(f.toPath()));
             sldHorizontal.setValue(op.getX());
             sldVertical.setValue(op.getY());
-            btnExperimental.setSelected(op.isExperimental());
-            txtVertical.setText(String.format("%d", op.getY()));
-            txtHorizontal.setText(String.format("%d", op.getX()));
+            btnExperimental.setSelected(op.getStatus("experimental"));
+            txtVertical.setText(String.valueOf(op.getY()));
+            txtHorizontal.setText(String.valueOf(op.getX()));
             avanzadas.readValues();
-            btnDarkMode.setSelected(true);
+            btnDarkMode.setSelected(op.getStatus("darkMode"));
             checkDarkMode();
         } catch (IOException ex) {Dialog.showError(ex);}
     }
@@ -365,7 +364,7 @@ public class PrePartida extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarkModeActionPerformed
-        op.toggleDarkMode();
+        op.toggleStatus("darkMode");
         checkDarkMode();
     }//GEN-LAST:event_btnDarkModeActionPerformed
 
@@ -381,7 +380,7 @@ public class PrePartida extends javax.swing.JFrame {
      * </code> en las opciones! </b>
      */
     private void checkDarkMode() {
-        principal.toggleDarkMode(op.isDarkModeEnabled());
+        principal.toggleDarkMode(op.getStatus("darkMode"));
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(avanzadas);
     }

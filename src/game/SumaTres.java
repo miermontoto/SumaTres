@@ -212,7 +212,7 @@ public final class SumaTres extends JPanel {
         highestValue = 3;
         turno = 1;
         finished = false;
-        difficultyMultiplier = op.isEnhancedDiffMultEnabled() ? calculateMultiplier() : 1.0;
+        difficultyMultiplier = op.getStatus("newDiffMult") ? calculateMultiplier() : 1.0;
 
         try {t = new Tablero(op.getX(), op.getY());} catch (Exception ex) {
             err.printf("ERROR: %s."
@@ -226,7 +226,7 @@ public final class SumaTres extends JPanel {
          * de colores aleatorios durante ese turno solamente.
          */
         Pieza.inicializarColores(); vrbMsg(2, "Colores inicializados.");
-        if (op.isBalancedStartEnabled()) {
+        if (op.getStatus("balancedStart")) {
             int tmpLimit = Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1);
             for(int i = 0; i < tmpLimit; i++) 
                 generarSetFichas();
@@ -239,7 +239,7 @@ public final class SumaTres extends JPanel {
           * la partida en modo experimental.
           */
          
-         if(op.isConsoleEnabled()) out.println(fullToString());
+         if(op.getStatus("consoleOutput")) out.println(fullToString());
 
 
         newSiguiente(); // Se establece la ficha 'siguiente' por primera vez.
@@ -380,9 +380,8 @@ public final class SumaTres extends JPanel {
      */
     public void toggleConsole() {
             String s;
-            if(op.isConsoleEnabled()) s = "Desactivada salida por consola.";
-            else                      s = "Activada salida por consola.";
-            op.toggleConsole();
+            if(op.toggleStatus("consoleOutput")) s = "Desactivada salida por consola.";
+            else                                 s = "Activada salida por consola.";
             update();
             Dialog.show(s);
     }
@@ -398,7 +397,7 @@ public final class SumaTres extends JPanel {
     public void enableCheats() {
         cheatsUsed = true;
         setMultiplier(0.0);
-        op.toggleSaveResultsToFile(); // se desactiva guardar los resultados de una partida con trucos.
+        op.setStatus("saveResults", false); // Se desactiva guardar los resultados de una partida con trucos.
     }
 
     /**
@@ -540,7 +539,7 @@ public final class SumaTres extends JPanel {
         if(op.verbosity() == 2) tmpTime = System.currentTimeMillis();
         long tmpPuntos = getPuntos();
         turn.mover();
-        if(op.isConsoleEnabled()) out.println(this); //TODO: hacer que los saltos de línea coincidan
+        if(op.getStatus("consoleOutput")) out.println(this); //TODO: hacer que los saltos de línea coincidan
         turn.sumar();
         vrbMsg(2, String.format("La jugada ha tardado %s en calcularse.", getTime(tmpTime)));
         vrbMsg(1, String.format("Se han conseguido %d puntos en la última jugada.", getPuntos() - tmpPuntos));
@@ -599,7 +598,7 @@ public final class SumaTres extends JPanel {
      */
     public void update() {
         repaint();
-        if(op.isConsoleEnabled()) out.print(fullToString());
+        if(op.getStatus("consoleOutput")) out.print(fullToString());
     }
     
     private String getTime() {
@@ -656,20 +655,24 @@ public final class SumaTres extends JPanel {
      * @see <a href="https://stackoverflow.com/questions/880581/how-to-convert-int-to-integer-in-java">
      *		Pasar de int[] a List </a>
      */
-    private void newSiguienteExperimental() {
-   	if(op.isMoreNextValuesEnabled()) {
+    private void newSiguiente() {
+   	if(op.getStatus("moreNextValues")) {
             int[] values = possibleNextValues();
             if(values.length == 3) setSiguiente(Crypto.newRandom(3) + 1);
             else {
                 int finalValue;
-                //List<Integer> probabilities = Arrays.stream(values).boxed().collect(Collectors.toList());
                 int otherValues = values.length - 3;
                 double max = values.length * 5 + 20 / 100.0;
                 if(max < 0.55) max = 0.55;
             }
      	}
     	else setSiguiente(Crypto.newRandom(3) + 1);
-    	obtainedFromRandom.put(getSiguiente(),
+        
+    	saveSiguiente();
+    }
+    
+    private void saveSiguiente() {
+        obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
     }
 
@@ -689,15 +692,14 @@ public final class SumaTres extends JPanel {
      * del enunciado.
      * 
      */
-    @Deprecated (since="v20", forRemoval=false)
-    private void newSiguiente() {
-        if(op.isMoreNextValuesEnabled()) 
+    @Deprecated (since="v22", forRemoval=false)
+    private void newSiguienteClassic() {
+        if(op.getStatus("moreNextValues")) 
             setSiguiente(possibleNextValues()[Crypto.newRandom(possibleNextValues().length)]);
         else 
             setSiguiente(Crypto.newRandom(3) + 1);
         
-        obtainedFromRandom.put(getSiguiente(),
-            obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
+        saveSiguiente();
     }
 
     /**
@@ -816,7 +818,7 @@ public final class SumaTres extends JPanel {
         Dialog.show(salida);
         
 
-        if(op.isConsoleEnabled()) {
+        if(op.getStatus("consoleEnabled")) {
             out.printf("%n%n%s%n",salida);
             out.print("Fichas obtenidas: ");
             for(int i=0; i < possibleNextValues().length; i++) {
@@ -826,17 +828,17 @@ public final class SumaTres extends JPanel {
             out.println();
         }
         
-        if(op.isSaveResultsToFileEnabled()) {
+        if(op.getStatus("saveResults")) {
             String output = String.format("%s;%s;%d;%d;%d;%d;%d;%.1f;%s;\n",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 VERSION, getTablero().getColumns(), getTablero().getRows(), getPuntos(), getHighest(),
-                getTurnos(), getMultiplier(), op.isExperimental() ? "Experimental" : "Clásico");
+                getTurnos(), getMultiplier(), op.getStatus("experimental") ? "Experimental" : "Clásico");
             if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador;Modo\n", ARCHIVO);
             FileWS.write(output, ARCHIVO);
-            if(op.isConsoleEnabled()) out.println("Puntuaciones guardadas.");
+            if(op.getStatus("consoleEnabled")) out.println("Puntuaciones guardadas.");
         }
 
-        if(op.isExitOnEndEnabled()) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
+        if(op.getStatus("exitOnEnd")) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
         Keyboard.disableHandling(); // desactiva la entrada por teclado.
         Mouse.disableHandling(); // desctiva la entrada por ratón.
         finished = true;
@@ -880,6 +882,7 @@ public final class SumaTres extends JPanel {
      * Método que redirige los gráficos a {@link #paint(Graphics)}. <p>
      * También pide el focus de la ventana al comenzar a pintar, para evitar que se pierdan
      * pulsaciones de teclado al comenzar la partida.
+     * @param g Objeto gráfico por defecto.
      */
     @Override
     public void paintComponent(Graphics g) {

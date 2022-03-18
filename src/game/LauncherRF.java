@@ -147,7 +147,7 @@ public class LauncherRF extends javax.swing.JFrame {
         // Propiedades del JPanel de la partida.
         juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
         juego.setLocation(0,0);
-        juego.setBackground(op.isDarkModeEnabled() ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
+        juego.setBackground(op.getStatus("darkMode") ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
         
         // añade el panel de la partida y establece el orden correcto.
         tabTabbedPane.removeAll();
@@ -157,24 +157,24 @@ public class LauncherRF extends javax.swing.JFrame {
         SwingUtilities.updateComponentTreeUI(this); // arregla pintura extra en la barra de pestañas.
         
         // Se determinan qué opciones del menú pueden ser seleccionadas y cuales ya lo están.
-        jmiTrucos.setEnabled(op.isPossibleCheats());
-        jmiExtrasConsole.setSelected(op.isConsoleEnabled());
-        jmiExitOnEnd.setSelected(op.isExitOnEndEnabled());
-        jmiInterfazHud.setSelected(op.isHudEnabled());
-        jmiInterfazFlechas.setSelected(op.isPaintArrowsEnabled());
-        jmiInterfazHud.setEnabled(op.isExperimental());
-        jmiInterfazFlechas.setEnabled(op.isExperimental());
-        jmiDarkMode.setSelected(op.isDarkModeEnabled());
-        jmiInterfaz.setEnabled(op.isExperimental());
-        jmiIntefazGrid.setSelected(op.isDrawGridEnabled());
-        jmiInterfazZonas.setSelected(op.isDrawZonesEnabled());
-        jmiInterfazCoords.setSelected(op.isDrawCoordsEnabled());
+        jmiTrucos.setEnabled(op.getStatus("possibleCheats"));
+        jmiExtrasConsole.setSelected(op.getStatus("consoleOutput"));
+        jmiExitOnEnd.setSelected(op.getStatus("exitOnEnd"));
+        jmiInterfazHud.setSelected(op.getStatus("drawHud"));
+        jmiInterfazFlechas.setSelected(op.getStatus("drawArrows"));
+        jmiInterfazHud.setEnabled(op.getStatus("experimental"));
+        jmiInterfazFlechas.setEnabled(op.getStatus("experimental"));
+        jmiDarkMode.setSelected(op.getStatus("darkMode"));
+        jmiInterfaz.setEnabled(op.getStatus("experimental"));
+        jmiIntefazGrid.setSelected(op.getStatus("drawGrid"));
+        jmiInterfazZonas.setSelected(op.getStatus("drawZones"));
+        jmiInterfazCoords.setSelected(op.getStatus("drawCoords"));
         
         // Se selecciona qué modo y si se puede cambiar entre modos o no.
-        jmiModoClassic.setEnabled(op.isExperimental());
-        jmiModoClassic.setSelected(op.isExperimental());
-        jmiModoExperimental.setEnabled(op.isExperimental());
-        jmiModoExperimental.setSelected(op.isExperimental());
+        jmiModoClassic.setEnabled(op.getStatus("experimental"));
+        jmiModoClassic.setSelected(op.getStatus("experimental"));
+        jmiModoExperimental.setEnabled(op.getStatus("experimental"));
+        jmiModoExperimental.setSelected(op.getStatus("experimental"));
         
         requestFocusInWindow();
     }
@@ -609,7 +609,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiModoClassicActionPerformed
 
     private void setCheatsEnabled(final boolean status) {
-        boolean opdef = juego.areCheatsEnabled() && juego.getSettings().isPossibleCheats() && status;
+        boolean opdef = juego.areCheatsEnabled() && juego.getSettings().getStatus("possibleCheats") && status;
         jmiTrucosAñadir.setEnabled(opdef);
         jmiTrucosPuntos.setEnabled(opdef);
         jmiTrucosUndo.setEnabled(opdef);
@@ -680,10 +680,10 @@ public class LauncherRF extends javax.swing.JFrame {
                 + "Tamaño del tablero: %d x %d%n"
                 + "HUD: %s%n"
                 + "Flechas: %s%n",
-                op.isExperimental() ? "experimental" : "clásico",
+                op.getStatus("experimental") ? "experimental" : "clásico",
                 juego.areCheatsEnabled() ? "activados" : "desactivados",
                 juego.getTablero().getRows(), juego.getTablero().getColumns(),
-                activado(op.isHudEnabled()), activado(op.isPaintArrowsEnabled()));
+                activado(op.getStatus("drawHud")), activado(op.getStatus("drawArrows")));
 
             s += String.format("%nMovimiento diagonal: %s%n"
                 + "Salida por consola: %s%n"
@@ -692,13 +692,13 @@ public class LauncherRF extends javax.swing.JFrame {
                 + "Más fichas siguientes: %s%n"
                 + "Multiplicador de dificultad mejorado %s%n"
                 + "Guardar resultados al final de la partida: %s%n",
-                activado(op.isDiagonalMovementEnabled()),
-                activado(op.isConsoleEnabled()),
-                activado(op.isPossibleCheats()),
-                activado(op.isBalancedStartEnabled()),
-                activado(op.isMoreNextValuesEnabled()),
-                activado(op.isEnhancedDiffMultEnabled()),
-                activado(op.isSaveResultsToFileEnabled())
+                activado(op.getStatus("diagonalMovement")),
+                activado(op.getStatus("consoleOutput")),
+                activado(op.getStatus("possibleCheats")),
+                activado(op.getStatus("balancedStart")),
+                activado(op.getStatus("moreNextValues")),
+                activado(op.getStatus("newDiffMult")),
+                activado(op.getStatus("saveResults"))
                 );
                         
             s += String.format("%n%s", juego.isFinished() ? "Partida terminada." : "");
@@ -720,7 +720,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiColoresActionPerformed
 
     private void jmiTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmiTrucosMouseEntered
-        jmiTrucos.setToolTipText(String.format("%s",  juego.getSettings().isPossibleCheats() ? "Los trucos no se pueden desactivar una vez habilitados." : "Los trucos no se pueden activar en modo clásico."));
+        jmiTrucos.setToolTipText(String.format("%s",  juego.getSettings().getStatus("possibleCheats") ? "Los trucos no se pueden desactivar una vez habilitados." : "Los trucos no se pueden activar con estas opciones."));
     }//GEN-LAST:event_jmiTrucosMouseEntered
 
     private void mnuTrucosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuTrucosMouseEntered
@@ -728,16 +728,16 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuTrucosMouseEntered
 
     private void jmiExitOnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExitOnEndActionPerformed
-        juego.getSettings().toggleExitOnEnd();
+        juego.getSettings().toggleStatus("exitOnEnd");
     }//GEN-LAST:event_jmiExitOnEndActionPerformed
 
     private void jmiInterfazFlechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazFlechasActionPerformed
-        juego.getSettings().togglePaintArrows();
+        juego.getSettings().toggleStatus("drawArrows");
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazFlechasActionPerformed
 
     private void jmiInterfazHudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazHudActionPerformed
-        juego.getSettings().toggleHud();
+        juego.getSettings().toggleStatus("drawHud");
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazHudActionPerformed
 
@@ -754,9 +754,9 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTrucosLoopStartActionPerformed
 
     private void jmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDarkModeActionPerformed
-        juego.getSettings().toggleDarkMode();
-        juego.setBackground(juego.getSettings().isDarkModeEnabled() ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
-        toggleDarkMode(juego.getSettings().isDarkModeEnabled());
+        boolean ns = juego.getSettings().toggleStatus("darkMode");
+        juego.setBackground(ns ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
+        toggleDarkMode(ns);
         juego.repaint();
     }//GEN-LAST:event_jmiDarkModeActionPerformed
 
@@ -773,7 +773,7 @@ public class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTrucosForzarSiguienteActionPerformed
 
     private void jmiSaveOnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveOnExitActionPerformed
-        juego.getSettings().toggleSaveResultsToFile();
+        juego.getSettings().toggleStatus("saveResults");
     }//GEN-LAST:event_jmiSaveOnExitActionPerformed
 
     private void jmiTrucosLoopEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopEndActionPerformed
@@ -788,23 +788,23 @@ public class LauncherRF extends javax.swing.JFrame {
             setCheatsEnabled(true); // Habilita los menús de trucos.
             jmiSaveOnExit.setEnabled(false); // Deshabilita la posibilidad de activar el guardado de resultados.
             jmiSaveOnExit.setSelected(false);
-            if(juego.getSettings().isSaveResultsToFileEnabled()) juego.getSettings().toggleSaveResultsToFile();
+            juego.getSettings().setStatus("saveResults", false);
             actualizarPneInfo(); // Actualiza el estado de los trucos en el panel de info.
         } else {jmiTrucos.setSelected(false);}
     }//GEN-LAST:event_jmiTrucosActionPerformed
 
     private void jmiIntefazGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiIntefazGridActionPerformed
-        juego.getSettings().toggleDrawGrid();
+        juego.getSettings().getStatus("drawGrid");
         juego.repaint();
     }//GEN-LAST:event_jmiIntefazGridActionPerformed
 
     private void jmiInterfazZonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazZonasActionPerformed
-        juego.getSettings().toggleDrawZones();
+        juego.getSettings().getStatus("drawZones");
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazZonasActionPerformed
 
     private void jmiInterfazCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazCoordsActionPerformed
-        juego.getSettings().toggleDrawCoords();
+        juego.getSettings().getStatus("drawCoords");
         juego.repaint();
     }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
 
@@ -822,7 +822,7 @@ public class LauncherRF extends javax.swing.JFrame {
                     juego.setTurno(Integer.parseInt(a[2]));
                     juego.setHighest(Integer.parseInt(a[3]));
                     juego.setSettings(new Settings(a[4]));
-                    toggleDarkMode(juego.getSettings().isDarkModeEnabled());
+                    toggleDarkMode(juego.getSettings().getStatus("darkMode"));
                     juego.update();
                     actualizarPneInfo();
                 } else {Dialog.showError("El tamaño del tablero no es el actual.");}

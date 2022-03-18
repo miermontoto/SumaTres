@@ -87,7 +87,7 @@ public class Mouse {
 
         int limitX = Graphic.lateralSize(s.getSettings().getX());
         int limitY = Graphic.lateralSize(s.getSettings().getY());
-        boolean diagonal = s.getSettings().isDiagonalMovementEnabled();
+        boolean diagonal = s.getSettings().getStatus("diagonalMovement");
 
         if(x <= Paint.MAIN_SPACER) { 
             if(y <= Paint.MAIN_SPACER && diagonal) s.jugada('q');

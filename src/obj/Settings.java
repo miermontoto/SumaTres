@@ -1,81 +1,99 @@
 package obj;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.naming.OperationNotSupportedException;
 
 /**
  *
- * @author JuanMier
+ * @author Juan Mier
  */
 public class Settings {
     
     private int sizex;
     private int sizey;
-    private boolean experimentalMode;
-    private boolean consoleEnabled;
-    private boolean diagonalMovementEnabled;
-    private boolean possibleCheats;
-    private boolean hudEnabled;
-    private boolean moreNextValuesEnabled;
-    private boolean balancedStartEnabled;
-    private boolean exitOnEndEnabled;
-    private boolean drawArrowsEnabled;
-    private boolean darkModeEnabled;
-    private boolean enhancedDiffMultEnabled;
-    private boolean saveResultsToFileEnabled;
-    private boolean drawZonesEnabled;
-    private boolean drawGridEnabled;
-    private boolean drawCoordsEnabled;
+    private Map<String, Boolean> settingsMap;
     private int verbosityLevel;
     
     public Settings(int x, int y, boolean m) {
         sizex = x;
         sizey = y;
-        experimentalMode = m;
-        consoleEnabled = !m;
-        diagonalMovementEnabled = m;
-        possibleCheats = m;
-        hudEnabled = true;
-        moreNextValuesEnabled = m;
-        balancedStartEnabled = m;
-        exitOnEndEnabled = true;
-        drawArrowsEnabled = true;
-        darkModeEnabled = false;
-        enhancedDiffMultEnabled = m;
-        saveResultsToFileEnabled = m;
-        drawGridEnabled = false;
-        drawZonesEnabled = false;
-        drawCoordsEnabled = false;
+        settingsMap = new TreeMap<>();
+        
+        settingsMap.put("experimental", m);
+        settingsMap.put("consoleOutput", !m);
+        settingsMap.put("diagonalMovement", m);
+        settingsMap.put("possibleCheats", m);
+        settingsMap.put("moreNextValues", m);
+        settingsMap.put("newDiffMult", m);
+        settingsMap.put("balancedStart", m);
+        settingsMap.put("exitOnEnd", true);
+        settingsMap.put("drawArrows", true);
+        settingsMap.put("drawHud", true);
+        settingsMap.put("darkMode", false);
+        settingsMap.put("saveResults", true);
+        settingsMap.put("drawGrid", false);
+        settingsMap.put("drawZones", false);
+        settingsMap.put("drawCoords", false);
+        settingsMap.put("newNextValues", true);
         verbosityLevel = 0;
     }
     
     public Settings(String s) throws IOException {
-        String[] data = s.split(" ");
-        if(data.length != 18) throw new IOException("Tamaño de información incorrecto.");
+        String[] data = s.split("'");
+        //if(data.length != 19) throw new IOException("Tamaño de información incorrecto.");
+        settingsMap = new TreeMap<>();
+        
         sizex = Integer.parseInt(data[0]);
         sizey = Integer.parseInt(data[1]);
-        experimentalMode = Boolean.parseBoolean(data[2]);
-        consoleEnabled = Boolean.parseBoolean(data[3]);
-        diagonalMovementEnabled = Boolean.parseBoolean(data[4]);
-        possibleCheats = Boolean.parseBoolean(data[5]);
-        hudEnabled = Boolean.parseBoolean(data[6]);
-        moreNextValuesEnabled = Boolean.parseBoolean(data[7]);
-        balancedStartEnabled = Boolean.parseBoolean(data[8]);
-        exitOnEndEnabled = Boolean.parseBoolean(data[9]);
-        drawArrowsEnabled = Boolean.parseBoolean(data[10]);
-        darkModeEnabled = Boolean.parseBoolean(data[11]);
-        enhancedDiffMultEnabled = Boolean.parseBoolean(data[12]);
-        saveResultsToFileEnabled = Boolean.parseBoolean(data[13]);
-        drawZonesEnabled = Boolean.parseBoolean(data[14]);
-        drawGridEnabled = Boolean.parseBoolean(data[15]);
-        drawCoordsEnabled = Boolean.parseBoolean(data[16]);
-        verbosityLevel = Integer.parseInt(data[17]);
+        verbosityLevel = Integer.parseInt(data[2]);
+        for(int i = 3; i < data.length; i++) {
+            var settingName = data[i].split("=")[0];
+            var settingStatus = Boolean.parseBoolean(data[i].split("=")[1]);
+            settingsMap.put(settingName, settingStatus);
+        }
 
-        
-        if(!experimentalMode && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||
+        /*
+        if(!settingsMap.get("experimental") && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||
                     moreNextValuesEnabled || balancedStartEnabled || !drawArrowsEnabled ||
                         enhancedDiffMultEnabled || saveResultsToFileEnabled || drawZonesEnabled ||
                             drawGridEnabled || drawCoordsEnabled)) 
-                throw new IOException("Leídos valores inválidos desde archivo de opciones.");
+                throw new IOException("Leídos valores inválidos desde archivo de opciones.");*/
+    }
+    
+    /**
+     * Devuelve el valor de una opción que esté dentro del diccionario de opciones.
+     * @param s Nombre de la opción del que se desea conocer el valor.
+     * @return Valor de la opción.
+     */
+    public boolean getStatus(String s) {
+        //if(!settingsMap.containsKey(s)) throw new OperationNotSupportedException("Opción no existente.");
+        return settingsMap.get(s);
+    }
+    
+    /**
+     * Método que establece el valor de una opción.
+     * @param s Opción del que se quiere cambiar el valor.
+     * @param b Valor a establecer.
+     * @return Devuelve el valor booleano que devuelve {@code put}.
+     */
+    public boolean setStatus(String s, boolean b) {
+        //if(!settingsMap.containsKey(s)) throw new OperationNotSupportedException("Opción no existente.");
+        return settingsMap.put(s, b);
+    }
+    
+    /**
+     * Método que conmuta el valor de una opción.
+     * @param s Nombre de la opción a conmutar.
+     * @return Devuelve el nuevo valor booleano de la opción.
+     */
+    public boolean toggleStatus(String s) {
+        //if(!settingsMap.containsKey(s)) throw new OperationNotSupportedException("Opción no existente.");
+        boolean newValue = !settingsMap.get(s);
+        settingsMap.put(s, newValue);
+        return newValue;
     }
 
     public int getX() {
@@ -86,111 +104,36 @@ public class Settings {
         return sizey;
     }
 
-    public boolean isExperimental() {
-        return experimentalMode;
-    }  
-
-    public void setSizex(int sizex) {
-        this.sizex = sizex;
+    public void setSizex(int val) {
+        if (val >= 2) sizex = val;
     }
 
-    public void setSizey(int sizey) {
-        this.sizey = sizey;
+    public void setSizey(int val) {
+        if (val >= 2) sizey = val;
+    }
+    
+    public void setVerbosity(int val) {
+        if(val >= 0 && val <= 3) verbosityLevel = val;
     }
 
     public void setExperimentalMode(boolean exp) {
-        this.experimentalMode = exp;
-        this.consoleEnabled = exp;
-        this.diagonalMovementEnabled = exp;
-        this.possibleCheats = exp;
-        this.moreNextValuesEnabled = exp;
-        this.enhancedDiffMultEnabled = exp;
-    }
-
-    public boolean isConsoleEnabled() {
-        return consoleEnabled;
-    }
-
-    public boolean isDiagonalMovementEnabled() {
-        return diagonalMovementEnabled;
-    }
-
-    public boolean isPossibleCheats() {
-        return possibleCheats;
-    }
-
-    public boolean isHudEnabled() {
-        return hudEnabled;
-    }
-    
-    public boolean isMoreNextValuesEnabled() {
-        return moreNextValuesEnabled;
-    }
-    
-    public boolean isBalancedStartEnabled() {
-        return balancedStartEnabled;
-    }
-    
-    public boolean isExitOnEndEnabled() {
-        return exitOnEndEnabled;
-    }
-    
-    public boolean isPaintArrowsEnabled() {
-        return drawArrowsEnabled;
-    }
-    
-    public boolean isDarkModeEnabled() {
-        return darkModeEnabled;
-    }
-    
-    public boolean isEnhancedDiffMultEnabled() {
-        return enhancedDiffMultEnabled;
-    }
-    
-    public boolean isSaveResultsToFileEnabled() {
-        return saveResultsToFileEnabled;
-    }
-    
-    public boolean isDrawZonesEnabled() {
-        return drawZonesEnabled;
-    }
-    
-    public boolean isDrawGridEnabled() {
-        return drawGridEnabled;
-    }
-    
-    public boolean isDrawCoordsEnabled() {
-        return drawCoordsEnabled;
+        settingsMap.put("experimental", exp);
+        settingsMap.put("consoleOutput", !exp);
+        settingsMap.put("diagonalMovement", exp);
+        settingsMap.put("possibleCheats", exp);
+        settingsMap.put("moreNextValues", exp);
+        settingsMap.put("newDiffMult", exp);
+        settingsMap.put("newNextValues", exp);
     }
     
     public int verbosity() {
         return verbosityLevel;
     }
     
-    public void toggleHud() {hudEnabled = !hudEnabled;}
-    public void togglePossibleCheats() {possibleCheats = !possibleCheats;}
-    public void toggleDiagonalMovement() {diagonalMovementEnabled = !diagonalMovementEnabled;}
-    public void toggleConsole() {consoleEnabled = !consoleEnabled;}
-    public void toggleMoreNextValues() {moreNextValuesEnabled = !moreNextValuesEnabled;}
-    public void toggleBalancedStart() {balancedStartEnabled = !balancedStartEnabled;}
-    public void toggleExitOnEnd() {exitOnEndEnabled = !exitOnEndEnabled;}
-    public void togglePaintArrows() {drawArrowsEnabled = !drawArrowsEnabled;}
-    public void toggleDarkMode() {darkModeEnabled = !darkModeEnabled;}
-    public void toggleEnhancedDiffMult() {enhancedDiffMultEnabled = !enhancedDiffMultEnabled;}
-    public void toggleSaveResultsToFile() {saveResultsToFileEnabled = !saveResultsToFileEnabled;}
-    public void toggleDrawGrid() {drawGridEnabled = !drawGridEnabled;}
-    public void toggleDrawZones() {drawZonesEnabled = !drawZonesEnabled;}
-    public void toggleDrawCoords() {drawCoordsEnabled = !drawCoordsEnabled;}
-    public void setVerbosityLevel(int l) {verbosityLevel = l;}
-    
     @Override
     public String toString() {
-        return String.format("%d %d %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %d", 
-                sizex, sizey, experimentalMode, consoleEnabled, 
-                diagonalMovementEnabled, possibleCheats, hudEnabled, 
-                moreNextValuesEnabled, balancedStartEnabled, exitOnEndEnabled,
-                drawArrowsEnabled, darkModeEnabled, enhancedDiffMultEnabled,
-                saveResultsToFileEnabled, drawZonesEnabled, drawGridEnabled,
-                drawCoordsEnabled, verbosityLevel);
+        String s = sizex + "'" + sizey + "'" + verbosityLevel;
+        for(Map.Entry<String, Boolean> pair : settingsMap.entrySet()) s += "'" + pair.getKey() + "=" + pair.getValue();
+        return s;
     }
 }

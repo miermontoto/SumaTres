@@ -91,11 +91,11 @@ public class Paint {
 
         pintarTablero();
         pintarFichas();
-        if(op.isPaintArrowsEnabled()) pintarFlechas();
-        if(op.isHudEnabled()) pintarInfo();
-        if(op.isDrawZonesEnabled()) pintarZonas();
-        if(op.isDrawGridEnabled()) pintarGrid();
-        if(op.isDrawCoordsEnabled()) pintarCoords();
+        if(op.getStatus("drawArrows")) pintarFlechas();
+        if(op.getStatus("drawHud")) pintarInfo();
+        if(op.getStatus("drawZones")) pintarZonas();
+        if(op.getStatus("drawGrid")) pintarGrid();
+        if(op.getStatus("drawCoords")) pintarCoords();
     }
 
     /**
@@ -118,7 +118,7 @@ public class Paint {
         int middleColumn = defineX / 2;
         int rightColumn = defineX - MAIN_SPACER * 2 / 3;
         
-        g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : Color.blue);
+        g.setColor(op.getStatus("darkMode") ? BOARD_COLOR : Color.blue);
         setFontSize(20);
         
         g.drawString("\u2190", leftColumn, middleRow);   // flecha izquierda
@@ -126,7 +126,7 @@ public class Paint {
         g.drawString("\u2192", rightColumn, middleRow);  // flecha derecha
         g.drawString("\u2193", middleColumn, bottomRow); // flecha abajo
         
-        if(op.isDiagonalMovementEnabled()) {
+        if(op.getStatus("diagonalMovement")) {
             g.drawString("\u2B76", leftColumn, topRow);     // arriba izquierda
             g.drawString("\u2B77", rightColumn, topRow);    // arriba derecha
             g.drawString("\u2B78", rightColumn, bottomRow); // abajo derecha
@@ -151,7 +151,7 @@ public class Paint {
      * siguiente pieza en pantalla.
      */
     private void pintarInfo() {
-        g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : new Color(48, 50, 52));
+        g.setColor(op.getStatus("darkMode") ? BOARD_COLOR : new Color(48, 50, 52));
         setFontSize(15);
 
         // Siguiente:
@@ -202,7 +202,7 @@ public class Paint {
     }
     
     private void pintarZonas() {
-        g.setColor(op.isDarkModeEnabled() ? BOARD_COLOR : Color.DARK_GRAY);
+        g.setColor(op.getStatus("darkMode") ? BOARD_COLOR : Color.DARK_GRAY);
         g.drawLine(MAIN_SPACER, 0, MAIN_SPACER, lateralSizeY + MAIN_SPACER);
         g.drawLine(lateralSizeX, 0, lateralSizeX, lateralSizeY + MAIN_SPACER);
         g.drawLine(0, MAIN_SPACER, defineX, MAIN_SPACER);
