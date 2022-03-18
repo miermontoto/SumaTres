@@ -8,7 +8,6 @@ import gui.dialog.LoadDialog;
 import gui.dialog.SaveDialog;
 import handler.Keyboard;
 import handler.Mouse;
-import java.awt.Desktop;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -21,8 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map; // Map.EntrySet
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
 import javax.swing.table.DefaultTableModel;
@@ -49,7 +46,6 @@ public class LauncherRF extends javax.swing.JFrame {
     private SumaTres juego;
     private Thread loopThread;
     private static LoopComms loopComms; 
-    private TableModel dlm;
     
     /**
      * Constructor principal y único. No necesita parámetros.
