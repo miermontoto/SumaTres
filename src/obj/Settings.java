@@ -37,7 +37,7 @@ public class Settings {
         settingsMap.put("drawGrid", false);
         settingsMap.put("drawZones", false);
         settingsMap.put("drawCoords", false);
-        settingsMap.put("newNextValues", true);
+        settingsMap.put("newNextValues", false);
         verbosityLevel = 0;
     }
     

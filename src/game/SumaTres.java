@@ -524,13 +524,13 @@ public final class SumaTres extends JPanel {
      * @param c Caracter que determina el movimiento (w/s/a/d) y, en modo experimental, (q/w/e/d/c/x/z/a).
      */
     public void jugada(char c) {
-        long jstTime = 0;
-        long tmpTime = 0;
+        long jstTime = 0; // Tiempo que se tarda en ejecutar el turno.
+        long tmpTime = 0; // Tiempo que se tarda en calcular el turno.
         if(op.verbosity() == 2) jstTime = System.currentTimeMillis();
         
         String oldStatus = t.toString();
         Tablero temp = new Tablero(op.getX(), op.getY());
-        temp.setFromString(t.toString());
+        temp.setFromString(t.toString()); // Se guarda el tablero.
         Jugada x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
         Turno turn = new Turno(this, x); // Se crea un objeto tipo "Turno" que ejecute la jugada.
         
@@ -565,10 +565,10 @@ public final class SumaTres extends JPanel {
         if (!newStatus.equals(oldStatus)) {
             vrbMsg(2, "La jugada ha modificado el tablero, sumando un turno.");
             addTurno(); // Si el tablero ha cambiado, se añade un turno.
-            tableros.addLast(temp);
+            tableros.addLast(temp); // Se añade el tablero anterior.
         } else {
             vrbMsg(2, "La jugada no ha modificado el tablero.");
-            deactivateWarning();
+            deactivateWarning(); // Si no se ha movido, la ficha siguiente sigue siendo la misma.
         }
         
 
@@ -611,7 +611,7 @@ public final class SumaTres extends JPanel {
     
     public void colocarSiguiente() throws NullPointerException {
         int[] loc = getValidLocations();
-        if(loc == null) throw new NullPointerException("No se ha encontrado lugar donde insertar pieza siguiente (NULL).");
+        if(loc == null) throw new NullPointerException("No se ha encontrado lugar donde insertar pieza siguiente.");
         setWarning(loc);
         setTab(loc[0], loc[1], getSiguiente());
         t.addAmount();
@@ -656,6 +656,7 @@ public final class SumaTres extends JPanel {
      *		Pasar de int[] a List </a>
      */
     private void newSiguiente() {
+        if(!op.getStatus("newNextValues")) {newSiguienteClassic(); return;}
    	if(op.getStatus("moreNextValues")) {
             int[] values = possibleNextValues();
             if(values.length == 3) setSiguiente(Crypto.newRandom(3) + 1);

@@ -10,6 +10,7 @@ import handler.FileWS;
 import handler.Loader;
 import java.awt.event.KeyEvent;
 import javax.swing.SwingUtilities;
+import util.Crypto;
 
 
 public class PrePartida extends javax.swing.JFrame {
@@ -341,7 +342,7 @@ public class PrePartida extends javax.swing.JFrame {
      */
     private void openSettingsFile(File f) {
         try {
-            op = new Settings(Files.readString(f.toPath()));
+            op = new Settings(Crypto.decode(Files.readString(f.toPath())));
             sldHorizontal.setValue(op.getX());
             sldVertical.setValue(op.getY());
             btnExperimental.setSelected(op.getStatus("experimental"));
@@ -359,7 +360,7 @@ public class PrePartida extends javax.swing.JFrame {
         File f = new Loader("Guardar archivo de opciones",
                 new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto")).save();
         try {
-            FileWS.write(op.toString(), new File(f.getAbsolutePath()));
+            FileWS.write(Crypto.encode(op.toString()), new File(f.getAbsolutePath()));
         } catch (Exception ex) {Dialog.showError(ex);}
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -387,10 +388,12 @@ public class PrePartida extends javax.swing.JFrame {
     
     public Settings getSettings() {return this.op;}
     public void setSettings(Settings op) {this.op = op;}
+    
     public void setExperimental() {
         setSettings(new Settings(op.getX(), op.getY(), true));
         btnExperimental.setSelected(true);
     }
+    
     public void setClassic() {
         setSettings(new Settings(op.getX(), op.getY(), false));
         btnClásico.setSelected(true);
