@@ -22,6 +22,10 @@ import java.util.Map; // Map.EntrySet
 import java.util.Scanner;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Tablero;
@@ -38,7 +42,7 @@ import util.visual.Paint; // Se utiliza para obtener el color del fondo.
  * SumaTresTexto</code>.
  * @author JuanMier
  */
-public class LauncherRF extends javax.swing.JFrame {
+public final class LauncherRF extends javax.swing.JFrame {
     
     private final PrePartida secundaria;
     private final EditarColores ventanaColores;
@@ -50,11 +54,15 @@ public class LauncherRF extends javax.swing.JFrame {
      * Constructor principal y único. No necesita parámetros.
      */
     public LauncherRF() {
-        FlatLightLaf.setup(); // Se establece el modo claro por defecto.
-        initComponents();
+        secundaria = new PrePartida(this);
         ventanaColores = new EditarColores(this);
         ventanaColores.setVisible(false);
-        secundaria = new PrePartida(this);
+        try {
+            FlatLightLaf.setup(); // Se establece el modo claro por defecto.
+            updateComponentTreeUI();
+        } catch (Exception ex) {secundaria.setDarkModeStatus(false);}
+        initComponents();
+        
         secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
     }
     
@@ -134,8 +142,6 @@ public class LauncherRF extends javax.swing.JFrame {
         } else {
             System.out.println("No se ha leído el archivo de resultados porque no existe.");
         }
-        
-        
         
         // Propiedades de la ventana.
         setBounds(0, 0, Graphic.defineX(juego), Graphic.defineY(juego));
@@ -651,8 +657,24 @@ public class LauncherRF extends javax.swing.JFrame {
     public void toggleDarkMode(boolean b) {
         if(b) FlatDarkLaf.setup();
         else FlatLightLaf.setup();
+        updateComponentTreeUI();
+    }
+    
+    public void setLookAndFeel(String s) {
+        try {
+            if(s.equals("default")) {
+                FlatLightLaf.setup();
+            } else {
+                UIManager.setLookAndFeel(s);
+            }
+            
+        } catch(Exception ex) {} finally {updateComponentTreeUI();}
+    }
+    
+    public void updateComponentTreeUI() {
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(ventanaColores);
+        SwingUtilities.updateComponentTreeUI(secundaria);
     }
     
     public void actualizarPneInfo() {

@@ -1,4 +1,5 @@
 package gui;
+import com.formdev.flatlaf.FlatLightLaf;
 import game.LauncherRF;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class PrePartida extends javax.swing.JFrame {
             openSettingsFile(defaultSettings);
             System.out.println("Cargado archivo de opciones por defecto.");
         }
+        FlatLightLaf.setup();
+        SwingUtilities.updateComponentTreeUI(avanzadas);
     }
 
     /**
@@ -354,7 +357,9 @@ public class PrePartida extends javax.swing.JFrame {
         } catch (IOException ex) {Dialog.showError(ex);}
     }
     
-    
+    public void setDarkModeStatus(boolean b) {
+        btnDarkMode.setEnabled(b);
+    }
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         File f = new Loader("Guardar archivo de opciones",
@@ -397,6 +402,10 @@ public class PrePartida extends javax.swing.JFrame {
     public void setClassic() {
         setSettings(new Settings(op.getX(), op.getY(), false));
         btnClásico.setSelected(true);
+    }
+    
+    public LauncherRF getPrincipal() {
+        return this.principal;
     }
     
     /**

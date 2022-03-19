@@ -1,4 +1,7 @@
 package gui;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import obj.Settings;
 
 /**
@@ -15,6 +18,9 @@ public class Avanzadas extends javax.swing.JFrame {
     private Avanzadas() {
         initComponents();
         lblVerbosityWarning.setVisible(false);
+        cmbLnf.removeAllItems();
+        cmbLnf.addItem("FlatLaf (default)");
+        for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) cmbLnf.addItem(info.getName());
     }
     
     public Avanzadas(PrePartida p) {
@@ -32,6 +38,8 @@ public class Avanzadas extends javax.swing.JFrame {
     private void initComponents() {
 
         btgModos = new javax.swing.ButtonGroup();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
         btnClásico = new javax.swing.JRadioButton();
         btnExperimental = new javax.swing.JRadioButton();
         jSeparator1 = new javax.swing.JSeparator();
@@ -58,6 +66,9 @@ public class Avanzadas extends javax.swing.JFrame {
         spnVerbosity = new javax.swing.JSpinner();
         btnImprimir = new javax.swing.JButton();
         lblVerbosityWarning = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        cmbLnf = new javax.swing.JComboBox<>();
+        jSeparator7 = new javax.swing.JSeparator();
 
         setTitle("SumaTres - Opciones avanzadas");
         setResizable(false);
@@ -204,6 +215,14 @@ public class Avanzadas extends javax.swing.JFrame {
         lblVerbosityWarning.setText("(!) La verbosidad afecta al rendimiento.");
         lblVerbosityWarning.setBorder(javax.swing.BorderFactory.createCompoundBorder());
 
+        jLabel5.setText("Look and feel:");
+
+        cmbLnf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbLnfActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -213,7 +232,7 @@ public class Avanzadas extends javax.swing.JFrame {
                 .addComponent(btnClásico)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExperimental)
-                .addGap(54, 54, 54))
+                .addGap(56, 56, 56))
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
@@ -224,41 +243,46 @@ public class Avanzadas extends javax.swing.JFrame {
                         .addComponent(chkExitOnEnd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(chkSaveResults))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel3)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(spnVerbosity, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cmbLnf, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(37, 37, 37)
+                            .addComponent(btnImprimir))
+                        .addComponent(jSeparator6)
+                        .addComponent(jLabel1)
+                        .addComponent(lblVerbosityWarning)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(chkEnhancedDiffMult)
+                                .addComponent(chkCheatsAvailable)
+                                .addComponent(chkDiagonalMovement))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(chkMoreNextValues)
+                                .addComponent(chkBalancedStart)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(chkDrawGrid)
+                                .addComponent(jLabel2)
+                                .addComponent(chkHUD))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(chkDrawGrid)
-                                        .addComponent(jLabel2)
-                                        .addComponent(chkHUD))
-                                    .addGap(46, 46, 46)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(chkPaintArrows)
-                                            .addGap(86, 86, 86)
-                                            .addComponent(chkDrawZones))
-                                        .addComponent(chkDrawCoords)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(chkEnhancedDiffMult)
-                                        .addComponent(chkCheatsAvailable)
-                                        .addComponent(chkDiagonalMovement))
-                                    .addGap(94, 94, 94)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(chkMoreNextValues)
-                                        .addComponent(chkBalancedStart)))
+                                    .addComponent(chkDrawCoords)
+                                    .addGap(206, 206, 206))
                                 .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(spnVerbosity, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(263, 263, 263)
-                                    .addComponent(btnImprimir))
-                                .addComponent(jSeparator6))
-                            .addComponent(jLabel1)
-                            .addComponent(lblVerbosityWarning)))
+                                    .addComponent(chkPaintArrows)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(chkDrawZones)
+                                    .addGap(36, 36, 36))))
+                        .addComponent(jSeparator7))
                     .addComponent(jSeparator4)
                     .addComponent(jSeparator2))
                 .addGap(59, 59, 59))
@@ -308,13 +332,17 @@ public class Avanzadas extends javax.swing.JFrame {
                     .addComponent(chkBalancedStart))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkEnhancedDiffMult)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addComponent(lblVerbosityWarning)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(spnVerbosity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnImprimir))
+                    .addComponent(btnImprimir)
+                    .addComponent(jLabel5)
+                    .addComponent(cmbLnf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16))
         );
 
@@ -392,6 +420,16 @@ public class Avanzadas extends javax.swing.JFrame {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         System.out.println(ventanaSecundaria.getSettings().toString());
     }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void cmbLnfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLnfActionPerformed
+        try {
+            int index = cmbLnf.getSelectedIndex();
+            String res = index == 0 ? "default" : UIManager.getInstalledLookAndFeels()[index].getClassName();
+            ventanaSecundaria.getPrincipal().setLookAndFeel(res);
+            ventanaSecundaria.setDarkModeStatus(index == 0);
+            
+        } catch (Exception ex) {} finally {SwingUtilities.updateComponentTreeUI(this);}
+    }//GEN-LAST:event_cmbLnfActionPerformed
  
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
@@ -477,14 +515,19 @@ public class Avanzadas extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkMoreNextValues;
     private javax.swing.JCheckBox chkPaintArrows;
     private javax.swing.JCheckBox chkSaveResults;
+    private javax.swing.JComboBox<String> cmbLnf;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
     private javax.swing.JLabel lblVerbosityWarning;
     private javax.swing.JSpinner spnVerbosity;
     // End of variables declaration//GEN-END:variables
