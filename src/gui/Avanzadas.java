@@ -427,6 +427,7 @@ public class Avanzadas extends javax.swing.JFrame {
             String res = index == 0 ? "default" : UIManager.getInstalledLookAndFeels()[index].getClassName();
             ventanaSecundaria.getPrincipal().setLookAndFeel(res);
             ventanaSecundaria.setDarkModeStatus(index == 0);
+            ventanaSecundaria.getPrincipal().setDarkModeStatus(index == 0);
             
         } catch (Exception ex) {} finally {SwingUtilities.updateComponentTreeUI(this);}
     }//GEN-LAST:event_cmbLnfActionPerformed

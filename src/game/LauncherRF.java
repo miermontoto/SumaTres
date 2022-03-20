@@ -895,6 +895,10 @@ public final class LauncherRF extends javax.swing.JFrame {
         return this.juego;
     }
     
+    public void setDarkModeStatus(boolean b) {
+        this.jmiDarkMode.setEnabled(b);
+    }
+    
     /**
      * @param args the command line arguments
      */
