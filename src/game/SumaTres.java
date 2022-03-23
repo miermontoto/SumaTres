@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.JPanel;
+import util.Timer;
 
 /**
  * <h2> Clase principal del proyecto SumaTres </h2>
@@ -171,7 +172,7 @@ public final class SumaTres extends JPanel {
     private Tablero t; // Tablero sobre el que se juega la partida.
     private Settings op; // Opciones de la partida.
     private boolean finished; // Booleano que determina si la partida se ha terminado ya o no.
-    private long startTime; // Computer time para el comienzo de la partida.
+    private Timer timer; // Contador de tiempo de la partida.
 
     /**
     * Constructor de la clase sobrecargado por tres enteros.
@@ -195,12 +196,12 @@ public final class SumaTres extends JPanel {
     * 
     * @param op: Objeto de tipo obj.Settings que defina la partida.
     */
-    public SumaTres(Settings op) {
+    public SumaTres(Settings op) { 
         
-        startTime = System.currentTimeMillis();
+        timer = new Timer(op.verbosity());
         this.op = op;
-        vrbMsg(2, "Partida iniciada.");
-        vrbMsg(1, String.format("INFO: Verbosity level = %d", op.verbosity()));
+        timer.log(2, "Partida iniciada.");
+        timer.log(1, String.format("INFO: Verbosity level = %d", op.verbosity()));
 
         // Se inicializan variables.
         cheatsUsed = false;
@@ -225,14 +226,14 @@ public final class SumaTres extends JPanel {
          * generar el set de fichas inicial. De lo contrario, la primera jugada contaría con piezas
          * de colores aleatorios durante ese turno solamente.
          */
-        Pieza.inicializarColores(); vrbMsg(2, "Colores inicializados.");
+        Pieza.inicializarColores(); timer.log(2, "Colores inicializados.");
         if (op.getStatus("balancedStart")) {
             int tmpLimit = Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1);
             for(int i = 0; i < tmpLimit; i++) 
                 generarSetFichas();
-            vrbMsg(2, String.format("Generado(s) %d set(s) de ficha(s).", tmpLimit));
+            timer.log(2, String.format("Generado(s) %d set(s) de ficha(s).", tmpLimit));
         }
-        else generarSetFichas(); vrbMsg(2, "Generado set de fichas.");
+        else generarSetFichas(); timer.log(2, "Generado set de fichas.");
          /*
           * Se hace Math.max porque en el tablero 3x3, el resultado del cálculo es 0.45,
           * que convertido a entero es 0, lo que resulta en un tablero vacío al empezar
@@ -534,15 +535,15 @@ public final class SumaTres extends JPanel {
         Jugada x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
         Turno turn = new Turno(this, x); // Se crea un objeto tipo "Turno" que ejecute la jugada.
         
-        vrbMsg(1, String.format("Jugada: %s", x.getNombre()));
+        timer.log(1, String.format("Jugada: %s", x.getNombre()));
 
         if(op.verbosity() == 2) tmpTime = System.currentTimeMillis();
         long tmpPuntos = getPuntos();
         turn.mover();
         if(op.getStatus("consoleOutput")) out.println(this); //TODO: hacer que los saltos de línea coincidan
         turn.sumar();
-        vrbMsg(2, String.format("La jugada ha tardado %s en calcularse.", getTime(tmpTime)));
-        vrbMsg(1, String.format("Se han conseguido %d puntos en la última jugada.", getPuntos() - tmpPuntos));
+        timer.log(2, String.format("La jugada ha tardado %s en calcularse.", Timer.getTime(tmpTime)));
+        timer.log(1, String.format("Se han conseguido %d puntos en la última jugada.", getPuntos() - tmpPuntos));
 
 
         /*
@@ -552,31 +553,31 @@ public final class SumaTres extends JPanel {
          * a colocar no varía.
          */
         if (!t.isFull()) {
-            vrbMsg(1, String.format("Colocando ficha siguiente, \"%d\"", getSiguiente()));
+            timer.log(1, String.format("Colocando ficha siguiente, \"%d\"", getSiguiente()));
             colocarSiguiente();
         }
-        else vrbMsg(1, "El tablero está lleno, no se ha colocado ficha siguiente.");
+        else timer.log(1, "El tablero está lleno, no se ha colocado ficha siguiente.");
 
         
         String newStatus = t.toString();
-        vrbMsg(2, String.format("ID tablero previo: %s", oldStatus));
-        vrbMsg(2, String.format("ID tablero nuevo : %s", newStatus));
+        timer.log(2, String.format("ID tablero previo: %s", oldStatus));
+        timer.log(2, String.format("ID tablero nuevo : %s", newStatus));
         
         if (!newStatus.equals(oldStatus)) {
-            vrbMsg(2, "La jugada ha modificado el tablero, sumando un turno.");
+            timer.log(2, "La jugada ha modificado el tablero, sumando un turno.");
             addTurno(); // Si el tablero ha cambiado, se añade un turno.
             tableros.addLast(temp); // Se añade el tablero anterior.
         } else {
-            vrbMsg(2, "La jugada no ha modificado el tablero.");
+            timer.log(2, "La jugada no ha modificado el tablero.");
             deactivateWarning(); // Si no se ha movido, la ficha siguiente sigue siendo la misma.
         }
         
 
         update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
         if (!Turno.ableToMove(this)) finalDePartida(); // Si no se puede mover, se termina la partida.
-        else vrbMsg(2, "Quedan jugadas posibles.");
+        else timer.log(2, "Quedan jugadas posibles.");
         
-        vrbMsg(2, String.format("La jugada ha tardado %s en ejecutarse.", getTime(jstTime)));
+        timer.log(2, String.format("La jugada ha tardado %s en ejecutarse.", Timer.getTime(jstTime)));
     }
     
 
@@ -599,14 +600,6 @@ public final class SumaTres extends JPanel {
     public void update() {
         repaint();
         if(op.getStatus("consoleOutput")) out.print(fullToString());
-    }
-    
-    private String getTime() {
-        return getTime(startTime);
-    }
-    
-    private String getTime(long start) {
-        return String.valueOf((System.currentTimeMillis() - start) / 1000.0);
     }
     
     public void colocarSiguiente() throws NullPointerException {
@@ -644,9 +637,6 @@ public final class SumaTres extends JPanel {
         }
     }
     
-    public void vrbMsg(int i, String s) {
-        if(i <= op.verbosity()) {out.printf("[%s] %s%n", getTime(), s);}
-    }
 
     /**
      * Método experimental para generar nuevos siguientes. Tiene en cuenta el tamaño de las piezas
@@ -836,7 +826,7 @@ public final class SumaTres extends JPanel {
                 getTurnos(), getMultiplier(), op.getStatus("experimental") ? "Experimental" : "Clásico");
             if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador;Modo\n", ARCHIVO);
             FileWS.write(output, ARCHIVO);
-            if(op.getStatus("consoleEnabled")) out.println("Puntuaciones guardadas.");
+            if(op.getStatus("consoleOutput")) out.println("Puntuaciones guardadas.");
         }
 
         if(op.getStatus("exitOnEnd")) System.exit(0); // Se termina con estado '0' para indicar que se termina correctamente.
