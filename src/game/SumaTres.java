@@ -639,26 +639,30 @@ public final class SumaTres extends JPanel {
     
 
     /**
-     * Método experimental para generar nuevos siguientes. Tiene en cuenta el tamaño de las piezas
-     * y aumenta las probabilidades de piezas menores, especialmente 1, 2 y 3.
-     *
-     * @see <a href="https://stackoverflow.com/questions/880581/how-to-convert-int-to-integer-in-java">
-     *		Pasar de int[] a List </a>
+     * Método experimental para generar nuevos valores siguientes. Tiene en cuenta
+     * el tamaño de las piezas y aumenta las probabilidades de piezas menores, 
+     * especialmente 1, 2 y 3.
      */
     private void newSiguiente() {
-        if(!op.getStatus("newNextValues")) {newSiguienteClassic(); return;}
-   	if(op.getStatus("moreNextValues")) {
-            int[] values = possibleNextValues();
-            if(values.length == 3) setSiguiente(Crypto.newRandom(3) + 1);
-            else {
-                int finalValue;
-                int otherValues = values.length - 3;
-                double max = values.length * 5 + 20 / 100.0;
-                if(max < 0.55) max = 0.55;
-            }
+
+        // Si se escoge el generador clásico o se desactiva la generación de valores nueva,
+        // se utiliza el generador clásico.
+        if(!op.getStatus("newNextValues") || !op.getStatus("moreNextValues")) {
+            newSiguienteClassic();
+            return;
+        }
+
+        int[] values = possibleNextValues();
+        if(values.length == 3) setSiguiente(Crypto.newRandom(3) + 1);
+        else {
+            int otherValues = values.length - 3;
+            
+            int valueFromLower = Crypto.newRandom(Crypto.newRandom(3) + 1);
+            int valueFromHigher = values[Crypto.newRandom(otherValues) + 3];
+            int chance;
+            
+            setSiguiente(Crypto.newRandom(101) > chance ? valueFromHigher : valueFromLower);
      	}
-    	else setSiguiente(Crypto.newRandom(3) + 1);
-        
     	saveSiguiente();
     }
     
@@ -683,7 +687,7 @@ public final class SumaTres extends JPanel {
      * del enunciado.
      * 
      */
-    @Deprecated (since="v22", forRemoval=false)
+    @Deprecated(since="v22", forRemoval=false)
     private void newSiguienteClassic() {
         if(op.getStatus("moreNextValues")) 
             setSiguiente(possibleNextValues()[Crypto.newRandom(possibleNextValues().length)]);
