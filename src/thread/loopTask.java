@@ -10,10 +10,10 @@ import handler.Keyboard;
 import util.Crypto;
 
 /**
- *
- * @author JuanMier
+ * Clase abstracta que contiene la lógica y ejecuta el loop de jugadas.
+ * @author Juan Mier
  */
-abstract class LoopTask implements SincroForeBack {
+abstract class loopTask implements loopSync{
     protected LauncherRF ventana;
     protected SumaTres partida;
     protected String jugadas;
@@ -21,14 +21,18 @@ abstract class LoopTask implements SincroForeBack {
     protected int slowdown;
     protected boolean mode;
     
-    protected LoopTask(LauncherRF l) {
+    /**
+     * Constructor de la clase.
+     * @param l Objeto de clase {@link LauncherRF} que contenga información sobre la partida.
+     */
+    protected loopTask(LauncherRF l) {
         this.ventana = l;
         this.partida = l.getPartida();
         this.jugadas = partida.getSettings().getStatus("diagonalMovement") ? 
                 Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
-        limit = 1;
-        slowdown = 0;
-        mode = false; // Modo aleatorio por defecto.
+        this.limit = Integer.MAX_VALUE; // Por defecto, no hay límite.
+        this.slowdown = 0; // Por defecto, no hay retraso.
+        this.mode = false; // Modo aleatorio por defecto.
     }
     
     /**
@@ -60,27 +64,26 @@ abstract class LoopTask implements SincroForeBack {
     }
     
     @Override
-    public void Run() {
+    public void run() {
             
-        Start();
+        start();
     
         int i = 0;
-        int j = 0;
-        while(!partida.isFinished() && i < limit) {
-            if(mode) {
+        while(!partida.isFinished() && limit != 0) {
+            if(mode) { // Modo secuencial.
                 try {
                     partida.jugada(Keyboard.VALID_EXPERIMENTAL_KEYS.charAt(i++)); 
                 } catch(StringIndexOutOfBoundsException oob) {i = 0;}
-            } else partida.jugada(jugadas.toCharArray()[Crypto.newRandom(jugadas.length())]);
-            Update();
+            } else partida.jugada(jugadas.toCharArray()[Crypto.newRandom(jugadas.length())]); // Modo aleatorio.
+            update();
             try {
                 Thread.sleep(slowdown);
             } catch(InterruptedException ex) {break;}
-            if(Stop()) {Finish(); return;}
-            i++;
+            if(stop()) {finish(); return;}
+            limit--;
         }
         
-        Finish();
+        finish();
         
     }
 }

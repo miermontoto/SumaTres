@@ -473,6 +473,10 @@ public final class SumaTres extends JPanel {
     public void setSettings(Settings nv) {
         this.op = nv;
     }
+    
+    public Timer getTimer() {
+        return timer;
+    }
 
     // --- sets y gets --- //
 
@@ -659,7 +663,7 @@ public final class SumaTres extends JPanel {
             
             int valueFromLower = Crypto.newRandom(Crypto.newRandom(3) + 1);
             int valueFromHigher = values[Crypto.newRandom(otherValues) + 3];
-            int chance;
+            int chance = 55;
             
             setSiguiente(Crypto.newRandom(101) > chance ? valueFromHigher : valueFromLower);
      	}

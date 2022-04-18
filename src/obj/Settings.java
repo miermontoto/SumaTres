@@ -76,10 +76,13 @@ public class Settings {
      * Método que establece el valor de una opción.
      * @param s Opción del que se quiere cambiar el valor.
      * @param b Valor a establecer.
-     * @return Devuelve el valor booleano que devuelve {@code put}.
+     * @return Devuelve el valor booleano que devuelve {@code put} o {@code false} si la opción no existe.
      */
     public boolean setStatus(String s, boolean b) {
-        //if(!settingsMap.containsKey(s)) throw new OperationNotSupportedException("Opción no existente.");
+        if(!settingsMap.containsKey(s)) {
+            System.err.println("Opción no existente: " + s);
+            return false;
+        }
         return settingsMap.put(s, b);
     }
     
