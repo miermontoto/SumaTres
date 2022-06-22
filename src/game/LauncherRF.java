@@ -23,9 +23,6 @@ import java.util.Scanner;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities; // Se utiliza para actualizar intfz. entre modo claro y oscuro.
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Tablero;

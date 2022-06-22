@@ -4,14 +4,14 @@ import java.util.Base64;
 import org.uncommons.maths.random.XORShiftRNG;
 
 /**
- * Clase que se encarga de generar números aleatorios.
- * No se puede inicializar, solo acepta llamadas estáticas al método newRandom(int).
+ * Clase que se encarga de generar números aleatorios y encriptar/desencriptar en Base64.
+ * No se puede inicializar.
  * 
  * <p> Utiliza un randomizador importado de la librería uncommons-math optimizado
  * para rendimiento máximo. Es mucho más rápido que <code>SecureRandom</code>, el
  * randomizador que se usaba previamente.
  * 
- * @author under
+ * @author Juan Mier
  */
 public class Crypto {
     

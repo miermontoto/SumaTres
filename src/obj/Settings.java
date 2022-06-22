@@ -132,7 +132,9 @@ public class Settings {
     @Override
     public String toString() {
         String s = sizex + "'" + sizey + "'" + verbosityLevel;
-        for(Map.Entry<String, Boolean> pair : settingsMap.entrySet()) s += "'" + pair.getKey() + "=" + pair.getValue();
+        for(Map.Entry<String, Boolean> pair : settingsMap.entrySet()) {
+            s += "'" + pair.getKey() + "=" + pair.getValue();
+        }
         return s;
     }
 }
