@@ -27,17 +27,18 @@ import javax.swing.table.DefaultTableModel;
 import obj.Settings; // Se utiliza para guardar y editar opciones.
 import obj.Tablero;
 import obj.Turno;
-import thread.LoopComms;
+import thread.loopComms;
 import util.Crypto;
 import util.Dialog; // Se utiliza para hacer que el usuario confirme algunas acciones.
 import util.visual.Graphic; // Se utiliza para definir las dimensiones de la ventana.
 import util.visual.Paint; // Se utiliza para obtener el color del fondo.
+import util.Timer; // Se utiliza para logear acciones en caso de haber activado la verbosidad.
 
 
 /**
  * Ventana principal y sustituto del antiguo <code>Launcher</code> o <code>
  * SumaTresTexto</code>.
- * @author JuanMier
+ * @author Juan Mier
  */
 public final class LauncherRF extends javax.swing.JFrame {
     
@@ -45,7 +46,8 @@ public final class LauncherRF extends javax.swing.JFrame {
     private final EditarColores ventanaColores;
     private SumaTres juego;
     private Thread loopThread;
-    private static LoopComms loopComms; 
+    private static loopComms loopComms; 
+    private Timer gameTimer;
     
     /**
      * Constructor principal y único. No necesita parámetros.
@@ -77,6 +79,7 @@ public final class LauncherRF extends javax.swing.JFrame {
      */
     public void launch(Settings op) {
         juego = new SumaTres(op);
+        gameTimer = juego.getTimer();
         
         /*
          * Handlers de teclado y ratón.
@@ -86,6 +89,7 @@ public final class LauncherRF extends javax.swing.JFrame {
         juego.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent event) {
+                gameTimer.log(2, "Recibido evento de teclado (" + event.getKeyChar() + ")");
                 new Keyboard(juego, event).keyboardHandler();
                 ventanaColores.updateValues();
             }
@@ -94,6 +98,7 @@ public final class LauncherRF extends javax.swing.JFrame {
         juego.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
+                gameTimer.log(2, "Recibido evento de ratón (" + event.getX() + ", " + event.getY() + ")");
                 new Mouse(juego, event).mouseHandler();
             }
         });
@@ -143,7 +148,7 @@ public final class LauncherRF extends javax.swing.JFrame {
         // Propiedades de la ventana.
         setBounds(0, 0, Graphic.defineX(juego), Graphic.defineY(juego));
         setVisible(true);
-        loopComms = new LoopComms(this);
+        loopComms = new loopComms(this);
         loopComms.setLimit(-1); // se establece el límite del bucle al máximo posible.
         //loopComms.setLimit(50);
          
@@ -763,10 +768,11 @@ public final class LauncherRF extends javax.swing.JFrame {
     private void jmiTrucosLoopStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopStartActionPerformed
         if(loopThread != null) {
             loopComms.setStop(false);
+            loopComms.run();
             loopStarting();
         } else {
             loopThread = new Thread() {@Override
-                public void run(){LauncherRF.loopComms.Run();};
+                public void run(){LauncherRF.loopComms.run();};
             };
             loopThread.start();
         }
