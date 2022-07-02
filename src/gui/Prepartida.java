@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import util.Crypto;
 
 
-public class PrePartida extends javax.swing.JFrame {
+public class Prepartida extends javax.swing.JFrame {
     
     private Settings op;
     private LauncherRF principal;
@@ -23,12 +23,12 @@ public class PrePartida extends javax.swing.JFrame {
     /**
      * Creates new form PrePartida
      */
-    private PrePartida() {
+    private Prepartida() {
         initComponents();
         btnJugar.requestFocus(); // permite comenzar la partida al darle enter nada más iniciar.
     }
     
-    public PrePartida(LauncherRF p) {
+    public Prepartida(LauncherRF p) {
         this();
         principal = p;
         avanzadas = new Avanzadas(this);
@@ -73,11 +73,11 @@ public class PrePartida extends javax.swing.JFrame {
         flcOpen.setDialogTitle("SumaTres - Cargar archivo de opciones");
 
         flcSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
-        flcSave.setCurrentDirectory(new java.io.File("/home/under/."));
+        flcSave.setCurrentDirectory(new java.io.File("/home/mier/."));
         flcSave.setDialogTitle("SumaTres - Guardar opciones a archivo");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SumaTres - Prepartida");
+        setTitle("Prepartida");
         setName("Prepartida"); // NOI18N
         setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -189,9 +189,10 @@ public class PrePartida extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
+                        .addGap(8, 8, 8)
                         .addComponent(sldVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,24 +200,22 @@ public class PrePartida extends javax.swing.JFrame {
                             .addComponent(btnClásico)
                             .addComponent(btnExperimental)
                             .addComponent(btnJugar)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(sldHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(22, 22, 22)
-                                .addComponent(btnDarkMode)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnOpen)
-                                .addGap(18, 18, 18)
-                                .addComponent(bttAvanzadas)))))
-                .addContainerGap(61, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(sldHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(txtVertical, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(22, 22, 22)
+                            .addComponent(btnDarkMode)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnSave)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnOpen)
+                            .addGap(18, 18, 18)
+                            .addComponent(bttAvanzadas))))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -425,12 +424,12 @@ public class PrePartida extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PrePartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Prepartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new PrePartida().setVisible(true);
+            new Prepartida().setVisible(true);
         });
     }
 

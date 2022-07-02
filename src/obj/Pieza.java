@@ -26,6 +26,7 @@ public class Pieza {
     private int valor;
     private Color color;
     private boolean brillante;
+    public static final int TIMES_CHECK_REDMEAN = 50;
     
     /**
     * HashMap que contiene un valor con un color para cada clave asignada a los
@@ -103,11 +104,11 @@ public class Pieza {
         }
     }
     
-    public static void generateColorForValue(int value) {
+    public static Color generateColorForValue(int value) {
         Color c1 = Color.white; // Es necesario inicializar el color.
         boolean check = true;
         int c = 0;
-        while(check && c < 25) { // solo se busca 10 veces un color nuevo.
+        while(check && c < TIMES_CHECK_REDMEAN) { // solo se busca 10 veces un color nuevo.
             check = false;
             c1 = new Color(Crypto.newRandom(256), Crypto.newRandom(256), Crypto.newRandom(256));
             for(Color c2 : COLORES.values()) {
@@ -127,6 +128,7 @@ public class Pieza {
         }
         COLORES.put(value, c1);
         updateBrightnessForValue(value);
+        return c1;
     }
     
     public static void updateBrightnessForValue(int value) {

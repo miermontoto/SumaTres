@@ -2,7 +2,7 @@ package game;
 
 import com.formdev.flatlaf.FlatDarkLaf; // Modo claro que reemplaza a Nimbus.
 import com.formdev.flatlaf.FlatLightLaf; // Modo oscuro.
-import gui.PrePartida; // Ventana de opciones prepartida.
+import gui.Prepartida; // Ventana de opciones prepartida.
 import gui.EditarColores; // Ventana de edición de colores de piezas.
 import gui.dialog.LoadDialog;
 import gui.dialog.SaveDialog;
@@ -42,7 +42,7 @@ import util.Timer; // Se utiliza para logear acciones en caso de haber activado 
  */
 public final class LauncherRF extends javax.swing.JFrame {
     
-    private final PrePartida secundaria;
+    private final Prepartida secundaria;
     private final EditarColores ventanaColores;
     private SumaTres juego;
     private Thread loopThread;
@@ -53,7 +53,7 @@ public final class LauncherRF extends javax.swing.JFrame {
      * Constructor principal y único. No necesita parámetros.
      */
     public LauncherRF() {
-        secundaria = new PrePartida(this);
+        secundaria = new Prepartida(this);
         ventanaColores = new EditarColores(this);
         ventanaColores.setVisible(false);
         try {
@@ -739,6 +739,7 @@ public final class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiSalirActionPerformed
 
     private void jmiColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiColoresActionPerformed
+        gameTimer.log(1, "Se ha abierto la ventana de edición de colores.");
         ventanaColores.setVisible(true);
         ventanaColores.updateValues();
     }//GEN-LAST:event_jmiColoresActionPerformed
@@ -783,10 +784,12 @@ public final class LauncherRF extends javax.swing.JFrame {
         juego.setBackground(ns ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
         toggleDarkMode(ns);
         juego.repaint();
+        gameTimer.log(1, "Se ha alternado el modo oscuro.");
     }//GEN-LAST:event_jmiDarkModeActionPerformed
 
     private void jmiTrucosModSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosModSiguienteActionPerformed
         juego.modificarSiguiente();
+        gameTimer.log(1, "Se ha modificado el valor de la pieza siguiente.");
     }//GEN-LAST:event_jmiTrucosModSiguienteActionPerformed
 
     private void jmiTrucosForzarSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosForzarSiguienteActionPerformed
@@ -794,11 +797,13 @@ public final class LauncherRF extends javax.swing.JFrame {
             juego.colocarSiguiente();
             juego.repaint();
             if(!Turno.ableToMove(juego)) juego.finalDePartida();
+            gameTimer.log(1, "Se ha forzado la colocación de la pieza siguiente.");
         } catch (NullPointerException ex) {Dialog.showError("No hay hueco para otra pieza.");}
     }//GEN-LAST:event_jmiTrucosForzarSiguienteActionPerformed
 
     private void jmiSaveOnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveOnExitActionPerformed
         juego.getSettings().toggleStatus("saveResults");
+        gameTimer.log(1, "Se ha alternado la opción de guardar al salir.");
     }//GEN-LAST:event_jmiSaveOnExitActionPerformed
 
     private void jmiTrucosLoopEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopEndActionPerformed
@@ -815,22 +820,26 @@ public final class LauncherRF extends javax.swing.JFrame {
             jmiSaveOnExit.setSelected(false);
             juego.getSettings().setStatus("saveResults", false);
             actualizarPneInfo(); // Actualiza el estado de los trucos en el panel de info.
+            gameTimer.log(1, "Se han activados los trucos.");
         } else {jmiTrucos.setSelected(false);}
     }//GEN-LAST:event_jmiTrucosActionPerformed
 
     private void jmiIntefazGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiIntefazGridActionPerformed
         juego.getSettings().toggleStatus("drawGrid");
         juego.repaint();
+        gameTimer.log(1, "Se ha alternado el dibujado del grid de piezas.");
     }//GEN-LAST:event_jmiIntefazGridActionPerformed
 
     private void jmiInterfazZonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazZonasActionPerformed
         juego.getSettings().toggleStatus("drawZones");
         juego.repaint();
+        gameTimer.log(1, "Se ha alternado el dibujado de los límites de las zonas de la intefaz.");
     }//GEN-LAST:event_jmiInterfazZonasActionPerformed
 
     private void jmiInterfazCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInterfazCoordsActionPerformed
         juego.getSettings().toggleStatus("drawCoords");
         juego.repaint();
+        gameTimer.log(1, "Se ha alternado el dibujado de las coordenadas de cada pieza.");
     }//GEN-LAST:event_jmiInterfazCoordsActionPerformed
 
     private void jmiLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoadActionPerformed
@@ -857,6 +866,7 @@ public final class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiLoadActionPerformed
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
+        gameTimer.log(1, "Se ha abierto la interfaz de guardado de partida.");
         SaveDialog sd = new SaveDialog(juego);
         sd.showDialog();
     }//GEN-LAST:event_jmiSaveActionPerformed
@@ -882,10 +892,12 @@ public final class LauncherRF extends javax.swing.JFrame {
 
     private void jmiTrucosLoopModoSecuencialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopModoSecuencialActionPerformed
         loopComms.setMode(true);
+        gameTimer.log(1, "Se ha establecido el modo de funcionamiento del loop a \"secuencial\"");
     }//GEN-LAST:event_jmiTrucosLoopModoSecuencialActionPerformed
 
     private void jmiTrucosLoopModoAleatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopModoAleatorioActionPerformed
         loopComms.setMode(false);
+        gameTimer.log(1, "Se ha establecido el modo de funcionamiento del loop a \"aleatorio\"");
     }//GEN-LAST:event_jmiTrucosLoopModoAleatorioActionPerformed
 
     

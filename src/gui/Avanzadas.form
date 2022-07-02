@@ -10,7 +10,7 @@
     </Component>
   </NonVisualComponents>
   <Properties>
-    <Property name="title" type="java.lang.String" value="SumaTres - Opciones avanzadas"/>
+    <Property name="title" type="java.lang.String" value="Opciones avanzadas"/>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>

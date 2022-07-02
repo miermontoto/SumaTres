@@ -3,6 +3,7 @@ package gui;
 import util.visual.PiezaDisplayer;
 import game.LauncherRF;
 import java.awt.Color;
+import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JColorChooser;
 import obj.Pieza;
@@ -10,18 +11,17 @@ import obj.Settings;
 import obj.Tablero;
 
 /**
- *
- * @author JuanMier
+ * Interfaz que permite modificar lo0s colores y el brillo de cada pieza.
+ * @author Juan Mier
  */
 public class EditarColores extends javax.swing.JFrame {
     
     private LauncherRF principal;
     private DefaultListModel model;
     private PiezaDisplayer displayer;
+    private static HashMap<Integer, Color> rawColors = new HashMap<>();
+    private static HashMap<Integer, Integer> rawBrightness = new HashMap<>();
 
-    /**
-     * Creates new form EditarColores
-     */
     public EditarColores() {
         initComponents();
         model = new DefaultListModel();
@@ -55,6 +55,7 @@ public class EditarColores extends javax.swing.JFrame {
         btnMásBrillo = new javax.swing.JButton();
         btnMenosBrillo = new javax.swing.JButton();
         pnlPieza = new PiezaDisplayer();
+        sldBrightness = new javax.swing.JSlider();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -67,8 +68,9 @@ public class EditarColores extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        setTitle("SumaTres - Editar colores");
+        setTitle("Editar colores");
         setAlwaysOnTop(true);
+        setPreferredSize(new java.awt.Dimension(253, 224));
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -130,6 +132,15 @@ public class EditarColores extends javax.swing.JFrame {
             .addGap(0, 68, Short.MAX_VALUE)
         );
 
+        sldBrightness.setMaximum(3);
+        sldBrightness.setMinimum(-3);
+        sldBrightness.setValue(0);
+        sldBrightness.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldBrightnessStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -142,9 +153,12 @@ public class EditarColores extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnMenosBrillo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sldBrightness, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnMásBrillo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnMenosBrillo))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(btnEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRandomizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18))
@@ -153,7 +167,7 @@ public class EditarColores extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(pnlPieza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 10, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,13 +180,13 @@ public class EditarColores extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(37, 37, 37))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(pnlPieza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnMenosBrillo)
-                            .addComponent(btnMásBrillo))
+                                .addGap(31, 31, 31))
+                            .addComponent(pnlPieza, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnMásBrillo)
+                            .addComponent(sldBrightness, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnMenosBrillo))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnRandomizar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -189,48 +203,90 @@ public class EditarColores extends javax.swing.JFrame {
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         if(!lstValores.isSelectionEmpty()) {
-            int selectedValue = (int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3];
+            int selectedValue = getSelectedValue();
 //          int selectedValue = Integer.parseInt(lstValores.getSelectedValue()); // <-- esto no funciona! no es culpa mía, es java.
             Color newColor = JColorChooser.showDialog(null, "Seleccione nuevo color", Pieza.getColores().get(selectedValue), false);
             if(newColor != null) {
                 Pieza.getColores().put(selectedValue, newColor);
+                rawColors.put(selectedValue, newColor);
+                rawBrightness.put(selectedValue, 0);
                 refresh(selectedValue);
             }
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     
-    private void refresh(int selectedValue) {
-        updateColorOfValue(selectedValue);
-        updateBrightnessOfValue(selectedValue);
+    private void refresh(int value) {
+        updateColorOfValue(value);
+        updateBrightnessOfValue(value);
         updateColorLabel();
+        sldBrightness.setValue(rawBrightness.get(value));
         principal.getPartida().repaint();
     }
     
     private void lstValoresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstValoresValueChanged
         updateColorLabel();
+        int selectedValue = getSelectedValue();
+        if(!rawColors.containsKey(selectedValue)) {
+            // Si el diccionario no contiene el color, tampoco está contenido en el diccionario de brillos.
+            rawColors.put(selectedValue, Pieza.getColores().get(selectedValue));
+            rawBrightness.put(selectedValue, 0); // Se asume punto de partida para el brillo.
+        }
     }//GEN-LAST:event_lstValoresValueChanged
 
     private void btnRandomizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRandomizarActionPerformed
-        int selectedValue = (int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3];
-        Pieza.generateColorForValue(selectedValue);
+        int selectedValue = getSelectedValue();
+        Color newColor = Pieza.generateColorForValue(selectedValue);
+        rawColors.put(selectedValue, newColor);
+        rawBrightness.put(selectedValue, 0);
+        phaseColor(selectedValue, newColor);
         refresh(selectedValue);
     }//GEN-LAST:event_btnRandomizarActionPerformed
 
     private void btnMenosBrilloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenosBrilloActionPerformed
-        int selectedValue = (int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3];
-        Pieza.getColores().put(selectedValue, Pieza.getColores().get(selectedValue).darker());
-        Pieza.updateBrightnessForValue(selectedValue);
+        int selectedValue = getSelectedValue();
+        int currentBrightness = rawBrightness.get(selectedValue);
+        if(currentBrightness == -3) return;
+        sldBrightness.setValue(currentBrightness--);
+        rawBrightness.put(selectedValue, currentBrightness--);
+        phaseColor(selectedValue, getColorFromBrightness(selectedValue));
         refresh(selectedValue);
     }//GEN-LAST:event_btnMenosBrilloActionPerformed
 
     private void btnMásBrilloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMásBrilloActionPerformed
-        int selectedValue = (int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3];
-        Pieza.getColores().put(selectedValue, Pieza.getColores().get(selectedValue).brighter());
-        Pieza.updateBrightnessForValue(selectedValue);
+        int selectedValue = getSelectedValue();
+        int currentBrightness = rawBrightness.get(selectedValue);
+        if(currentBrightness == 3) return;
+        rawBrightness.put(selectedValue, currentBrightness++);
+        sldBrightness.setValue(currentBrightness++);
+        phaseColor(selectedValue, getColorFromBrightness(selectedValue));
         refresh(selectedValue);
     }//GEN-LAST:event_btnMásBrilloActionPerformed
 
+    private void sldBrightnessStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldBrightnessStateChanged
+        int selectedValue = getSelectedValue();
+        rawBrightness.put(selectedValue, sldBrightness.getValue());
+        phaseColor(selectedValue, getColorFromBrightness(selectedValue));
+        refresh(selectedValue);
+        
+    }//GEN-LAST:event_sldBrightnessStateChanged
+
+    private void phaseColor(int value, Color color) {
+        Pieza.getColores().put(value, color);
+        Pieza.updateBrightnessForValue(value);
+    }
+    
+    private Color getColorFromBrightness(int value) {
+        Color tempColor = rawColors.get(value);
+        int tempBrightness = rawBrightness.get(value);
+        if(tempBrightness > 0) for(int i = 0; i < tempBrightness; i++) tempColor = tempColor.brighter();
+        else if(tempBrightness < 0) for(int i = 0; i < Math.abs(tempBrightness); i++) tempColor = tempColor.darker();
+        return tempColor;
+    }
+    
+    private int getSelectedValue() {
+        return (int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3];
+    }
     private void updateColorLabel() {
         displayer.setPieza((int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3]);
         displayer.repaint();
@@ -314,5 +370,6 @@ public class EditarColores extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> lstValores;
     private javax.swing.JPanel pnlPieza;
+    private javax.swing.JSlider sldBrightness;
     // End of variables declaration//GEN-END:variables
 }

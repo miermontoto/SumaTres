@@ -10,7 +10,7 @@ import obj.Settings;
  */
 public class Avanzadas extends javax.swing.JFrame {
     
-    private PrePartida ventanaSecundaria;
+    private Prepartida ventanaSecundaria;
 
     /**
      * Creates new form Avanzadas
@@ -23,7 +23,7 @@ public class Avanzadas extends javax.swing.JFrame {
         for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) cmbLnf.addItem(info.getName());
     }
     
-    public Avanzadas(PrePartida p) {
+    public Avanzadas(Prepartida p) {
         this();
         ventanaSecundaria = p;
     }
@@ -70,7 +70,7 @@ public class Avanzadas extends javax.swing.JFrame {
         cmbLnf = new javax.swing.JComboBox<>();
         jSeparator7 = new javax.swing.JSeparator();
 
-        setTitle("SumaTres - Opciones avanzadas");
+        setTitle("Opciones avanzadas");
         setResizable(false);
 
         btgModos.add(btnClásico);
