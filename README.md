@@ -1,6 +1,7 @@
 # SumaTres
 - Proyecto de grupo, IP - PL4 2020: la versión entregada fue la [versión 13](https://github.com/miermontoto/SumaTres/tree/f85b0cb72ed033d36211e62354214de6f3cf8d31), el 14/01/2021. **Nota: 10**
 - Proyecto individual, CPM - PL1 2022: la versión entregada fue la [versión 21](https://github.com/miermontoto/SumaTres/tree/7e6c021c9ab5c9427b77d39f9edeab12b3d77b8a), el 11/03/2022. **Nota: 9.8**
+
 Versión actual: 23 (18/10/2022).
 
 
