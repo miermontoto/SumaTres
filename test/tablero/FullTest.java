@@ -12,7 +12,7 @@ import util.Crypto;
 
 @DisplayName("Detección de tablero lleno")
 public class FullTest {
-	
+
 	SumaTres s;
 
 	@BeforeEach
@@ -26,7 +26,7 @@ public class FullTest {
 		for(int i=0; i<3; i++) for(int j=0; j<3; j++) s.setTab(i, j, 3);
 		assertEquals(true, s.getTablero().isFull());
 	}
-	
+
 	@Test
 	@DisplayName("negativa")
 	public void noLlenoTest() {

@@ -15,7 +15,7 @@ import util.Crypto;
 
 
 public class Prepartida extends javax.swing.JFrame {
-    
+
     private Settings op;
     private LauncherRF principal;
     private Avanzadas avanzadas;
@@ -27,12 +27,12 @@ public class Prepartida extends javax.swing.JFrame {
         initComponents();
         btnJugar.requestFocus(); // permite comenzar la partida al darle enter nada más iniciar.
     }
-    
+
     public Prepartida(LauncherRF p) {
         this();
         principal = p;
         avanzadas = new Avanzadas(this);
-        
+
         // las opciones por defecto son: tamaño 5x5, modo experimental.
         op = new Settings(5, 5, true);
         avanzadas.readValues();
@@ -293,7 +293,7 @@ public class Prepartida extends javax.swing.JFrame {
                 val = 2;
                 txtVertical.setText("2");
             }
-            
+
             op.setSizex(val);
         } catch(NumberFormatException ex) {
             Dialog.showError("Este campo solo admite valores naturales.");
@@ -337,7 +337,7 @@ public class Prepartida extends javax.swing.JFrame {
      * <code> readValues() </code> y el estado del botón de modo oscuro, <code>
      * btnDarkMode </code>, para mantenerlo sincronizado con el estado del modo
      * oscuro.
-     * 
+     *
      * @param f Objeto de tipo archivo que supuestamente contiene opciones. Debe
      *          de estar construido mediante el método <code>toString()</code> de
      *          la clase.
@@ -355,11 +355,11 @@ public class Prepartida extends javax.swing.JFrame {
             checkDarkMode();
         } catch (IOException ex) {Dialog.showError(ex);}
     }
-    
+
     public void setDarkModeStatus(boolean b) {
         btnDarkMode.setEnabled(b);
     }
-    
+
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         File f = new Loader("Guardar archivo de opciones",
                 new FileNameExtensionFilter("Opciones de partida de SumaTres (.sto)", "sto")).save();
@@ -389,24 +389,24 @@ public class Prepartida extends javax.swing.JFrame {
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(avanzadas);
     }
-    
+
     public Settings getSettings() {return this.op;}
     public void setSettings(Settings op) {this.op = op;}
-    
+
     public void setExperimental() {
         setSettings(new Settings(op.getX(), op.getY(), true));
         btnExperimental.setSelected(true);
     }
-    
+
     public void setClassic() {
         setSettings(new Settings(op.getX(), op.getY(), false));
         btnClásico.setSelected(true);
     }
-    
+
     public LauncherRF getPrincipal() {
         return this.principal;
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -414,7 +414,7 @@ public class Prepartida extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

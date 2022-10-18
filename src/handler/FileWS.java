@@ -12,10 +12,10 @@ import util.Dialog;
  * @author Juan Mier.
  */
 public class FileWS {
-	
+
     /**
      * Constrctor generado para cumplir con SonarLint:S1118.
-     * 
+     *
      * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
      * 		Regla SonarLint:S1118 </a>
      */
@@ -23,20 +23,40 @@ public class FileWS {
         throw new IllegalStateException("File handling class");
     }
 
+
+    /**
+     * Método que machaca una cadena de texto en un archivo.
+     * @param string Cadena de texto a escribir.
+     * @param file Archivo en el que escribir.
+     */
+    public static void write(String string, File file) {
+        use(string, file, false);
+    }
+
+    /**
+     * Método que añade una cadena de texto en un archivo.
+     * @param string Cadena de texto a escribir.
+     * @param file Archivo en el que escribir.
+     */
+    public static void append(String string, File file) {
+        use(string, file, true);
+    }
+
     /**
      * Método que escribe una cadena a un archivo.
      * Si el archivo no existe, se crea.
      * @param s Cadena a introducir en el fichero.
      * @param file Archivo en el que escribir.
+     * @param append Establece el modo "append", similar al funcionamiento de Python con <code>open("file", "a")</code>.
      */
-    public static void write(String s, File file) {
-            try {
-                if(file.createNewFile()) {System.out.println("Creado archivo.");}
-                try (FileWriter writer = new FileWriter(file, true)) {
-                    writer.write(s);
-                    writer.close();
-                }
-            } catch (IOException e) {Dialog.showError(e);}
+    private static void use(String string, File file, boolean append) {
+        try {
+            if(file.createNewFile()) System.out.println("Creado archivo.");
+            try (FileWriter writer = new FileWriter(file, append)) {
+                writer.write(string);
+                writer.close();
+            }
+        } catch (IOException e) {Dialog.showError(e);}
     }
 
 }

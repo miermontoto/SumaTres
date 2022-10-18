@@ -27,51 +27,51 @@ import util.Timer;
 
 /**
  * <h2> Clase principal del proyecto SumaTres </h2>
- * 
+ *
  * Se inicializa sobrecargando tres enteros que delimitan el tamaño del tablero
  * y el modo de juego, respectivamente.
- * 
+ *
  * <p>
- * 
+ *
  * Para determinar y almacenar el color de las piezas según su valor, se utiliza
  * un HashMap. El HashMap es necesario si se quiere almacenar todos los valores
  * predeterminados en {@link #inicializarColores()} y, además, se generan
  * colores aleatoriamente utilizando {@link #newRandom(int)} para los valores
  * que no están ya determinados.
- * 
+ *
  * <p>
- * 
+ *
  * Para determinar la escala de la aplicación gráfica, se obtiene el alto de la
  * pantalla mediante <code>java.awt.Toolkit</code> y se divide por 720.
  * Correspondientemente, la aplicación se pintará con todos los atributos
  * multiplicados por la escala.
- * 
+ *
  * <p>
- * 
+ *
  * Para la entrada, se utiliza MouseEvent y KeyEvent, que perimte movimientos
  * mediante teclado y mediante ratón.
- * 
+ *
  * <p>
- * 
+ *
  * Cada vez que se genera una nueva pieza, aparece un rectángulo anaranjado
  * alrededor de la ficha para señalarla. Se guarda la posición de la nueva ficha
  * en un vector y luego se genera un rectángulo basado en ese vector.
- * 
+ *
  * <p>
- * 
+ *
  * En determinadas ocasiones, los valores de las fichas pueden hacer overflow y
  * convertirse en negativos. No merece la pena cambiar todo el programa para
  * corregir esto, ya que tan solo en jugadas automáticas se puede alcanzar esos
  * valores.
- * 
+ *
  * <p>
- * 
+ *
  * Si no se han activado los trucos y está activado el modo experimental, el
- * programa guarda información de la partida al terminar en 
+ * programa guarda información de la partida al terminar en
  * "./assets/resultados.txt"
- * 
+ *
  * <p>
- * 
+ *
  * Personalmente, recomiendo jugar en modo 'experimental' con un tablero pequeño,
  * como 5x5. Esto genera partidas más fluidas y cortas. El modo clásico es ligeramente
  * más frustrante, ya que no hay tantas opciones de movimiento ni de ayudas. Cuanto
@@ -79,9 +79,9 @@ import util.Timer;
  * de 1920x1080, el tamaño máximo del tablero es de 14x29. Estas partidas suelen tardar
  * entre 20000 y 100000 turnos en terminar, por lo que el objetivo no es llegar al final,
  * sino alcanzar la máxima puntuación y la ficha máxima más grande posible.
- * 
+ *
  * <p>
- * 
+ *
  * De una manera relativamente rápida, se calcula la distancia entre los colores
  * ya instalados y el nuevo color, en caso de que se necesite. Esto se utiliza para
  * evitar que se generen colores muy similares a los ya presentes. En la realidad,
@@ -92,54 +92,48 @@ import util.Timer;
  * la diferencia entre colores numéricamente no es la misma visualmente, por lo que
  * sigue siendo posible que se generen colores similares, aunque esto debería ayudar a
  * reducir la cantidad de estos casos.
- * 
- * <p>
- * 
- * Desde la versión 14, el proyecto ya no forma parte del trabajo en grupo para
- * la EPI. La versión entregada fue 'v13'. <p> 
- * Code coverage: ~95% (v13) - Programas utilizados: Eclipse, VSCode, NetBeans.
- * 
+ *
  * @author Juan Mier
- * @version v22
+ * @version v23
  * @see <a href="https://docs.oracle.com/javase/tutorial/java/data/numberformat.html">
  *      Documentación de Oracle: Number Format </a> <blockquote> A new line
  *      character appropriate to the platform running the application. You
  *      should always use %n, rather than \n. </blockquote>
- *      
+ *
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html">
  *      Documentación de Oracle: HashMap </a>
- *      
+ *
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/awt/Toolkit.html">
  *      Documentación de Oracle: Toolkit </a>
- *      
+ *
  * @see <a href="https://docs.oracle.com/javase/tutorial/uiswing/events/keylistener.html">
  *      Documentación de Oracle: Tutorial de KeyListener </a>
- *      
+ *
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/io/FileWriter.html">
  *      Documentación de Oracle: FileWriter </a>
- *      
+ *
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html">
  * 		Documentación de Oracle: LocalDateTime </a>
- * 
+ *
  * @see <a href="https://stackoverflow.com/questions/25536500/how-to-remove-milliseconds-from-localtime-in-java-8">
  * 		StackOverflow: Cómo acortar nanosegundos en la fecha </a>
- * 
+ *
  * @see <a href="https://www.tutorialspoint.com/java/io/writer_flush.htm">
  * 		Tutorial y documentación sobre el método flush() </a>
- * 
+ *
  * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/io/FileWS.html">
  		Documentación de Oracle: FileWS </a>
- * 
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Color_difference">
  * 		Wikipedia: Fórmula e información sobre distancia entre colores </a>
  * 		<blockquote> [...] One of the better low-cost approximations, sometimes called
  * 		"redmean", combines the two cases smoothly </blockquote>
- * 
+ *
  * @see <a href="https://stackoverflow.com/questions/22463062/how-to-parse-format-dates-with-localdatetime-java-8">
  * 		StackOverflow: Información sobre formateo de fechas con LocalDateTime </a>
- * 
+ *
  * @see <a href="https://www.github.com/miermontoto/SumaTres"> Repositorio de GitHub </a>
- * 
+ *
  */
 public final class SumaTres extends JPanel {
 
@@ -151,7 +145,7 @@ public final class SumaTres extends JPanel {
      * <p>
      * El serial ha sido generado automáticamente por Eclipse. El serial debe
      * de ser obligatoriamente final y de tipo 'long'.
-     * 
+     *
      * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html">
      * 		Documentación de Oracle: Serializable </a>
      */
@@ -193,11 +187,11 @@ public final class SumaTres extends JPanel {
     * El main solo puede sobrecargar valores válidos. Aún así, se implementa un
     * try/catch para evitar exepciones molestas en caso de que alguien manipule
     * el código de manera incorrecta.
-    * 
+    *
     * @param op: Objeto de tipo obj.Settings que defina la partida.
     */
-    public SumaTres(Settings op) { 
-        
+    public SumaTres(Settings op) {
+
         timer = new Timer(op.verbosity());
         this.op = op;
         timer.log(2, "Partida iniciada.");
@@ -229,7 +223,7 @@ public final class SumaTres extends JPanel {
         Pieza.inicializarColores(); timer.log(2, "Colores inicializados.");
         if (op.getStatus("balancedStart")) {
             int tmpLimit = Math.max((int) (0.15 * t.getColumns() * t.getRows()) / 3, 1);
-            for(int i = 0; i < tmpLimit; i++) 
+            for(int i = 0; i < tmpLimit; i++)
                 generarSetFichas();
             timer.log(2, String.format("Generado(s) %d set(s) de ficha(s).", tmpLimit));
         }
@@ -239,7 +233,7 @@ public final class SumaTres extends JPanel {
           * que convertido a entero es 0, lo que resulta en un tablero vacío al empezar
           * la partida en modo experimental.
           */
-         
+
          if(op.getStatus("consoleOutput")) out.println(fullToString());
 
 
@@ -258,7 +252,7 @@ public final class SumaTres extends JPanel {
             t.addAmount();
         }
     }
-    
+
     /**
      * Método que calcula la dificultad en caso de estar activada la opción "enhancedDiffMult".
      * Calcula una dificultad proporcional al tamaño del tablero. Para el tablero
@@ -266,7 +260,7 @@ public final class SumaTres extends JPanel {
      * podrá llegar hasta 2 en el mínimo tablero posible, es decir, 2x2. Para tableros
      * mayores, devolverá el cálculo de una función logarítmica invertida o 0,
      * dependiendo de cuál sea mayor.
-     * @return 
+     * @return
      */
     private double calculateMultiplier() {
         int res = op.getX() * op.getY();
@@ -290,44 +284,44 @@ public final class SumaTres extends JPanel {
      */
     private void setWarning(int[] x) {if(x.length == 2 && x[0]>=0 && x[1]>=0 &&
             x[0] < op.getX() && x[1] < op.getY()) this.warning = x;}
-    
-    
+
+
     public int[] getSelected() {return this.selected;}
-    
+
     public void setSelected(int[] x) {if(x.length == 3 && x[0]>=0 && x[1]>=0 &&
             x[0] < op.getX() && x[1] < op.getY() && x[2] >= 0 && x[2] <= 3) this.selected = x;}
 
     /**
      * Devuelve la ficha de mayor valor actual.
-     * 
+     *
      * @return entero con el valor actuales.
      */
     public int getHighest() {return this.highestValue;}
 
     /**
      * Comprueba y establece el mayor valor de cualquier ficha en el tablero.
-     * 
+     *
      * @param puntos que se quiera establecer como máximo.
      */
     public void setHighest(int puntos) {if (puntos > this.getHighest()) this.highestValue = puntos;}
 
     /**
      * Devuelve los puntos.
-     * 
+     *
      * @return entero con los puntos actuales.
      */
     public long getPuntos() {return this.puntos;}
 
     /**
      * Añade puntos al contador actual.
-     * 
+     *
      * @param puntos que se quieren sumar. Puede ser negativo.
      */
     public void addPuntos(long puntos) {this.puntos += puntos;}
 
     /**
      * Devuelve el valor de la ficha que se encuentre en unas coordenadas.
-     * 
+     *
      * @param x Coordenada x que se desea analizar.
      * @param y Coordenada y que se desea analizar.
      * @return  Entero con el valor de la casilla.
@@ -336,7 +330,7 @@ public final class SumaTres extends JPanel {
 
     /**
      * Establece el valor de una ficha para una casilla.
-     * 
+     *
      * @param x  Coordenada x que se desea cambiar.
      * @param y  Coordenada y que se desea cambiar.
      * @param nv Nuevo Valor de la casilla.
@@ -345,14 +339,14 @@ public final class SumaTres extends JPanel {
 
     /**
      * Devuelve el valor de la próxima ficha.
-     * 
+     *
      * @return Entero con el valor de la futura ficha.
      */
     public int getSiguiente() {return this.siguiente;}
 
     /**
      * Establece el valor de la próxima ficha.
-     * 
+     *
      * @param siguiente Nuevo valor de la ficha.
      */
     public void setSiguiente(int siguiente) {this.siguiente = siguiente;}
@@ -370,7 +364,7 @@ public final class SumaTres extends JPanel {
 
     /**
      * Devuelve los turnos que se han jugado hasta el momento.
-     * 
+     *
      * @return Entero con la cantidad de turnos.
      */
     public int getTurnos() {return this.turno;}
@@ -416,7 +410,7 @@ public final class SumaTres extends JPanel {
     /**
      * Método que establece el multiplicador que depende de la dificultad.
      * Solo afecta a la partida en el modo experimental.
-     * 
+     *
      * @param nv Valor a establecer
      */
     public void setMultiplier(double nv) {this.difficultyMultiplier = nv;}
@@ -424,7 +418,7 @@ public final class SumaTres extends JPanel {
     /**
      * Método que devuelve el multiplicador actual.
      * Solo accessible en el modo experimental.
-     * 
+     *
      * @return Valor 'double'
      */
     public double getMultiplier() {return this.difficultyMultiplier;}
@@ -434,16 +428,20 @@ public final class SumaTres extends JPanel {
      * como una señal de que el vector no debería accederse hasta que se
      * vuelva a establecer otro valor. Principalmente, sirve para no remarcar
      * a la pieza siguiente cuando se vuelve al tablero anterior mediante
-     * {@link #undo()}. <p> Para simplificar, solo se establece la primera
-     * posición del vector a -1.
+     * {@link #undo()}.
      */
     public void deactivateWarning() {this.warning[0] = -1;}
-    
+
+    /**
+     * Método que desactiva la indicación de ficha nueva durante el turno.
+     * Esto puede darse cuando se vuelve al tablero anterior mediante viajes entre turnos o
+     * cuando el movimiento no genera una nueva ficha.
+     */
     public void deactivateSelected() {this.selected[0] = -1;}
 
     /**
      * Método que devuelve el tablero de la partida actual.
-     * 
+     *
      * @return Objeto de tipo 'Tablero'.
      */
     public Tablero getTablero() {return this.t;}
@@ -451,7 +449,7 @@ public final class SumaTres extends JPanel {
     /**
      * Método que intercambia el tablero actual por otro en caso de que ambos sean
      * del mismo tamaño.
-     * 
+     *
      * @param nt Tablero a establecer como actual.
      */
     public void setTablero(Tablero nt) {
@@ -465,15 +463,15 @@ public final class SumaTres extends JPanel {
     public void setPuntos(long nv) {
         if(nv >= 0) this.puntos = nv;
     }
-    
+
     public void setTurno(int nv) {
         if(nv >= 1) this.turno = nv;
     }
-    
+
     public void setSettings(Settings nv) {
         this.op = nv;
     }
-    
+
     public Timer getTimer() {
         return timer;
     }
@@ -523,30 +521,30 @@ public final class SumaTres extends JPanel {
      * siguiente ni la puntuación. Para ajustarse a este cambio, en el método main se
      * imprime la información extra para mostrar correctamente el tablero por primera
      * vez.
-     * 
+     *
      * @see Nombre Desde v17, el método es <code>jugada(char)</code>, no
      * 		<code>jugada(char)</code>, para seguir con el convenio de nombre de métodos.
-     * @param c Caracter que determina el movimiento (w/s/a/d) y, en modo experimental, (q/w/e/d/c/x/z/a).
+     * @param directionChar Caracter que determina el movimiento (w/s/a/d) y, en modo experimental, (q/w/e/d/c/x/z/a).
      */
-    public void jugada(char c) {
-        long jstTime = 0; // Tiempo que se tarda en ejecutar el turno.
-        long tmpTime = 0; // Tiempo que se tarda en calcular el turno.
-        if(op.verbosity() == 2) jstTime = System.currentTimeMillis();
-        
+    public void jugada(char directionChar) {
+        long turnTime = 0; // Tiempo que se tarda en ejecutar el turno.
+        long computeTime = 0; // Tiempo que se tarda en calcular el turno.
+        if(op.verbosity() == 2) turnTime = System.currentTimeMillis();
+
         String oldStatus = t.toString();
         Tablero temp = new Tablero(op.getX(), op.getY());
-        temp.setFromString(t.toString()); // Se guarda el tablero.
-        Jugada x = new Jugada(c); // Se crea un objeto jugada que almacena los valores del movimiento.
+        temp.setFromString(oldStatus); // Se guarda el tablero.
+        Jugada x = new Jugada(directionChar); // Se crea un objeto jugada que almacena los valores del movimiento.
         Turno turn = new Turno(this, x); // Se crea un objeto tipo "Turno" que ejecute la jugada.
-        
+
         timer.log(1, String.format("Jugada: %s", x.getNombre()));
 
-        if(op.verbosity() == 2) tmpTime = System.currentTimeMillis();
+        if(op.verbosity() == 2) computeTime = System.currentTimeMillis();
         long tmpPuntos = getPuntos();
         turn.mover();
-        if(op.getStatus("consoleOutput")) out.println(this); //TODO: hacer que los saltos de línea coincidan
+        if(op.getStatus("consoleOutput")) out.println(this);
         turn.sumar();
-        timer.log(2, String.format("La jugada ha tardado %s en calcularse.", Timer.getTime(tmpTime)));
+        timer.log(2, String.format("La jugada ha tardado %s en calcularse.", Timer.getTime(computeTime)));
         timer.log(1, String.format("Se han conseguido %d puntos en la última jugada.", getPuntos() - tmpPuntos));
 
 
@@ -562,11 +560,11 @@ public final class SumaTres extends JPanel {
         }
         else timer.log(1, "El tablero está lleno, no se ha colocado ficha siguiente.");
 
-        
+
         String newStatus = t.toString();
         timer.log(2, String.format("ID tablero previo: %s", oldStatus));
         timer.log(2, String.format("ID tablero nuevo : %s", newStatus));
-        
+
         if (!newStatus.equals(oldStatus)) {
             timer.log(2, "La jugada ha modificado el tablero, sumando un turno.");
             addTurno(); // Si el tablero ha cambiado, se añade un turno.
@@ -575,15 +573,15 @@ public final class SumaTres extends JPanel {
             timer.log(2, "La jugada no ha modificado el tablero.");
             deactivateWarning(); // Si no se ha movido, la ficha siguiente sigue siendo la misma.
         }
-        
+
 
         update(); // Se actualizan las salidas para mostrar los cambios en el tablero.
         if (!Turno.ableToMove(this)) finalDePartida(); // Si no se puede mover, se termina la partida.
         else timer.log(2, "Quedan jugadas posibles.");
-        
-        timer.log(2, String.format("La jugada ha tardado %s en ejecutarse.", Timer.getTime(jstTime)));
+
+        timer.log(2, String.format("La jugada ha tardado %s en ejecutarse.", Timer.getTime(turnTime)));
     }
-    
+
 
     /**
      * Devuelve el tablero a la situación anterior.
@@ -595,7 +593,7 @@ public final class SumaTres extends JPanel {
             removeTurno();
             deactivateWarning();
         }
-    }	
+    }
 
     /**
      * Método que actualiza la ventana gráfica y, en caso de que esté activada, la salida por consola.
@@ -605,7 +603,7 @@ public final class SumaTres extends JPanel {
         repaint();
         if(op.getStatus("consoleOutput")) out.print(fullToString());
     }
-    
+
     public void colocarSiguiente() throws NullPointerException {
         int[] loc = getValidLocations();
         if(loc == null) throw new NullPointerException("No se ha encontrado lugar donde insertar pieza siguiente.");
@@ -618,7 +616,7 @@ public final class SumaTres extends JPanel {
     /**
      * Método que devuelve todos los posibles valores que pueden establecerse
      * como "siguiente" en el modo experimiental.
-     * 
+     *
      * @return
      */
     public int[] possibleNextValues() {
@@ -634,17 +632,17 @@ public final class SumaTres extends JPanel {
             for(int h=0; h<3; h++) vlsSig[h] = h+1; // Se introducen 1, 2 y 3 en el vector de posibles valores.+
 
             for(int j=0; j < vlsSig.length - 3; j++) {
-                vlsSig[3+j] = (int) (6 * Math.pow(2, j)); 
+                vlsSig[3+j] = (int) (6 * Math.pow(2, j));
             }
 
             return vlsSig;
         }
     }
-    
+
 
     /**
      * Método experimental para generar nuevos valores siguientes. Tiene en cuenta
-     * el tamaño de las piezas y aumenta las probabilidades de piezas menores, 
+     * el tamaño de las piezas y aumenta las probabilidades de piezas menores,
      * especialmente 1, 2 y 3.
      */
     private void newSiguiente() {
@@ -660,23 +658,23 @@ public final class SumaTres extends JPanel {
         if(values.length == 3) setSiguiente(Crypto.newRandom(3) + 1);
         else {
             int otherValues = values.length - 3;
-            
+
             int valueFromLower = Crypto.newRandom(Crypto.newRandom(3) + 1);
             int valueFromHigher = values[Crypto.newRandom(otherValues) + 3];
             int chance = 55;
-            
+
             setSiguiente(Crypto.newRandom(101) > chance ? valueFromHigher : valueFromLower);
      	}
     	saveSiguiente();
     }
-    
+
     private void saveSiguiente() {
         obtainedFromRandom.put(getSiguiente(),
             obtainedFromRandom.containsKey(getSiguiente()) ? obtainedFromRandom.get(getSiguiente()) + 1 : 1);
     }
 
     /**
-     * 
+     *
      * Genera un número para la siguiente ficha a colocar. Dependiendo del modo de juego, funciona de
      * una manera diferente. <p>
      * En el caso de estar jugando en el modo 'experimental',  se generan valores
@@ -689,15 +687,15 @@ public final class SumaTres extends JPanel {
      * En el modo clásico, genera un número entre 1 y 3 utilizando
      * {@link #newRandom(int)}. Es el método clásico que sigue con las reglas originales
      * del enunciado.
-     * 
+     *
      */
     @Deprecated(since="v22", forRemoval=false)
     private void newSiguienteClassic() {
-        if(op.getStatus("moreNextValues")) 
+        if(op.getStatus("moreNextValues"))
             setSiguiente(possibleNextValues()[Crypto.newRandom(possibleNextValues().length)]);
-        else 
+        else
             setSiguiente(Crypto.newRandom(3) + 1);
-        
+
         saveSiguiente();
     }
 
@@ -725,7 +723,7 @@ public final class SumaTres extends JPanel {
 
     /**
      * <h2> Método que devuelve una cadena con la situación actual del tablero. </h2>
-     * 
+     *
      * Dependiendo de la longitud de la ficha máxima, es decir, de la cantidad
      * de cifras que tenga, el tamaño por celda cambia, con lo que las fichas
      * que tengan una longitud inferior se justifican a la derecha. Como el
@@ -815,7 +813,7 @@ public final class SumaTres extends JPanel {
             finalPuntos, getHighest(), getTurnos());
         if (areCheatsEnabled()) salida += "Se han utilizado trucos.";
         Dialog.show(salida);
-        
+
 
         if(op.getStatus("consoleOutput")) {
             out.printf("%n%n%s%n",salida);
@@ -826,14 +824,14 @@ public final class SumaTres extends JPanel {
             }
             out.println();
         }
-        
+
         if(op.getStatus("saveResults")) {
             String output = String.format("%s;%s;%d;%d;%d;%d;%d;%.1f;%s;\n",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 VERSION, getTablero().getColumns(), getTablero().getRows(), getPuntos(), getHighest(),
                 getTurnos(), getMultiplier(), op.getStatus("experimental") ? "Experimental" : "Clásico");
             if(!ARCHIVO.exists()) FileWS.write("Fecha;Versión;Columnas;Filas;Puntos;MásAlta;Turnos;Multiplicador;Modo\n", ARCHIVO);
-            FileWS.write(output, ARCHIVO);
+            FileWS.append(output, ARCHIVO);
             if(op.getStatus("consoleOutput")) out.println("Puntuaciones guardadas.");
         }
 
@@ -843,7 +841,7 @@ public final class SumaTres extends JPanel {
         finished = true;
         repaint();
     }
-    
+
     // ----------------------------------------------------------------------------------------------------
 
 
@@ -854,7 +852,7 @@ public final class SumaTres extends JPanel {
             update();
         }
     }
-    
+
     public boolean modificarTablero() {
         boolean check = false;
         ModifyBoardDialog dialog = new ModifyBoardDialog(this);

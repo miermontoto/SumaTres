@@ -12,11 +12,11 @@ import util.Crypto;
 import util.Dialog;
 
 /**
- *
+ * Diálogo que permite guardar la partida a un archivo con formato .stp o a un código en Base64.
  * @author Juan Mier
  */
 public class SaveDialog extends javax.swing.JDialog {
-    
+
     private boolean pressedOk;
     private SumaTres s;
     private String current;
@@ -29,10 +29,10 @@ public class SaveDialog extends javax.swing.JDialog {
         initComponents();
         this.setVisible(false);
     }
-    
+
     public SaveDialog(SumaTres si) {
         this(null, true);
-        this.s = si;   
+        this.s = si;
         current = s.getTablero().toString();
         current += String.format(":%d:%d:%d:%s", s.getPuntos(), s.getTurnos(), s.getHighest(), s.getSettings().toString());
         current = Crypto.encode(current);
@@ -40,7 +40,7 @@ public class SaveDialog extends javax.swing.JDialog {
         txtKey.setSize(new Dimension(64, 25));
     }
 
-    
+
     public boolean showDialog() {
         pressedOk = false;
         this.setVisible(true);
@@ -127,7 +127,7 @@ public class SaveDialog extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         File f = new Loader("Guardar partida",
-        new FileNameExtensionFilter("Partida de SumaTres (.stp)", "stp")).save();
+                new FileNameExtensionFilter("Partida de SumaTres (.stp)", "stp")).save();
         try {
             FileWS.write(current, new File(f.getAbsolutePath()));
         } catch (Exception ex) {Dialog.showError(ex);}
@@ -141,7 +141,7 @@ public class SaveDialog extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

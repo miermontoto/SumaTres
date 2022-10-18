@@ -41,14 +41,14 @@ import util.Timer; // Se utiliza para logear acciones en caso de haber activado 
  * @author Juan Mier
  */
 public final class LauncherRF extends javax.swing.JFrame {
-    
+
     private final Prepartida secundaria;
     private final EditarColores ventanaColores;
     private SumaTres juego;
     private Thread loopThread;
-    private static loopComms loopComms; 
+    private static loopComms loopComms;
     private Timer gameTimer;
-    
+
     /**
      * Constructor principal y único. No necesita parámetros.
      */
@@ -61,26 +61,26 @@ public final class LauncherRF extends javax.swing.JFrame {
             updateComponentTreeUI();
         } catch (Exception ex) {secundaria.setDarkModeStatus(false);}
         initComponents();
-        
+
         secundaria.setVisible(true); // Se lanza la ventana de opciones prepartida.
     }
-    
+
     /**
      * Método que lanza la partida como tal. Solo debería accederse una vez.
      * Establece el tamaño de ventana dependiendo del tamaño del tablero,
      * hace visible esta ventana y crea un objeto de tipo SumaTres según las
      * opciones introducidas. <p>
-     * 
+     *
      * Se encarga de crear un objeto de clase <code>SumaTres</code> que es
      * el que se utilzará para jugar la partida, hasta el final de la misma. <p>
-     * 
+     *
      * Se determinan qué opciones y menús están habilitados y seleccionados.
      * @param op Opciones con las que se pretende inicializar la partida.
      */
     public void launch(Settings op) {
         juego = new SumaTres(op);
         gameTimer = juego.getTimer();
-        
+
         /*
          * Handlers de teclado y ratón.
          * Son más flexibles al estar en la ventana principal en vez del
@@ -94,7 +94,7 @@ public final class LauncherRF extends javax.swing.JFrame {
                 ventanaColores.updateValues();
             }
         });
-        
+
         juego.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
@@ -102,7 +102,7 @@ public final class LauncherRF extends javax.swing.JFrame {
                 new Mouse(juego, event).mouseHandler();
             }
         });
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
@@ -111,7 +111,7 @@ public final class LauncherRF extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
-      
+
         String[] titles = {"Fecha", "Versión", "Columnas", "Filas", "Puntos", "Ficha más alta", "Turnos", "Multiplicador", "Modo"};
         if(SumaTres.ARCHIVO.exists()) {
             try {
@@ -123,9 +123,7 @@ public final class LauncherRF extends javax.swing.JFrame {
                     scr.nextLine();
                     while(scr.hasNext()) {
                         if(j == 9) {j = 0; i++;}
-                        String tmp = scr.next();
-                        //System.out.println(tmp);
-                        data[i][j] = tmp;
+                        data[i][j] = scr.next();
                         j++;
                     }
                 } catch (FileNotFoundException ex) {
@@ -140,30 +138,30 @@ public final class LauncherRF extends javax.swing.JFrame {
                 };
                 pneResultados.setModel(d);
             } catch (IOException ex) {Dialog.showError("Error al leer resultados previos.");}
-            
+
         } else {
             System.out.println("No se ha leído el archivo de resultados porque no existe.");
         }
-        
+
         // Propiedades de la ventana.
-        setBounds(0, 0, Graphic.defineX(juego), Graphic.defineY(juego));
+        setBounds(0, 0, Graphic.getHorizontalSize(juego), Graphic.getVerticalSize(juego));
         setVisible(true);
         loopComms = new loopComms(this);
         loopComms.setLimit(-1); // se establece el límite del bucle al máximo posible.
         //loopComms.setLimit(50);
-         
+
         // Propiedades del JPanel de la partida.
-        juego.setSize(Graphic.defineX(juego) + 15, Graphic.defineY(juego) + 39);
+        juego.setSize(Graphic.getHorizontalSize(juego) + 15, Graphic.getVerticalSize(juego) + 39);
         juego.setLocation(0,0);
         juego.setBackground(op.getStatus("darkMode") ? Paint.DARK_BACKGROUND : Paint.LIGHT_BACKGROUND);
-        
+
         // añade el panel de la partida y establece el orden correcto.
         tabTabbedPane.removeAll();
         tabTabbedPane.addTab("Juego", juego);
         tabTabbedPane.addTab("Info", new JScrollPane(pneInfo));
         tabTabbedPane.addTab("Resultados", new JScrollPane(pneResultados));
         SwingUtilities.updateComponentTreeUI(this); // arregla pintura extra en la barra de pestañas.
-        
+
         // Se determinan qué opciones del menú pueden ser seleccionadas y cuales ya lo están.
         jmiTrucos.setEnabled(op.getStatus("possibleCheats"));
         jmiExtrasConsole.setSelected(op.getStatus("consoleOutput"));
@@ -177,13 +175,13 @@ public final class LauncherRF extends javax.swing.JFrame {
         jmiIntefazGrid.setSelected(op.getStatus("drawGrid"));
         jmiInterfazZonas.setSelected(op.getStatus("drawZones"));
         jmiInterfazCoords.setSelected(op.getStatus("drawCoords"));
-        
+
         // Se selecciona qué modo y si se puede cambiar entre modos o no.
         jmiModoClassic.setEnabled(op.getStatus("experimental"));
         jmiModoClassic.setSelected(op.getStatus("experimental"));
         jmiModoExperimental.setEnabled(op.getStatus("experimental"));
         jmiModoExperimental.setSelected(op.getStatus("experimental"));
-        
+
         requestFocusInWindow();
     }
 
@@ -609,7 +607,7 @@ public final class LauncherRF extends javax.swing.JFrame {
         if(check) {
             juego.setMultiplier(0.0);
             juego.getSettings().setExperimentalMode(false);
-            jmiTrucos.setEnabled(false);            
+            jmiTrucos.setEnabled(false);
             setCheatsEnabled(false);
             juego.repaint();
             actualizarPneInfo();
@@ -625,21 +623,21 @@ public final class LauncherRF extends javax.swing.JFrame {
         jmiTrucosForzarSiguiente.setEnabled(opdef);
         jmiTrucosLoop.setEnabled(opdef);
     }
-    
+
     public void loopStarting() {
         jmiTrucosLoopStart.setEnabled(false);
         jmiTrucosLoopEnd.setEnabled(true);
         Keyboard.disableHandling();
         Mouse.disableHandling();
     }
-    
+
     public void loopEnding() {
         jmiTrucosLoopStart.setEnabled(true);
         jmiTrucosLoopEnd.setEnabled(false);
         Keyboard.enableHandling();
         Mouse.enableHandling();
     }
-    
+
     private void jmiModoExperimentalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModoExperimentalActionPerformed
         // Si se llega aquí, significa que el usuario partió del modo experimental,
         // pasó al modo clásico y con esta acción vuelve al modo experimental, por
@@ -656,12 +654,12 @@ public final class LauncherRF extends javax.swing.JFrame {
         juego.toggleConsole();
     }//GEN-LAST:event_jmiExtrasConsoleActionPerformed
 
-    public void toggleDarkMode(boolean b) {
-        if(b) FlatDarkLaf.setup();
+    public void toggleDarkMode(boolean current) {
+        if(current) FlatDarkLaf.setup();
         else FlatLightLaf.setup();
         updateComponentTreeUI();
     }
-    
+
     public void setLookAndFeel(String s) {
         try {
             if(s.equals("default")) {
@@ -669,16 +667,16 @@ public final class LauncherRF extends javax.swing.JFrame {
             } else {
                 UIManager.setLookAndFeel(s);
             }
-            
+
         } catch(Exception ex) {} finally {updateComponentTreeUI();}
     }
-    
+
     public void updateComponentTreeUI() {
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(ventanaColores);
         SwingUtilities.updateComponentTreeUI(secundaria);
     }
-    
+
     public void actualizarPneInfo() {
         if(juego != null) {
             Settings op = juego.getSettings();
@@ -687,12 +685,12 @@ public final class LauncherRF extends javax.swing.JFrame {
                 + "Siguiente ficha: %d%n"
                 + "Pieza más alta: %d%n"
                 + "Cantidad de piezas: %d%n",
-                juego.getPuntos(), juego.getMultiplier(), (int) (juego.getPuntos()*juego.getMultiplier()), 
+                juego.getPuntos(), juego.getMultiplier(), (int) (juego.getPuntos()*juego.getMultiplier()),
                 juego.getTurnos(), juego.getSiguiente(),
                 juego.getHighest(), juego.getTablero().amount());
 
             s += String.format("Posibles piezas siguientes actualmente: ");
-            for(int i : juego.possibleNextValues()) 
+            for(int i : juego.possibleNextValues())
                 s += String.format("%d ", i);
 
             s += String.format("%nPiezas \"siguientes\" obtenidas:%n");
@@ -724,16 +722,16 @@ public final class LauncherRF extends javax.swing.JFrame {
                 activado(op.getStatus("newDiffMult")),
                 activado(op.getStatus("saveResults"))
                 );
-                        
+
             s += String.format("%n%s", juego.isFinished() ? "Partida terminada." : "");
             pneInfo.setText(s);
         }
     }
-    
+
     private String activado(boolean b) {
         return b ? "activado" : "desactivado";
     }
-    
+
     private void jmiSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSalirActionPerformed
         juego.finalDePartida();
     }//GEN-LAST:event_jmiSalirActionPerformed
@@ -844,12 +842,11 @@ public final class LauncherRF extends javax.swing.JFrame {
 
     private void jmiLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoadActionPerformed
         LoadDialog lsd = new LoadDialog(juego);
-        try { 
-            if(lsd.showDialog())
-                    actualizarPneInfo(); {
+        try {
+            if(lsd.showDialog()) {
                 String[] a = Crypto.decode(lsd.getValue()).split(":");
-                if(Integer.parseInt(a[4].split(" ")[0]) == juego.getSettings().getX() && 
-                        Integer.parseInt(a[4].split(" ")[1]) == juego.getSettings().getY()) {
+                if(Integer.parseInt(a[4].split("'")[0]) == juego.getSettings().getX() &&
+                        Integer.parseInt(a[4].split("'")[1]) == juego.getSettings().getY()) {
                     juego.setTablero(new Tablero(juego.getSettings().getX(), juego.getSettings().getY()));
                     juego.getTablero().setFromString(a[0]);
                     juego.setPuntos(Long.parseLong(a[1]));
@@ -861,7 +858,7 @@ public final class LauncherRF extends javax.swing.JFrame {
                     actualizarPneInfo();
                 } else {Dialog.showError("El tamaño del tablero no es el actual.");}
             }
-        } catch (IOException | NumberFormatException ex) {Dialog.showError(ex);}
+        } catch (IOException ex) {Dialog.showError(ex);}
         catch (ArrayIndexOutOfBoundsException aix) {}
     }//GEN-LAST:event_jmiLoadActionPerformed
 
@@ -872,14 +869,15 @@ public final class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNuevaPartidaActionPerformed
-        if(Dialog.confirm("¿Desea iniciar una nueva partida?")) { 
+        if(Dialog.confirm("¿Desea iniciar una nueva partida?")) {
             secundaria.setVisible(true);
             this.setVisible(false);
         }
     }//GEN-LAST:event_jmiNuevaPartidaActionPerformed
 
     private void jmiTrucosLoopSlowdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopSlowdownActionPerformed
-        loopComms.setSlowdown(Integer.parseInt(Dialog.input("Introduzca el valor del nuevo slowdown (ms):", (x) -> (0 <= Integer.parseInt(x)))));
+        var result = Integer.parseInt(Dialog.input("Introduzca el valor del nuevo slowdown (ms):", (x) -> (0 <= Integer.parseInt(x))));
+        loopComms.setSlowdown(result);
     }//GEN-LAST:event_jmiTrucosLoopSlowdownActionPerformed
 
     private void jmiTrucosLoopLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopLimitActionPerformed
@@ -900,7 +898,7 @@ public final class LauncherRF extends javax.swing.JFrame {
         gameTimer.log(1, "Se ha establecido el modo de funcionamiento del loop a \"aleatorio\"");
     }//GEN-LAST:event_jmiTrucosLoopModoAleatorioActionPerformed
 
-    
+
     /**
      * Método que devuelve el objeto de tipo <code>SumaTres</code> con el que se
      * está jugando.
@@ -909,11 +907,11 @@ public final class LauncherRF extends javax.swing.JFrame {
     public SumaTres getPartida() {
         return this.juego;
     }
-    
+
     public void setDarkModeStatus(boolean b) {
         this.jmiDarkMode.setEnabled(b);
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -921,7 +919,7 @@ public final class LauncherRF extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -934,14 +932,14 @@ public final class LauncherRF extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(LauncherRF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new LauncherRF().setVisible(false);
         });
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

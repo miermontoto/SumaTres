@@ -10,18 +10,20 @@ import handler.Keyboard;
  * Llevo mucho tiempo sin modificar esta parte del código, tanto que no
  * recuerdo muy bien cómo funciona, pero funciona. Está propiamente explicado
  * (o debería).
+ *
+ * @author Juan Mier
  */
 public final class Turno {
 
-    private final SumaTres s;
-    private final Tablero t;
-    private final Jugada x;
-    
-    public Turno(SumaTres si, Jugada ji) {
-        s = si;
-        x = ji;
-        
-        t = si.getTablero();
+    private final SumaTres game;
+    private final Tablero board;
+    private final Jugada move;
+
+    public Turno(SumaTres gameObject, Jugada moveObject) {
+        game = gameObject;
+        move = moveObject;
+
+        board = gameObject.getTablero();
     }
 
     /**
@@ -37,27 +39,26 @@ public final class Turno {
     public void mover() {
         boolean check = true;
         while (check) {
-            
+
             // Si se detecta un espacio vacío en la dirección de movimiento, se mueve la pieza.
-            for (int i = x.getUp() + x.getDown()*(t.getColumns() - 2); i < t.getColumns() && i >= 0; i += 1 -2*x.getDown())
-                for (int j = x.getLeft() + x.getRight()*(t.getRows() - 2); j < t.getRows() && j >= 0; j += 1 - 2*x.getRight()) {
-                    if (t.getTab(i + x.moveVert(), j + x.moveHorz()) == 0) {
-                        t.setTab(i + x.moveVert(), j + x.moveHorz(), t.getTab(i, j));
-                        t.setTab(i, j, 0);
+            for (int i = move.getUp() + move.getDown()*(board.getColumns() - 2); i < board.getColumns() && i >= 0; i += 1 - 2*  move.getDown())
+                for (int j = move.getLeft() + move.getRight()*(board.getRows() - 2); j < board.getRows() && j >= 0; j += 1 - 2 * move.getRight()) {
+                    if (board.getTab(i + move.moveVert(), j + move.moveHorz()) == 0) {
+                        board.setTab(i + move.moveVert(), j + move.moveHorz(), board.getTab(i, j));
+                        board.setTab(i, j, 0);
                 }
             }
 
             /*
-             * Con un solo if, si se encuentra una pieza que contenga un valor y en la
-             * siguiente pieza en la dirección seleccionada está vacía, significa que
-             * se puede seguir moviendo el tablero.
+             * Si se encuentra una pieza que contenga un valor y la siguiente pieza en la
+             * dirección seleccionada está vacía, significa que se puede seguir moviendo el tablero.
              * De lo contrario, check se mantiene false por lo que se sale del bucle y se
              * termina el movimiento de las piezas.
              */
             check = false;
-            for (int i = x.getUp() + x.getDown() * (t.getColumns() - 2); i < t.getColumns() && i >= 0 && !check; i += 1 - 2 * x.getDown())
-                for (int j = x.getLeft() + x.getRight() * (t.getRows() - 2); j < t.getRows() && j >= 0 && !check; j += 1 - 2 * x.getRight()) {
-                    if (t.getTab(i, j) != 0 && (t.getTab(i + x.moveVert(), j + x.moveHorz()) == 0)) check = true;
+            for (int i = move.getUp() + move.getDown() * (board.getColumns() - 2); i < board.getColumns() && i >= 0 && !check; i += 1 - 2 * move.getDown())
+                for (int j = move.getLeft() + move.getRight() * (board.getRows() - 2); j < board.getRows() && j >= 0 && !check; j += 1 - 2 * move.getRight()) {
+                    if (board.getTab(i, j) != 0 && (board.getTab(i + move.moveVert(), j + move.moveHorz()) == 0)) check = true;
             }
         }
     }
@@ -80,15 +81,15 @@ public final class Turno {
      * través de {@link #game.SumaTres.setHighest(int)}.
      */
     public void sumar() {
-        for (int i = x.getUp() + x.getDown() * (t.getColumns() - 2); i < t.getColumns() && i >= 0; i += 1 - 2 * x.getDown())
-            for (int j = x.getLeft() + x.getRight() * (t.getRows() - 2); j < t.getRows() && j >= 0; j += 1 - 2 * x.getRight()) {
-                if (sumaCond(i, j, x, t)) { // Si se puede sumar, se convierte la nueva casilla en la suma y la antigua en 0.
-                    t.setTab(i + x.moveVert(), j + x.moveHorz(), t.getTab(i, j) + t.getTab(i + x.moveVert(), j + x.moveHorz()));
-                    t.setTab(i, j, 0);
-                    s.addPuntos(t.getTab(i + x.moveVert(), j + x.moveHorz()));
-                    s.setHighest(t.getTab(i + x.moveVert(), j + x.moveHorz()));
-                    t.subAmount();
-                    // Se comprueba si la mayor pieza es la recién sumada.
+        for (int i = move.getUp() + move.getDown() * (board.getColumns() - 2); i < board.getColumns() && i >= 0; i += 1 - 2 * move.getDown())
+            for (int j = move.getLeft() + move.getRight() * (board.getRows() - 2); j < board.getRows() && j >= 0; j += 1 - 2 * move.getRight()) {
+                if (sumaCond(i, j, move, board)) { // Si se puede sumar, se convierte la nueva casilla en la suma y la antigua en 0.
+                    int addResult = board.getTab(i, j) + board.getTab(i + move.moveVert(), j + move.moveHorz());
+                    board.setTab(i + move.moveVert(), j + move.moveHorz(), addResult);
+                    board.setTab(i, j, 0);
+                    game.addPuntos(addResult);
+                    game.setHighest(addResult); // Se comprueba si la mayor pieza es la recién sumada.
+                    board.subAmount(); // resta 1 al número de fichas en el tablero.
             }
         }
         mover(); // Se mueve al terminar de suma para evitar que queden huecos vacíos.
@@ -100,8 +101,7 @@ public final class Turno {
      * detecta que hay una suma que se pueda hacer, el check devuelve 'true'. Si el
      * tablero no está lleno, devuelve 'true'.
      * <p>
-     * Se utiliza
-     * {@link #sumaCond(int, int, Jugada)} para verificar si la suma es
+     * Se utiliza {@link #sumaCond(int, int, Jugada)} para verificar si la suma es
      * posible o no.
      * <p>
      * Se utiliza {@link #obj.Tablero.isFull()} como condición necesaria para seguir
@@ -109,33 +109,24 @@ public final class Turno {
      * imposible que la partida esté terminada.
      * <p>
      * Si se está jugando con movimientos diagonales, los comprueba también.
-     * @param s: Objeto de tipo 'SumaTres' que se desea analizar.
+     * @param game Objeto de tipo 'SumaTres' que se desea analizar.
      * @return Valor 'booleano' definiendo si es posible algún movimiento.
      */
-    public static boolean ableToMove(SumaTres s) {
-        boolean check = true;
-        Tablero t = s.getTablero();
-        if (t.isFull()) {
-            check = false;
-            String movesToCheck = s.getSettings().getStatus("diagonalMovement") ? 
-                Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
+    public static boolean ableToMove(SumaTres game) {
+        Tablero board = game.getTablero();
+        if (!board.isFull()) return true;
 
-            int b = 0;
-            while(b < movesToCheck.length() && !check) {
-                Jugada x = new Jugada(movesToCheck.charAt(b));
-                int i = x.getUp();
-                while(i + x.getDown() < t.getColumns() && !check) {
-                    int j = x.getLeft();
-                    while(j + x.getRight() < t.getRows() && !check) {
-                        check |= sumaCond(i, j, x, t);
-                        j++;
-                    }
-                    i++;
-                }
-                b++;
+        String movesToCheck = game.getSettings().getStatus("diagonalMovement") ?
+            Keyboard.VALID_EXPERIMENTAL_KEYS : Keyboard.VALID_CLASSIC_KEYS;
+
+        for(int o = 0; o < movesToCheck.length(); o++) {
+            Jugada move = new Jugada(movesToCheck.charAt(o));
+            for (int i = move.getUp(); i + move.getDown() < board.getColumns(); i++)
+                for (int j = move.getLeft(); j + move.getRight() < board.getRows(); j++) {
+                    if (sumaCond(i, j, move, board)) return true;
             }
         }
-        return check;
+        return false;
     }
 
 
@@ -145,17 +136,16 @@ public final class Turno {
      * Para determinar que sea una suma válida, se comprueba: o bien que sean piezas
      * iguales (excepto 1 y 2), o bien que una de las piezas sea 1 y la otra 2. <p>
      * Esto es FUNDAMENTAL!!! para el funcionamiento del juego.
-     * 
-     * @param i Posición x del tablero.
-     * @param j Posición y del tablero.
-     * @param x Objeto de la clase 'Jugada' que define el movimiento.
-     * @param t Objeto de la clase 'Tablero' en el que se está jugando.
+     *
+     * @param x Posición x del tablero.
+     * @param y Posición y del tablero.
+     * @param move Objeto de la clase 'Jugada' que define el movimiento.
+     * @param board Objeto de la clase 'Tablero' en el que se está jugando.
      * @return  Un booleano, 'true' si se puede sumar, 'false' si no.
      */
-    private static boolean sumaCond(int i, int j, Jugada x, Tablero t) {
-        return (t.getTab(i + x.moveVert(), j + x.moveHorz()) == t.getTab(i, j) &&
-            t.getTab(i, j) >= 3)  ||
-            (t.getTab(i, j) + t.getTab(i + x.moveVert(), j + x.moveHorz()) == 3 &&
-                (t.getTab(i, j) == 2 || t.getTab(i, j) == 1));
+    private static boolean sumaCond(int x, int y, Jugada move, Tablero board) {
+        return (board.getTab(x + move.moveVert(), y + move.moveHorz()) == board.getTab(x, y) && board.getTab(x, y) >= 3)  ||
+                        (board.getTab(x, y) + board.getTab(x + move.moveVert(), y + move.moveHorz()) == 3 &&
+                            (board.getTab(x, y) == 2 || board.getTab(x, y) == 1));
     }
 }

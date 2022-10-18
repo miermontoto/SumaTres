@@ -11,11 +11,11 @@ import obj.Settings;
 import obj.Tablero;
 
 /**
- * Interfaz que permite modificar lo0s colores y el brillo de cada pieza.
+ * Interfaz que permite modificar los colores y el brillo de cada pieza.
  * @author Juan Mier
  */
 public class EditarColores extends javax.swing.JFrame {
-    
+
     private LauncherRF principal;
     private DefaultListModel model;
     private PiezaDisplayer displayer;
@@ -28,10 +28,10 @@ public class EditarColores extends javax.swing.JFrame {
         updateValues();
         lstValores.setModel(model);
         lstValores.setSelectedIndex(0);
-        
+
         displayer = (PiezaDisplayer) pnlPieza;
     }
-    
+
     public EditarColores(LauncherRF p) {
         this();
         principal = p;
@@ -70,7 +70,6 @@ public class EditarColores extends javax.swing.JFrame {
 
         setTitle("Editar colores");
         setAlwaysOnTop(true);
-        setPreferredSize(new java.awt.Dimension(253, 224));
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -204,7 +203,6 @@ public class EditarColores extends javax.swing.JFrame {
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         if(!lstValores.isSelectionEmpty()) {
             int selectedValue = getSelectedValue();
-//          int selectedValue = Integer.parseInt(lstValores.getSelectedValue()); // <-- esto no funciona! no es culpa mía, es java.
             Color newColor = JColorChooser.showDialog(null, "Seleccione nuevo color", Pieza.getColores().get(selectedValue), false);
             if(newColor != null) {
                 Pieza.getColores().put(selectedValue, newColor);
@@ -215,7 +213,7 @@ public class EditarColores extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 
-    
+
     private void refresh(int value) {
         updateColorOfValue(value);
         updateBrightnessOfValue(value);
@@ -223,7 +221,7 @@ public class EditarColores extends javax.swing.JFrame {
         sldBrightness.setValue(rawBrightness.get(value));
         principal.getPartida().repaint();
     }
-    
+
     private void lstValoresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstValoresValueChanged
         updateColorLabel();
         int selectedValue = getSelectedValue();
@@ -268,14 +266,14 @@ public class EditarColores extends javax.swing.JFrame {
         rawBrightness.put(selectedValue, sldBrightness.getValue());
         phaseColor(selectedValue, getColorFromBrightness(selectedValue));
         refresh(selectedValue);
-        
+
     }//GEN-LAST:event_sldBrightnessStateChanged
 
     private void phaseColor(int value, Color color) {
         Pieza.getColores().put(value, color);
         Pieza.updateBrightnessForValue(value);
     }
-    
+
     private Color getColorFromBrightness(int value) {
         Color tempColor = rawColors.get(value);
         int tempBrightness = rawBrightness.get(value);
@@ -283,7 +281,7 @@ public class EditarColores extends javax.swing.JFrame {
         else if(tempBrightness < 0) for(int i = 0; i < Math.abs(tempBrightness); i++) tempColor = tempColor.darker();
         return tempColor;
     }
-    
+
     private int getSelectedValue() {
         return (int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3];
     }
@@ -291,7 +289,7 @@ public class EditarColores extends javax.swing.JFrame {
         displayer.setPieza((int) Pieza.getColores().keySet().toArray()[lstValores.getSelectedIndex() + 3]);
         displayer.repaint();
     }
-    
+
     public void updateValues() {
         model.removeAllElements();
         for(Integer i : Pieza.getColores().keySet()) {
@@ -301,13 +299,13 @@ public class EditarColores extends javax.swing.JFrame {
         model.removeElement(-1);
         model.removeElement(0);
     }
-    
+
     private void updateColorOfValue(int value) {
         Settings op = principal.getPartida().getSettings();
         Tablero tab = principal.getPartida().getTablero();
         Color newColor = Pieza.getColores().get(value);
         int amount = tab.amount();
-        
+
         for(int i = 0, k = 0; i < op.getX() && k < amount; i++) {
             for(int j = 0; j < op.getY() && k < amount; j++) {
                 if(tab.getTab(i, j) != 0) {
@@ -317,7 +315,7 @@ public class EditarColores extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private void updateBrightnessOfValue(int value) {
         boolean newBrillo = Pieza.getBrillos().get(value);
                 for(int i = 0; i < principal.getPartida().getSettings().getX(); i++) {
@@ -326,7 +324,7 @@ public class EditarColores extends javax.swing.JFrame {
             }
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -334,7 +332,7 @@ public class EditarColores extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

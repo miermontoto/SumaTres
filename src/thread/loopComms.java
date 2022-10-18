@@ -7,7 +7,7 @@ import game.LauncherRF;
  * @author Juan Mier
  */
 public class loopComms extends loopTask {
-    
+
     private boolean isStopped;
 
     /**
@@ -53,7 +53,7 @@ public class loopComms extends loopTask {
     public boolean stop() {
         return isStopped;
     }
-    
+
     /**
      * Método que detiene o resume el loop de jugadas.
      * @param t Valor booleano que indica si el loop se detendrá o no.

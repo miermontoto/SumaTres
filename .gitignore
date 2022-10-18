@@ -1,8 +1,8 @@
-.vscode/
+.vscode
 resultados.*
-nbproject/
-private/
-/olderBuilds/
+nbproject
+private
+olderBuilds
 *.sto
 manifest.mf
 build*
@@ -16,5 +16,8 @@ workspace.code-workspace
 bin
 coverage
 Libro1.xlsx
-/dist/
+dist
+*.stp
+*.ggb
+
 

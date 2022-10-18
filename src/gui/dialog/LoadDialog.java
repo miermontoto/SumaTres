@@ -9,13 +9,12 @@ import handler.Loader;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
- * @author JuanMier
+ * Diálogo que permite cargar una partida desde un archivo con formato .stp o desde un código en Base64.
+ * @author Juan Mier
  */
 public class LoadDialog extends javax.swing.JDialog {
-    
+
     private boolean pressedOk;
-    private SumaTres s;
 
     /**
      * Creates new form LoadSaveDialog
@@ -25,23 +24,22 @@ public class LoadDialog extends javax.swing.JDialog {
         initComponents();
         this.setVisible(false);
     }
-    
+
     public LoadDialog(SumaTres si) {
         this(null, true);
-        this.s = si;   
     }
 
-    
+
     public boolean showDialog() {
         pressedOk = false;
         this.setVisible(true);
         return pressedOk;
     }
-    
+
     public String getValue() {
         return new String(pswCode.getPassword());
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -155,7 +153,7 @@ public class LoadDialog extends javax.swing.JDialog {
     private void btnLoadFromFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromFileActionPerformed
         pswCode.setText(new Loader("Cargar partida", new FileNameExtensionFilter("Partida de SumaTres (.stp)", "stp")).loadString());
     }//GEN-LAST:event_btnLoadFromFileActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
@@ -163,7 +161,7 @@ public class LoadDialog extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

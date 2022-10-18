@@ -4,7 +4,7 @@ import util.Dialog;
 
 /**
  * <h2>Clase que define las jugadas del juego en el tablero.</h2>
- * 
+ *
  * Contiene valores para cada sentido del movimiento bidimensional. Por defecto,
  * todos los movimientos tienen valor '0'. Cuando se define un movimiento, dicho
  * movimiento pasa a tener valor '1'. Esto permite que el programa funcione de
@@ -24,11 +24,12 @@ import util.Dialog;
  * Estos dos métodos existen para que las detecciones de movimiento sean más
  * cortas y más sencillas, ya que todas usan el desplazamiento de la misma
  * manera.
- * 
+ *
  * @see <a href="https://rules.sonarsource.com/java/RSPEC-131"> SonarLint: RSPEC-131 </a>
  *		<blockquote> The requirement for a final default clause is defensive programming. The
  * 		clause should either take appropriate action, or contain a suitable comment as to why
  * 		no action is taken. </blockquote>
+ * @author Juan Mier
  */
 public class Jugada {
 
@@ -54,7 +55,7 @@ public class Jugada {
                 System.exit(1);
         }
     }
-    
+
     /**
      * Devuelve el nombre de la dirección de la jugada.
      * @return String con el nombre.

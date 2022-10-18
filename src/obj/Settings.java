@@ -3,31 +3,33 @@ package obj;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
-//import javax.naming.OperationNotSupportedException;
 
 /**
- *
+ * Clase que almacena todas las opciones referentes a una partida.
+ * <p> Se utiliza una estructura de datos TreeMap<String, Boolean> para almacenar las opciones.
  * @author Juan Mier
  */
 public class Settings {
-    
+
     private int sizex;
     private int sizey;
     private Map<String, Boolean> settingsMap;
     private int verbosityLevel;
-    
-    public Settings(int x, int y, boolean m) {
+
+    private static final int DEFAULT_VERBOSITY_LEVEL = 0;
+
+    public Settings(int x, int y, boolean experimental) {
         sizex = x;
         sizey = y;
         settingsMap = new TreeMap<>();
-        
-        settingsMap.put("experimental", m);
-        settingsMap.put("consoleOutput", !m);
-        settingsMap.put("diagonalMovement", m);
-        settingsMap.put("possibleCheats", m);
-        settingsMap.put("moreNextValues", m);
-        settingsMap.put("newDiffMult", m);
-        settingsMap.put("balancedStart", m);
+
+        settingsMap.put("experimental", experimental);
+        settingsMap.put("consoleOutput", !experimental);
+        settingsMap.put("diagonalMovement", experimental);
+        settingsMap.put("possibleCheats", experimental);
+        settingsMap.put("moreNextValues", experimental);
+        settingsMap.put("newDiffMult", experimental);
+        settingsMap.put("balancedStart", experimental);
         settingsMap.put("exitOnEnd", true);
         settingsMap.put("drawArrows", true);
         settingsMap.put("drawHud", true);
@@ -37,14 +39,13 @@ public class Settings {
         settingsMap.put("drawZones", false);
         settingsMap.put("drawCoords", false);
         settingsMap.put("newNextValues", false);
-        verbosityLevel = 0;
+        verbosityLevel = DEFAULT_VERBOSITY_LEVEL;
     }
-    
-    public Settings(String s) throws IOException {
-        String[] data = s.split("'");
-        //if(data.length != 19) throw new IOException("Tamaño de información incorrecto.");
-        settingsMap = new TreeMap<>();
-        
+
+    public Settings(String code) throws IOException {
+        this(5, 5, true);
+        String[] data = code.split("'");
+
         sizex = Integer.parseInt(data[0]);
         sizey = Integer.parseInt(data[1]);
         verbosityLevel = Integer.parseInt(data[2]);
@@ -53,25 +54,18 @@ public class Settings {
             var settingStatus = Boolean.parseBoolean(data[i].split("=")[1]);
             settingsMap.put(settingName, settingStatus);
         }
-
-        /*
-        if(!settingsMap.get("experimental") && (diagonalMovementEnabled || possibleCheats || !hudEnabled ||
-                    moreNextValuesEnabled || balancedStartEnabled || !drawArrowsEnabled ||
-                        enhancedDiffMultEnabled || saveResultsToFileEnabled || drawZonesEnabled ||
-                            drawGridEnabled || drawCoordsEnabled)) 
-                throw new IOException("Leídos valores inválidos desde archivo de opciones.");*/
     }
-    
+
     /**
      * Devuelve el valor de una opción que esté dentro del diccionario de opciones.
-     * @param s Nombre de la opción del que se desea conocer el valor.
+     * @param settingName Nombre de la opción del que se desea conocer el valor.
      * @return Valor de la opción.
      */
-    public boolean getStatus(String s) {
+    public boolean getStatus(String settingName) {
         //if(!settingsMap.containsKey(s)) throw new OperationNotSupportedException("Opción no existente.");
-        return settingsMap.get(s);
+        return settingsMap.get(settingName);
     }
-    
+
     /**
      * Método que establece el valor de una opción.
      * @param s Opción del que se quiere cambiar el valor.
@@ -85,7 +79,7 @@ public class Settings {
         }
         return settingsMap.put(s, b);
     }
-    
+
     /**
      * Método que conmuta el valor de una opción.
      * @param s Nombre de la opción a conmutar.
@@ -113,7 +107,7 @@ public class Settings {
     public void setSizey(int val) {
         if (val >= 2) sizey = val;
     }
-    
+
     public void setVerbosity(int val) {
         if(val >= 0 && val <= 2) verbosityLevel = val;
     }
@@ -127,11 +121,11 @@ public class Settings {
         settingsMap.put("newDiffMult", exp);
         settingsMap.put("newNextValues", exp);
     }
-    
+
     public int verbosity() {
         return verbosityLevel;
     }
-    
+
     @Override
     public String toString() {
         String s = sizex + "'" + sizey + "'" + verbosityLevel;

@@ -32,16 +32,16 @@ class FinalTest {
 		SumaTres s3 = new SumaTres(new Settings(3, 3, false));
 		SumaTres s4 = new SumaTres(new Settings(3, 3, false));
 		SumaTres s5 = new SumaTres(new Settings(3, 3, false));
-		
+
 		for (int i=0; i<3; i++) for(int j=0; j<3; j++) s1.setTab(i, j, 3);
 		s1.setTab(0, 0, 2);
 		s1.setTab(2, 0, 2);
 		s1.setTab(0, 2, 2);
 		s1.setTab(2, 2, 2);
 		s1.setTab(1, 1, 2);
-		
+
 		for (int i=0; i<3; i++) for(int j=0; j<3; j++) s2.setTab(i, j, 3);
-		
+
 		/*
 		 * Por algún motivo, el primer set de fichas genera 6 fichas.
 		 * No tengo ni idea de por qué. No tengo tiempo de adivinar por qué.
@@ -50,16 +50,16 @@ class FinalTest {
 		s4.generarSetFichas();
 		s4.generarSetFichas();
 
-		
+
 		for (int i=0; i<3; i++) for(int j=0; j<3; j++) s5.setTab(i, j, 2);
-		
+
 		assertEquals(false, Turno.ableToMove(s1));
 		assertEquals(true, Turno.ableToMove(s2));
 		assertEquals(true, Turno.ableToMove(s3));
 		assertEquals(true, Turno.ableToMove(s4));
 		assertEquals(false, Turno.ableToMove(s5));
 	}
-	
+
 	/**
 	 * Test que comprueba la correcta detección del final de partida,
 	 * esta vez en el modo experimental. Esto significa que hay que
@@ -75,7 +75,7 @@ class FinalTest {
 		SumaTres s4 = new SumaTres(new Settings(3, 3, true));
 		SumaTres s5 = new SumaTres(new Settings(3, 3, true));
 		SumaTres s6 = new SumaTres(new Settings(3, 3, true));
-		
+
 		/*
 		 * En el primer tablero, se rellena el tablero con un patrón repetitivo
 		 * de piezas con valores 3, 2, 3, 2...
@@ -85,14 +85,14 @@ class FinalTest {
 		s1.setTab(1, 0, 2);
 		s1.setTab(2, 1, 2);
 		s1.setTab(1, 2, 2);
-		
+
 		/*
 		 * El segundo tablero se rellena simplemente de piezas de valor 3.
 		 */
 		for (int i=0; i<3; i++) for(int j=0; j<3; j++) s2.setTab(i, j, 3);
-		
+
 		// El tercer tablero está completamente vacío.
-		
+
 		/*
 		 * El cuarto tablero tiene una posición que debería suponer el final de la partida.
 		 */
@@ -105,17 +105,17 @@ class FinalTest {
 		s4.setTab(0, 2, 2);
 		s4.setTab(2, 2, 2);
 		s4.setTab(1, 1, 48);
-		
+
 		/*
 		 * El quinto tablero tiene un patrón similar al de una partida recién empezada.
 		 */
 		s5.generarSetFichas();
-		
+
 		/*
 		 * El sexto tablero se rellena de pieas de valor 2.
 		 */
 		for (int i=0; i<3; i++) for(int j=0; j<3; j++) s6.setTab(i, j, 2);
-		
+
 		// Se comprueba la veracidad del método.
 		assertEquals(true, Turno.ableToMove(s1));
 		assertEquals(true, Turno.ableToMove(s2));
@@ -124,6 +124,6 @@ class FinalTest {
 		assertEquals(true, Turno.ableToMove(s5));
 		assertEquals(false, Turno.ableToMove(s6));
 	}
-	
+
 
 }

@@ -10,6 +10,8 @@ import util.Dialog;
  * tablero. Para facilitar la interacción con los setters y getters principales,
  * existen los métodos 'getPieza()' y 'setPieza()', así como setters y getters
  * para 'sizeX'y 'sizeY'.
+ *
+ * @author Juan Mier
  */
 public class Tablero {
     private Pieza[][] tablero;
@@ -22,7 +24,7 @@ public class Tablero {
      * sobrecargadas. A continuación, se llena el tablero de piezas con valor '0',
      * de modo que no aparecen ni en la ventana gráfica ni en la consola, en caso de
      * que esté activada.
-     * 
+     *
      * @param x Cantidad de columnas de la matriz.
      * @param y Cantidad de filas de la matriz.
      */
@@ -39,25 +41,25 @@ public class Tablero {
             amountOfPiezas = 0;
         }
     }
-    
-    public boolean setFromString(String s) {    
+
+    public boolean setFromString(String s) {
         String[] tab = s.split(",");
         if(tab.length != columns*rows) return false;
         amountOfPiezas = 0;
-        
+
         for(int i = 0, k = 0; i < columns; i++) for(int j = 0; j < rows; j++, k++) {
             int val = Integer.parseInt(tab[k]);
             if(val != 0) {
                 addAmount();
                 tablero[i][j].setValor(val);
-            } 
+            }
         }
         return true;
     }
 
     /**
      * Método que devuelve la dimensión horizontal del tablero.
-     * 
+     *
      * @return Valor entero
      */
     public int getColumns() {
@@ -66,24 +68,24 @@ public class Tablero {
 
     /**
      * Método que devuelve la dimensión vertical del tablero.
-     * 
+     *
      * @return Valor entero
      */
     public int getRows() {
             return rows;
     }
 
-    public void setTab(int x, int y, int nv) {this.getPieza(x, y).setValor(nv);}
+    public void setTab(int x, int y, int newValue) {this.getPieza(x, y).setValor(newValue);}
     public int getTab(int x, int y) {return this.getPieza(x, y).getValor();}
-    
+
     public void addAmount() {this.amountOfPiezas++;}
     public void subAmount() {this.amountOfPiezas--;}
-    
+
     /**
      * Devuelve la cantidad de piezas en tablero.
      * Se utiliza para evitar recorrer el tablero cuando ya se han encontrado
      * todas las piezas.
-     * @return 
+     * @return
      */
     public int amount() {return this.amountOfPiezas;}
 
@@ -92,7 +94,7 @@ public class Tablero {
      * utilizar para acceder a piezas cuando no sea posible con
      * <code>setTab(int, int)</code> o <code>getTab(int, int)</code>. <p>
      * Si no puede devolver la ficha especificada, devuelve la ficha 0, 0.
-     * 
+     *
      * @param x Coordenada x de la pieza que se desea obtener.
      * @param y Coordenada y de la pieza que se desea obtener.
      * @return Objeto tipo 'pieza'
@@ -109,7 +111,7 @@ public class Tablero {
     /**
     * Comprueba que si el tablero está lleno. Si la cantidad de piezas es igual
     * a la cantidad de espacios en tablero, se devuelve 'true'.
-    * 
+    *
     * @return Devuelve un booleano, 'true' si está lleno, 'false' si no.
     */
     public boolean isFull() {
@@ -122,8 +124,8 @@ public class Tablero {
     @Override
     public String toString() {
         String s = "";
-        for(int i=0; i < this.getColumns(); i++) 
-            for(int j=0; j < this.getRows(); j++) 
+        for(int i=0; i < this.getColumns(); i++)
+            for(int j=0; j < this.getRows(); j++)
                 s += String.format("%d,", this.getTab(i, j));
         return s;
     }

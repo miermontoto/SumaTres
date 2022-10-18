@@ -9,7 +9,7 @@ import obj.Settings;
  * @author JuanMier
  */
 public class Avanzadas extends javax.swing.JFrame {
-    
+
     private Prepartida ventanaSecundaria;
 
     /**
@@ -22,7 +22,7 @@ public class Avanzadas extends javax.swing.JFrame {
         cmbLnf.addItem("FlatLaf (default)");
         for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) cmbLnf.addItem(info.getName());
     }
-    
+
     public Avanzadas(Prepartida p) {
         this();
         ventanaSecundaria = p;
@@ -428,16 +428,16 @@ public class Avanzadas extends javax.swing.JFrame {
             ventanaSecundaria.getPrincipal().setLookAndFeel(res);
             ventanaSecundaria.setDarkModeStatus(index == 0);
             ventanaSecundaria.getPrincipal().setDarkModeStatus(index == 0);
-            
+
         } catch (Exception ex) {} finally {SwingUtilities.updateComponentTreeUI(this);}
     }//GEN-LAST:event_cmbLnfActionPerformed
- 
+
     public void readValues() {
         Settings op = ventanaSecundaria.getSettings();
-        
+
         btnExperimental.setSelected(op.getStatus("experimental"));
         btnClásico.setSelected(!op.getStatus("experimental"));
-        
+
         chkDiagonalMovement.setEnabled(op.getStatus("experimental"));
         chkHUD.setEnabled(op.getStatus("experimental"));
         chkCheatsAvailable.setEnabled(op.getStatus("experimental"));
@@ -449,7 +449,7 @@ public class Avanzadas extends javax.swing.JFrame {
         chkDrawZones.setEnabled(op.getStatus("experimental"));
         chkDrawCoords.setEnabled(op.getStatus("experimental"));
         //spnVerbosity.setEnabled(op.isExperimental()); // debería estar desactivado en modo clásico?
-        
+
         chkDiagonalMovement.setSelected(op.getStatus("diagonalMovement"));
         chkHUD.setSelected(op.getStatus("drawHud"));
         chkCheatsAvailable.setSelected(op.getStatus("possibleCheats"));
@@ -464,11 +464,11 @@ public class Avanzadas extends javax.swing.JFrame {
         chkDrawZones.setSelected(op.getStatus("drawZones"));
         chkDrawCoords.setSelected(op.getStatus("drawCoords"));
         spnVerbosity.setValue(op.verbosity());
-        
+
         lblVerbosityWarning.setVisible(op.verbosity() != 0);
     }
-    
-    
+
+
     /**
      * @param args the command line arguments
      */
@@ -476,7 +476,7 @@ public class Avanzadas extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -489,7 +489,7 @@ public class Avanzadas extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Avanzadas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */

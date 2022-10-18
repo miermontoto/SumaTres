@@ -5,16 +5,16 @@ import util.visual.PiezaDisplayer;
 import obj.Pieza;
 
 /**
- *
- * @author JuanMier
+ * Diálogo que modifica el valor de las piezas en el tablero.
+ * @author Juan Mier
  */
 public class ModifyBoardDialog extends javax.swing.JDialog {
-    
+
     private boolean pressedOk;
     private SumaTres s;
     private PiezaDisplayer displayer;
     private int mode;
-    
+
     /**
      * Creates new form CoordenadasMatriz
      */
@@ -23,40 +23,40 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
         initComponents();
         displayer = (PiezaDisplayer) pnlPieza;
     }
-    
+
     public ModifyBoardDialog(SumaTres si) {
         this(null, true);
         this.s = si;
         sldHorizontal.setMaximum(si.getSettings().getY() - 1);
         sldVertical.setMaximum(si.getSettings().getX() - 1);
-        updateValues(); 
+        updateValues();
     }
-    
+
     public void updateValues() {
         cmbValores.removeAllItems();
         for(Integer i : Pieza.getColores().keySet()) {
             cmbValores.addItem(String.valueOf(i));
         }
-        
+
         // se eliminan los valores -2, -1 y 0 del combobox.
         cmbValores.removeItem("-2");
         cmbValores.removeItem("-1");
         cmbValores.removeItem("0");
     }
-    
-    
-    
+
+
+
     public boolean showDialog() {
         pressedOk = false;
         this.setVisible(true);
         update();
         return pressedOk;
     }
-    
+
     public int getMode() {
         return mode;
     }
-    
+
     public int getValue() {
         return Integer.parseInt((String) cmbValores.getSelectedItem());
     }
@@ -296,15 +296,15 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
             if(mode == 2 || mode == 3) mode = 0;
             // Si se estaba en modo modificar o eliminar, se resetea el modo.
         }
-        
+
         s.setSelected(new int[] {getCoordsX(), getCoordsY(), mode});
         if(pnlPieza.isVisible()) displayer.repaint();
         s.repaint();
     }
-    
+
     public int getCoordsX() {return sldVertical.getValue();}
     public int getCoordsY() {return sldHorizontal.getValue();}
-    
+
     /**
      * @param args the command line arguments
      */
@@ -312,7 +312,7 @@ public class ModifyBoardDialog extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

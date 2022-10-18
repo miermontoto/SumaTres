@@ -2,9 +2,12 @@ package util.visual;
 
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
-
 import game.SumaTres;
 
+/**
+ * Clase que contiene métodos estáticos sobre la propiedades de la ventana y similares.
+ * @author Juan MIer
+ */
 public final class Graphic {
 
     public static final ImageIcon ICON = new ImageIcon("./assets/icon.png");
@@ -22,7 +25,7 @@ public final class Graphic {
     /*
      * Lo negativo de que los tamaños de la pantalla sean fijos y no se actualicen
      * es que el tablero mantiene el tamaño establecido al principio de la partida,
-     * con lo que al cambiar de resolución a mitad de partida, no se ajusta nada. 
+     * con lo que al cambiar de resolución a mitad de partida, no se ajusta nada.
      * No merece la pena crear métodos que obtenga constantemente la resolución de
      * la pantalla porque realísticamente nadie cambia la resolución constantemente
      * a menos que se quiera romper visualmente el programa.
@@ -30,7 +33,7 @@ public final class Graphic {
 
     /**
      * Constrctor generado para cumplir con SonarLint:S1118.
-     * 
+     *
      * @see <a href="https://sonarcloud.io/organizations/default/rules?languages=java&open=java%3AS1118&q=S1118">
      * 		Regla SonarLint:S1118 </a>
      */
@@ -39,61 +42,61 @@ public final class Graphic {
     }
 
     /**
-     * Método que calcula el ancho o alto total final de la pantalla. Se utiliza en el main para definir la
-     * aplicación y también en diversos métodos dentro de esta clase para calcular posiciones respecto
+     * Método que calcula el ancho o alto total final de la ventana. Se utiliza para calcular posiciones respecto
      * a los bordes de la ventana.
-     * 
-     * @param x Cantidad de columnas o filas
+     *
+     * @param componentSize Cantidad de columnas o filas
      * @return Valor entero con el ancho o alto de la ventana.
      */
-    public static int define(int x) {
-            return x * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER;
+    public static int define(int componentSize) {
+            return componentSize * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER;
     }
 
     /**
-     * Método que calcula el ancho total final de la pantalla. 
+     * Método que calcula el ancho total final de la pantalla.
      *
-     * @param s Objeto tipo 'SumaTres' con el que se está jugando.
+     * @param game Objeto tipo 'SumaTres' con el que se está jugando.
      * @return Valor entero con el alto de la ventana.
      */
-    public static int defineX(SumaTres s) {
-            return define(s.getSettings().getY());
+    public static int getHorizontalSize(SumaTres game) {
+            return define(game.getSettings().getY());
     }
 
     /**
-    * Método que calcula el alto total final de la pantalla. 
+    * Método que calcula el alto total final de la pantalla.
     *
-    * @param s Objeto tipo 'SumaTres' con el que se está jugando.
+    * @param game Objeto tipo 'SumaTres' con el que se está jugando.
     * @return Valor entero con el alto de la ventana.
     */
-    public static int defineY(SumaTres s) {
-            return define(s.getSettings().getX()) + 2 * Paint.MAIN_SPACER + Paint.BOARD_SPACER;
+    public static int getVerticalSize(SumaTres game) {
+            return define(game.getSettings().getX()) + 2 * Paint.MAIN_SPACER + Paint.BOARD_SPACER;
     }
-    
+
     /**
      * Devuelve el número entero del último pixel del tablero. No distingue
-     * entre filas o columnas (es intercambiable).
-     * @param d Número de filas o columnas.
+     * entre filas o columnas (es intercambiable). <p>
+     * Es muy similar a {@link #define(int)}.
+     * @param componentSize Número de filas o columnas.
      * @return Número entero con la posición.
-     */    
-    public static int lateralSize(int d) {
-        return d * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + Paint.MAIN_SPACER;
+     */
+    public static int lateralSize(int componentSize) {
+        return define(componentSize) - Paint.MAIN_SPACER;
     }
 
     /**
      * Método que comprueba si el tablero entra en pantalla con la resolución
      * actual.
-     * 
+     *
      * @param x Cantidad de filas
      * @param y Cantidad de columnas
      * @return Valor booleano que establece si la pantalla generada entra o no en la resolución actual.
      */
     public static boolean validSize(int x, int y) {
             return y * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER < SCREEN_WIDTH &&
-            x * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER < SCREEN_HEIGHT; 
+            x * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER < SCREEN_HEIGHT;
     }
 
-    
+
     /**
      * Método que devuelve las dimensiones del mayor tablero que quepa en pantalla.
      * @return Vector de enteros, el índice 0 para las columnas, el 1 para las filas.
@@ -104,7 +107,7 @@ public final class Graphic {
             i++;
         while(j * (Paint.SPOT_SPACER + Paint.SQUARE_SIZE) + 2 * Paint.BOARD_SPACER - Paint.SPOT_SPACER + 2 * Paint.MAIN_SPACER < SCREEN_WIDTH)
             j++;
-        i--; j--; // El máximo será uno menos el primer valor que supera la condición.
+        i--; j--; // El máximo será uno menos que el primer valor que supera la condición.
         return new int[]{i, j};
     }
 }

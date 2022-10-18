@@ -9,7 +9,7 @@ import util.Crypto;
 
 @DisplayName("Obtención de la posición de la ficha siguiente")
 class SiguienteTest {
-	
+
 	SumaTres s;
 
 	@BeforeEach
@@ -28,7 +28,7 @@ class SiguienteTest {
 		assertEquals(x, z[0]);
 		assertEquals(y, z[1]);
 	}
-	
+
 	@Test
 	@DisplayName("cuando no hay posiciones válidas")
 	void noPositionsTest() {

@@ -3,7 +3,7 @@ package thread;
 /**
  * Interfaz con los métodos de las clases referentes al loop de jugadas.
  * Estructura necesaria debido a restricciones del trabajo de CPM.
- * @author Juan Mier / Profesores de la asignatura CPM (GIITIN), EPI Gijón 21-22.
+ * @author Juan Mier
  */
 public interface loopSync {
 

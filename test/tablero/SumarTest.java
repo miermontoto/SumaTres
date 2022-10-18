@@ -23,28 +23,28 @@ class SumarTest {
 	@Nested
 	@DisplayName("en el modo clásico")
 	class ClassicTest {
-		
+
 		@Test
 		@DisplayName("hacia arriba")
 		void sumarArribaPositivoTest() {
 			new Turno(s, new Jugada('w')).sumar();
 			assertEquals(3, s.getTab(0, 1));
 		}
-		
+
 		@Test
 		@DisplayName("hacia abajo")
 		void sumarAbajoPositivoTest() {
 			new Turno(s, new Jugada('s')).sumar();
 			assertEquals(3, s.getTab(2, 1));
 		}
-		
+
 		@Test
 		@DisplayName("hacia la izquierda")
 		void sumarIzquierdaPositivoTest() {
 			new Turno(s, new Jugada('a')).sumar();
 			assertEquals(3, s.getTab(1, 0));
 		}
-		
+
 		@Test
 		@DisplayName("hacia la derecha")
 		void sumarDerechaPositivoTest() {
@@ -52,41 +52,41 @@ class SumarTest {
 			assertEquals(3, s.getTab(1, 2));
 		}
 	}
-	
+
 	@Nested
 	@DisplayName("en el modo experimental")
 	class ExperimentalTest {
-		
+
 		@Test
 		@DisplayName("hacia el noroeste")
 		void sumarNWPositivoTest() {
 			new Turno(s, new Jugada('e')).sumar();
 			assertEquals(3, s.getTab(0, 0));
 		}
-		
+
 		@Test
 		@DisplayName("hacia el noreste")
 		void sumarNEPositivoTest() {
 			new Turno(s, new Jugada('q')).sumar();
 			assertEquals(3, s.getTab(0, 2));
 		}
-		
+
 		@Test
 		@DisplayName("hacia el suroeste")
 		void sumarSWPositivoTest() {
 			new Turno(s, new Jugada('z')).sumar();
 			assertEquals(3, s.getTab(2, 0));
 		}
-		
+
 		@Test
 		@DisplayName("hacia el sureste")
 		void sumarSEPositivoTest() {
 			new Turno(s, new Jugada('c')).sumar();
 			assertEquals(3, s.getTab(2, 2));
 		}
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("se suman piezas iguales")
 	void PiezasIgualesTest() {
@@ -98,7 +98,7 @@ class SumarTest {
 		assertEquals(96, s.getTab(0, 1));
 		assertEquals(6, s.getTab(0, 0));
 	}
-	
+
 	@Test
 	@DisplayName("no se suman piezas desiguales")
 	void PiezasDesigualesTest() {

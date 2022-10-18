@@ -11,36 +11,36 @@ import util.visual.Paint;
  * El funcionamiento de todos los objetos de esta clase se puede desactivar
  * mediante el flag {@code handlingEnabled}, a través del método
  * {@link disableHandling()}.
- * 
+ *
  * @see game.SumaTres
  * @see game.LauncherRF
  * @author Juan Mier
  */
 public class Mouse {
-    
+
     private static boolean handlingEnabled = true;
-    
-    private final SumaTres s;
-    private final MouseEvent e;
-    
+
+    private final SumaTres game;
+    private final MouseEvent event;
+
     public static void disableHandling() {handlingEnabled = false;}
     public static void enableHandling() {handlingEnabled = true;}
 
     /**
      * Constructor por defecto. Requiere el objeto de la partida que se está
      * jugando y el evento de ratón generado.
-     * 
+     *
      * @see SumaTres
      * @see MouseEvent
-     * 
-     * @param si Objeto de la clase SumaTres de la partida actual.
-     * @param ei Evento de ratón que se quiera tratar.
+     *
+     * @param gameObject Objeto de la clase SumaTres de la partida actual.
+     * @param eventObject Evento de ratón que se quiera tratar.
      */
-    public Mouse(SumaTres si, MouseEvent ei) {
-        s = si;
-        e = ei;
+    public Mouse(SumaTres gameObject, MouseEvent eventObject) {
+        game = gameObject;
+        event = eventObject;
     }
-    
+
     /**
      * Método principal de la clase.
      * Filtra las jugadas válidas, es decir, las que estén dentro del frame de
@@ -49,31 +49,30 @@ public class Mouse {
      * <p> Las jugadas las realiza {@link jugadaHandler()}.
      */
     public void mouseHandler() {
-        //System.out.printf("%d %d (%d) %n", e.getX(), e.getY(), Paint.MAIN_SPACER);
-        if(e.getButton() == MouseEvent.BUTTON1 && handlingEnabled 
+        if(event.getButton() == MouseEvent.BUTTON1 && handlingEnabled
                 && inFrameClick() && !inBoardClick()) jugadaHandler();
     }
-    
+
     /**
-     * Devuelve si el click se ha hecho dentro del frame de la partida o no.
+     * Devuelve verdadero si el click se ha hecho dentro del frame de la partida o no.
      * Se le llama "frame" al todo el área del programa visible excepto la zona
      * de información.
      * @return Valor booleano.
      */
     private boolean inFrameClick() {
-        return e.getY() <= (Graphic.lateralSize(s.getSettings().getX()) + Paint.MAIN_SPACER);
+        return event.getY() <= (Graphic.lateralSize(game.getSettings().getX()) + Paint.MAIN_SPACER);
     }
-    
+
     /**
-     * Devuelve si el click se ha hecho dentro del tablero de la partida o no.
+     * Devuelve verdadero si el click se ha hecho dentro del tablero de la partida o no.
      * @return Valor booleano.
      */
     private boolean inBoardClick() {
-        return e.getX() > Paint.MAIN_SPACER && e.getY() > Paint.MAIN_SPACER &&
-                e.getX() <= Graphic.lateralSize(s.getSettings().getY()) && 
-                e.getY() <= Graphic.lateralSize(s.getSettings().getX());
+        return event.getX() > Paint.MAIN_SPACER && event.getY() > Paint.MAIN_SPACER &&
+                event.getX() <= Graphic.lateralSize(game.getSettings().getY()) &&
+                event.getY() <= Graphic.lateralSize(game.getSettings().getX());
     }
-    
+
     /**
      * Método que traduce los clics de ratón a jugadas.
      * Dependiendo de dónde ha hecho click el usuario, realiza una jugada en la
@@ -82,29 +81,29 @@ public class Mouse {
      * habilitando la opción <i>Dibujar zonas</i>.
      */
     private void jugadaHandler() {
-        int x = e.getX();
-        int y = e.getY();
+        int x = event.getX();
+        int y = event.getY();
 
-        int limitX = Graphic.lateralSize(s.getSettings().getX());
-        int limitY = Graphic.lateralSize(s.getSettings().getY());
-        boolean diagonal = s.getSettings().getStatus("diagonalMovement");
+        int limitX = Graphic.lateralSize(game.getSettings().getX());
+        int limitY = Graphic.lateralSize(game.getSettings().getY());
+        boolean diagonal = game.getSettings().getStatus("diagonalMovement");
 
-        if(x <= Paint.MAIN_SPACER) { 
-            if(y <= Paint.MAIN_SPACER && diagonal) s.jugada('q');
+        if(x <= Paint.MAIN_SPACER) { // Clicks en la parte superior del frame.
+            if(y <= Paint.MAIN_SPACER && diagonal) game.jugada('q');
             else {
-                if(y <= limitY) s.jugada('a');
-                else if(diagonal && y <= limitY + Paint.MAIN_SPACER) s.jugada('z');
+                if(y <= limitY) game.jugada('a');
+                else if(diagonal && y <= limitY + Paint.MAIN_SPACER) game.jugada('z');
             }
-        } else {
+        } else { // Clicks en el resto del frame que no es la parte superior.
             if(x >= limitX) {
-                if(y <= Paint.MAIN_SPACER && diagonal) s.jugada('e');
+                if(y <= Paint.MAIN_SPACER && diagonal) game.jugada('e');
                 else {
-                    if(y <= limitY) s.jugada('d');
-                    else if(diagonal && y <= limitY + Paint.MAIN_SPACER) s.jugada('c');
+                    if(y <= limitY) game.jugada('d');
+                    else if(diagonal && y <= limitY + Paint.MAIN_SPACER) game.jugada('c');
                 }
             } else {
-                if(y <= Paint.MAIN_SPACER) s.jugada('w');
-                else if(y <= limitY + Paint.MAIN_SPACER && limitY <= y) s.jugada('s');
+                if(y <= Paint.MAIN_SPACER) game.jugada('w');
+                else if(y <= limitY + Paint.MAIN_SPACER && limitY <= y) game.jugada('s');
             }
         }
     }
