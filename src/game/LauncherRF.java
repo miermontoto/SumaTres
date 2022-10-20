@@ -876,12 +876,15 @@ public final class LauncherRF extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiNuevaPartidaActionPerformed
 
     private void jmiTrucosLoopSlowdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopSlowdownActionPerformed
-        var result = Integer.parseInt(Dialog.input("Introduzca el valor del nuevo slowdown (ms):", (x) -> (0 <= Integer.parseInt(x))));
-        loopComms.setSlowdown(result);
+        try {
+            loopComms.setSlowdown(Integer.parseInt(Dialog.input("Introduzca el valor del nuevo slowdown (ms):", (x) -> (0 <= Integer.parseInt(x)))));
+        } catch (NumberFormatException nfe) {Dialog.showError("El valor introducido no es un número.");}
     }//GEN-LAST:event_jmiTrucosLoopSlowdownActionPerformed
 
     private void jmiTrucosLoopLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTrucosLoopLimitActionPerformed
-        loopComms.setLimit(Integer.parseInt(Dialog.input("Introduzca el límite de iteraciones:", (x) -> (Integer.parseInt(x) >= 0))));
+        try {
+            loopComms.setLimit(Integer.parseInt(Dialog.input("Introduzca el límite de iteraciones:", (x) -> (Integer.parseInt(x) >= 0))));
+        } catch (NumberFormatException nfe) {Dialog.showError("El valor introducido no es un número.");}
     }//GEN-LAST:event_jmiTrucosLoopLimitActionPerformed
 
     private void pneInfoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pneInfoComponentShown

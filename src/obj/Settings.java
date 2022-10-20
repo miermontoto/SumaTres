@@ -68,27 +68,27 @@ public class Settings {
 
     /**
      * Método que establece el valor de una opción.
-     * @param s Opción del que se quiere cambiar el valor.
-     * @param b Valor a establecer.
+     * @param settingName Opción del que se quiere cambiar el valor.
+     * @param bool Valor a establecer.
      * @return Devuelve el valor booleano que devuelve {@code put} o {@code false} si la opción no existe.
      */
-    public boolean setStatus(String s, boolean b) {
-        if(!settingsMap.containsKey(s)) {
-            System.err.println("Opción no existente: " + s);
+    public boolean setStatus(String settingName, boolean bool) {
+        if(!settingsMap.containsKey(settingName)) {
+            System.err.println("Opción no existente: " + settingName);
             return false;
         }
-        return settingsMap.put(s, b);
+        return settingsMap.put(settingName, bool);
     }
 
     /**
      * Método que conmuta el valor de una opción.
-     * @param s Nombre de la opción a conmutar.
+     * @param settingName Nombre de la opción a conmutar.
      * @return Devuelve el nuevo valor booleano de la opción.
      */
-    public boolean toggleStatus(String s) {
+    public boolean toggleStatus(String settingName) {
         //if(!settingsMap.containsKey(s)) throw new OperationNotSupportedException("Opción no existente.");
-        boolean newValue = !settingsMap.get(s);
-        settingsMap.put(s, newValue);
+        boolean newValue = !settingsMap.get(settingName);
+        settingsMap.put(settingName, newValue);
         return newValue;
     }
 
